@@ -9,11 +9,7 @@
     
     <script>
       window.MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']],
-          displayMath: [['$$', '$$'], ['\\[', '\\]']],
-          processEscapes: true
-        },
+        tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
         svg: { fontCache: 'global' }
       };
     </script>
@@ -24,7 +20,6 @@
             --bg-color: #0f1115;
             --card-bg: #1a1d23;
             --text-primary: #e0e0e0;
-            --text-secondary: #b0b0b0;
             --accent-gold: #ffc107;
             --accent-blue: #64ffda;
             --accent-red: #ff5252;
@@ -38,509 +33,430 @@
             background-color: var(--bg-color);
             color: var(--text-primary);
             font-family: var(--font-main);
+            margin: 0; padding: 20px;
             line-height: 1.7;
-            margin: 0;
-            padding: 0;
-            -webkit-font-smoothing: antialiased;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+        .container { max-width: 800px; margin: 0 auto; }
 
-        /* HEADER */
-        header {
-            text-align: center;
-            padding: 50px 0;
-            border-bottom: 2px solid #2a2e35;
-            margin-bottom: 40px;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin: 10px 0;
-            font-weight: 800;
-            background: linear-gradient(to right, #ffffff, #999999);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .subtitle {
-            font-family: var(--font-serif);
-            font-style: italic;
-            color: var(--accent-gold);
-            font-size: 1.1rem;
-        }
-
-        /* CARD STYLING */
-        .card {
-            background-color: var(--card-bg);
+        /* DASHBOARD CONTROLS */
+        .dashboard {
+            background: #1e2229;
+            padding: 30px;
             border-radius: 16px;
-            padding: 40px;
-            margin-bottom: 50px;
-            border: 1px solid #2a2e35;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .dose-header {
-            border-bottom: 1px solid #333;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+            border: 1px solid #333;
+            margin-bottom: 40px;
             text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        .date-badge {
-            background: rgba(255, 193, 7, 0.15);
-            color: var(--accent-gold);
-            padding: 6px 14px;
-            border-radius: 20px;
+        .btn-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+        
+        button {
+            background: var(--accent-blue);
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 0.9rem;
-            display: inline-block;
-            margin-bottom: 15px;
-        }
-
-        .intro-quote {
-            font-size: 1.2rem;
-            color: var(--accent-blue);
-            font-weight: 300;
-            font-style: italic;
-        }
-
-        /* SECTIONS */
-        .section-title {
-            display: flex;
-            align-items: center;
-            margin-top: 40px;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: transform 0.2s;
         }
         
-        .section-title h3 {
-            margin: 0;
-            font-size: 1.3rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-left: 15px;
+        button:active { transform: scale(0.95); }
+        button.secondary { background: #333; color: #fff; border: 1px solid #555; }
+
+        input[type="date"] {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #555;
+            background: #111;
+            color: #fff;
+            font-family: var(--font-main);
+            font-size: 1rem;
         }
 
+        /* HIDDEN CONTENT LOGIC */
+        .daily-dose { display: none; animation: fadeIn 0.5s; } /* Hidden by default */
+        .daily-dose.active { display: block; } /* Show when active */
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* CONTENT STYLING */
+        header { text-align: center; margin-bottom: 40px; }
+        h1 { font-size: 2.2rem; margin: 0; background: linear-gradient(to right, #fff, #999); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { font-family: var(--font-serif); font-style: italic; color: var(--accent-gold); margin-top: 5px; }
+
+        .card { background-color: var(--card-bg); border-radius: 16px; padding: 30px; border: 1px solid #2a2e35; margin-bottom: 40px; }
+        .dose-header { border-bottom: 1px solid #333; padding-bottom: 20px; margin-bottom: 30px; text-align: center; }
+        .date-badge { background: rgba(255, 193, 7, 0.15); color: var(--accent-gold); padding: 6px 14px; border-radius: 20px; font-weight: 700; text-transform: uppercase; font-size: 0.9rem; }
+        .intro-quote { font-size: 1.1rem; color: var(--accent-blue); font-style: italic; margin-top: 15px; }
+
+        /* SECTIONS */
+        .section-title { display: flex; align-items: center; margin-top: 40px; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
+        .section-title h3 { margin: 0 0 0 15px; font-size: 1.3rem; text-transform: uppercase; }
         .icon { font-size: 1.5rem; }
 
         /* COLORS */
-        .eng { color: var(--accent-blue); }
-        .law { color: var(--accent-red); }
-        .med { color: var(--accent-purple); }
-        .fin { color: var(--accent-green); }
-        .spi { color: var(--accent-gold); }
+        .eng { color: var(--accent-blue); } .law { color: var(--accent-red); } .med { color: var(--accent-purple); } .fin { color: var(--accent-green); } .spi { color: var(--accent-gold); }
 
-        /* CONTENT ELEMENTS */
-        p { margin-bottom: 18px; }
-        strong { color: #fff; font-weight: 700; }
+        /* ELEMENTS */
+        .math-block { background-color: #121418; padding: 25px; border-radius: 10px; text-align: center; margin: 25px 0; border-left: 4px solid var(--accent-blue); overflow-x: auto; }
+        .content-img { max-width: 100%; height: auto; display: block; margin: 20px auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 1px solid #333; }
+        .scenario-box { background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 8px; margin-top: 20px; border-left: 3px solid; }
+        .vocab-item { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 10px; margin-bottom: 15px; border-left: 3px solid var(--accent-gold); }
         
-        .math-block {
-            background-color: #121418;
-            padding: 25px;
-            border-radius: 10px;
-            text-align: center;
-            margin: 25px 0;
-            border-left: 4px solid var(--accent-blue);
-            font-size: 1.15rem;
-            overflow-x: auto;
-        }
-
-        /* IMPROVED IMAGE STYLING */
-        .content-img {
-            max-width: 100%;       /* Prevents stretching */
-            height: auto;          /* Maintains aspect ratio */
-            display: block;        /* Puts image on its own line */
-            margin: 20px auto;     /* Centers the image */
-            border-radius: 8px;    /* Smooth corners */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5); /* Pro shadow */
-            border: 1px solid #333; /* Subtle border */
-        }
-
-        .scenario-box {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-            border-left: 3px solid;
-        }
-
-        .vocab-item {
-            background: rgba(255,255,255,0.03);
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            border-left: 3px solid var(--accent-gold);
-        }
-
-        .judgment-block {
-            border: 2px solid var(--accent-red);
-            background: linear-gradient(180deg, rgba(255, 82, 82, 0.05) 0%, rgba(15, 17, 21, 0) 100%);
-            text-align: center;
-            padding: 40px;
-            margin-top: 50px;
-            border-radius: 10px;
-        }
-
-        footer {
-            text-align: center;
-            padding: 60px 0;
-            color: #555;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-        }
+        .judgment-block { border: 2px solid var(--accent-red); background: linear-gradient(180deg, rgba(255, 82, 82, 0.05) 0%, rgba(15, 17, 21, 0) 100%); text-align: center; padding: 40px; margin-top: 50px; border-radius: 10px; }
+        
+        .error-msg { color: var(--accent-red); font-weight: bold; margin-top: 20px; display: none; text-align: center; }
+        footer { margin-top: 50px; color: #666; font-size: 0.9rem; text-align: center; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>For my Proverbs 31</h1>
-        <div class="subtitle">Engineering • Law • Medical • Finance • Spirituality</div>
-    </header>
+    <div class="container">
+        <header>
+            <h1>For my Proverbs 31</h1>
+            <div class="subtitle">Engineering • Law • Medical • Finance • Spirituality</div>
+        </header>
 
-    <article class="card">
-        <div class="dose-header">
-            <span class="date-badge">January 5, 2026 (Monday)</span>
-            <div class="intro-quote">"Monday is the day of execution. Theory ends; practice begins."</div>
-        </div>
-
-        <div class="section-title eng">
-            <span class="icon">⚡</span>
-            <h3>Engineering</h3>
-        </div>
-        <p><strong>Topic:</strong> MOSFET Switching & The Miller Plateau (Power Electronics).</p>
-        <p>You are building an induction heater. You think your MOSFET switches "instantly" from OFF to ON. <strong>You are wrong.</strong> There is a hidden delay that causes heat and explosions. It is called the <strong>Miller Plateau</strong>.</p>
-
-        <img src="https://i.ibb.co/qF37YqcL/k-QC1h-2.jpg" alt="MOSFET Switching Graph" class="content-img">
-
-        <p><strong>The Physics:</strong><br>
-        Between the Gate (G) and Drain (D) of every MOSFET, there is a tiny, invisible "parasitic" capacitor ($C_{gd}$).<br>
-        When you turn the MOSFET ON, the Gate voltage ($V_{gs}$) rises. But when the Drain voltage starts to drop, it "fights" the Gate through this capacitor. The Gate voltage gets <strong>stuck</strong> flat for a few microseconds. This flat line is the Miller Plateau.</p>
-
-        <p><strong>The Danger Zone:</strong><br>
-        During the plateau, the MOSFET is acting like a resistor (Linear Region). It is carrying high current AND high voltage simultaneously.<br>
-        $$P_{loss} = V_{ds} \times I_d$$</p>
-        <p>If $V_{ds}=300V$ and $I_d=20A$, your power loss is <strong>6,000 Watts</strong> during that tiny plateau. This is why your MOSFETs get hot even if they are "efficient."</p>
-
-        <div class="scenario-box" style="border-color: var(--accent-blue);">
-            <strong>Lab Test:</strong><br>
-            Hook an oscilloscope to the Gate pin of your ZVS driver. You will see the voltage rise, <em>stop</em> flat at around 4-5V, and then rise again. That stop is the Miller Effect.<br><br>
-            <strong>Fix:</strong> You need a Gate Driver that can push high current (Amps, not milliAmps) to charge that parasitic capacitor quickly and shorten the plateau.
-        </div>
-
-        <div class="section-title law">
-            <span class="icon">⚖️</span>
-            <h3>Law Enforcement</h3>
-        </div>
-        <p><strong>Topic:</strong> <em>Dolus Eventualis</em> (Legal Intent in South Africa).</p>
-        <p>In South African criminal law, "Intent" ($Dolus$) isn't just "I wanted to kill him." There is a darker, more subtle form called <em>Dolus Eventualis</em>.</p>
-
-        <p><strong>The Definition:</strong><br>
-        A person acts with <em>Dolus Eventualis</em> if:</p>
-        <ul>
-            <li>1. They <strong>foresaw the possibility</strong> that their action could result in death.</li>
-            <li>2. They <strong>reconciled themselves</strong> to that possibility (i.e., they proceeded anyway, reckless of the consequences).</li>
-        </ul>
-
-        <div class="scenario-box" style="border-color: var(--accent-red);">
-            <strong>Scenario for Musa:</strong><br>
-            A suspect shoots through a closed door. He argues, "I didn't know who was behind it, so I didn't <em>intend</em> to kill anyone specific."<br><br>
-            <strong>The Verdict:</strong> Did he foresee that <em>someone</em> might be behind the door? Yes. Did he shoot anyway? Yes. He is guilty of Murder via <em>Dolus Eventualis</em>, even if he didn't target a specific person. (Reference: <em>S v Pistorius</em>).
-        </div>
-
-        <div class="section-title med">
-            <span class="icon">🩸</span>
-            <h3>Medical Sciences</h3>
-        </div>
-        <p><strong>Topic:</strong> The Renin-Angiotensin-Aldosterone System (RAAS).</p>
-        <p>This is the master control system for your blood pressure. It is a chain reaction.</p>
-
-        <img src="https://i.ibb.co/gFFCBhRC/IMG-20260105-WA0000.jpg" alt="RAAS System Diagram" class="content-img">
-
-        <p><strong>The Mechanism:</strong></p>
-        <ul>
-            <li><strong>Step 1 (Kidneys):</strong> Low blood pressure detected. Kidneys release <strong>Renin</strong>.</li>
-            <li><strong>Step 2 (Liver):</strong> Renin converts a protein into <strong>Angiotensin I</strong> (inactive).</li>
-            <li><strong>Step 3 (Lungs):</strong> ACE (Angiotensin-Converting Enzyme) turns it into <strong>Angiotensin II</strong>.</li>
-            <li><strong>Step 4 (The Effect):</strong> Angiotensin II is a potent vasoconstrictor (tightens veins) and tells the adrenal glands to release <strong>Aldosterone</strong> (which retains salt and water).</li>
-        </ul>
-
-        <p style="background: rgba(179, 136, 255, 0.1); padding: 15px; border-radius: 8px;"><strong>Prodigy Note:</strong> Blood pressure medication often works by blocking Step 3 (ACE Inhibitors) or Step 4 (ARBs). If you block the enzyme, the veins relax.</p>
-
-        <div class="section-title fin">
-            <span class="icon">📊</span>
-            <h3>Finance</h3>
-        </div>
-        <p><strong>Topic:</strong> The Sharpe Ratio (Risk-Adjusted Return).</p>
-        <p>Making money is easy. Keeping it while making more is hard. The Sharpe Ratio tells you if an investment is "smart" or just "lucky/risky."</p>
-
-        <p><strong>The Formula:</strong></p>
-        <div class="math-block">
-            $$\text{Sharpe Ratio} = \frac{R_p - R_f}{\sigma_p}$$
-        </div>
-        <ul>
-            <li>$R_p$ = Return of the Portfolio (e.g., your trading profit).</li>
-            <li>$R_f$ = Risk-Free Rate (e.g., US Treasury Bonds, ~4%).</li>
-            <li>$\sigma_p$ (Sigma) = Standard Deviation (Volatility/Risk).</li>
-        </ul>
-
-        <div class="scenario-box" style="border-color: var(--accent-green);">
-            <strong>Analysis:</strong><br>
-            • <strong>Trader A</strong> makes 20% profit but has wild swings (high risk).<br>
-            • <strong>Trader B</strong> makes 15% profit but has a smooth line (low risk).<br><br>
-            <strong>Verdict:</strong> Trader B likely has a higher Sharpe Ratio. Institutional investors (big banks) prefer Trader B. Don't just look at the profit percentage; look at the <em>smoothness</em> of the curve.
-        </div>
-
-        <div class="section-title spi">
-            <span class="icon">🔥</span>
-            <h3>Spirituality</h3>
-        </div>
-        <p><strong>Topic:</strong> Sanctification (Positional vs. Progressive).</p>
-        <p>We discussed "Justification" (Legal standing). Now we discuss "Sanctification" (Becoming holy).</p>
-
-        <ul>
-            <li><strong>Positional Sanctification:</strong> Happened instantly when you believed. You are set apart. (Hebrews 10:10).</li>
-            <li><strong>Progressive Sanctification:</strong> The daily, painful process of aligning your behavior with your status. It is a war.</li>
-        </ul>
-
-        <p><strong>The Analogy:</strong><br>
-        Imagine a Prince who was raised in the slums.
-        <br><strong>Positional:</strong> The DNA test proves he is a Prince. He has the title instantly.
-        <br><strong>Progressive:</strong> He still speaks and eats like a street urchin. He must <em>learn</em> to act like a Prince.</p>
-        
-        <p><strong>Lesson:</strong> Do not despair when you sin. It doesn't mean you aren't a Prince; it means you are still in training.</p>
-
-        <div class="section-title" style="color: #ffab40;">
-            <span class="icon">📚</span>
-            <h3>Vocabulary</h3>
-        </div>
-
-        <div class="vocab-item">
-            <div style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Perspicacious (Adj)</div>
-            <p>Having a ready insight into and understanding of things; mentally sharp.</p>
-            <p><em>Example: "Musa's <strong>perspicacious</strong> analysis of the crime scene revealed details the other officers missed."</em></p>
-        </div>
-
-        <div class="vocab-item">
-            <div style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Sycophant (Noun)</div>
-            <p>A person who acts obsequiously toward someone important in order to gain advantage.</p>
-            <p><em>Example: "A leader surrounds himself with critics, but a tyrant surrounds himself with <strong>sycophants</strong>."</em></p>
-        </div>
-
-        <div class="vocab-item">
-            <div style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Inchoate (Adj)</div>
-            <p>Just begun and so not fully formed or developed; rudimentary.</p>
-            <p><em>Example: "My plans for the new induction heater are still <strong>inchoate</strong>; I have the concept, but not the schematic."</em></p>
-        </div>
-
-        <div class="judgment-block">
-            <span class="icon" style="display:block; font-size: 2rem; margin-bottom: 10px;">🔨</span>
-            <h3 style="color: var(--accent-red); margin-top:0;">MY JUDGMENT</h3>
+        <div class="dashboard">
+            <h3 style="margin-top: 0; color: #fff;">Select Date</h3>
             
-            <p>The <strong>Miller Plateau</strong> teaches us that the transition is the most dangerous part. Switching from "Student" to "Engineer," or "Boy" to "Man," generates heat.</p>
-            <p>You are in the plateau right now. The voltage is high, the current is high. Do not get stuck there. Push through the transition with high-current discipline.</p>
-            <p>If you linger in the middle, you will burn.</p>
+            <div class="btn-group">
+                <button onclick="loadDate('today')">Read Today</button>
+                <button class="secondary" onclick="loadDate('yesterday')">Read Yesterday</button>
+            </div>
 
-            <div style="font-family: var(--font-serif); font-style: italic; color: #fff; margin-top: 20px;">"I would that you were cold or hot. So then because you are lukewarm... I will spew you out of my mouth." — Revelation 3:15-16</div>
-        </div>
-    </article>
-    <br><hr style="border-color: #333; margin: 40px 0;"><br>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+                <span style="color: #aaa;">Or pick date:</span>
+                <input type="date" id="datePicker" onchange="loadDate(this.value)">
+            </div>
 
-    <article class="card">
-        <div class="dose-header">
-            <span class="date-badge">January 4, 2026 (Sunday)</span>
-            <div class="intro-quote">"It is Sunday. A day of rest for the body, but never for the mind. Let’s feed the intellect."</div>
+            <div id="errorMessage" class="error-msg">❌ No Intellect Dose found for this date.</div>
         </div>
 
-        <div class="section-title eng">
-            <span class="icon">🔌</span>
-            <h3>Engineering</h3>
+        <div id="2026-01-05" class="daily-dose">
+            <article class="card">
+                <div class="dose-header">
+                    <span class="date-badge">January 5, 2026 (Monday)</span>
+                    <div class="intro-quote">"Monday is the day of execution. Theory ends; practice begins."</div>
+                </div>
+
+                <div class="section-title eng">
+                    <span class="icon">⚡</span><h3>Engineering</h3>
+                </div>
+                <p><strong>Topic:</strong> MOSFET Switching & The Miller Plateau (Power Electronics).</p>
+                <p>You are building an induction heater. You think your MOSFET switches "instantly" from OFF to ON. <strong>You are wrong.</strong> There is a hidden delay that causes heat and explosions. It is called the <strong>Miller Plateau</strong>.</p>
+                <img src="https://i.ibb.co/qF37YqcL/k-QC1h-2.jpg" alt="MOSFET Switching Graph" class="content-img">
+                <p><strong>The Physics:</strong><br>
+                Between the Gate (G) and Drain (D) of every MOSFET, there is a tiny, invisible "parasitic" capacitor ($C_{gd}$).<br>
+                When you turn the MOSFET ON, the Gate voltage ($V_{gs}$) rises. But when the Drain voltage starts to drop, it "fights" the Gate through this capacitor. The Gate voltage gets <strong>stuck</strong> flat for a few microseconds. This flat line is the Miller Plateau.</p>
+                <p><strong>The Danger Zone:</strong><br>
+                During the plateau, the MOSFET is acting like a resistor (Linear Region). It is carrying high current AND high voltage simultaneously.<br>
+                $$P_{loss} = V_{ds} \times I_d$$</p>
+                <p>If $V_{ds}=300V$ and $I_d=20A$, your power loss is <strong>6,000 Watts</strong> during that tiny plateau. This is why your MOSFETs get hot even if they are "efficient."</p>
+                <div class="scenario-box" style="border-color: var(--accent-blue);">
+                    <strong>Lab Test:</strong><br>
+                    Hook an oscilloscope to the Gate pin of your ZVS driver. You will see the voltage rise, <em>stop</em> flat at around 4-5V, and then rise again. That stop is the Miller Effect.<br><br>
+                    <strong>Fix:</strong> You need a Gate Driver that can push high current (Amps, not milliAmps) to charge that parasitic capacitor quickly and shorten the plateau.
+                </div>
+
+                <div class="section-title law">
+                    <span class="icon">⚖️</span><h3>Law Enforcement</h3>
+                </div>
+                <p><strong>Topic:</strong> <em>Dolus Eventualis</em> (Legal Intent in South Africa).</p>
+                <p>In South African criminal law, "Intent" ($Dolus$) isn't just "I wanted to kill him." There is a darker, more subtle form called <em>Dolus Eventualis</em>.</p>
+                <p><strong>The Definition:</strong><br>A person acts with <em>Dolus Eventualis</em> if:</p>
+                <ul>
+                    <li>1. They <strong>foresaw the possibility</strong> that their action could result in death.</li>
+                    <li>2. They <strong>reconciled themselves</strong> to that possibility (i.e., they proceeded anyway, reckless of the consequences).</li>
+                </ul>
+                <div class="scenario-box" style="border-color: var(--accent-red);">
+                    <strong>Scenario for Musa:</strong><br>
+                    A suspect shoots through a closed door. He argues, "I didn't know who was behind it, so I didn't <em>intend</em> to kill anyone specific."<br><br>
+                    <strong>The Verdict:</strong> Did he foresee that <em>someone</em> might be behind the door? Yes. Did he shoot anyway? Yes. He is guilty of Murder via <em>Dolus Eventualis</em>, even if he didn't target a specific person. (Reference: <em>S v Pistorius</em>).
+                </div>
+
+                <div class="section-title med">
+                    <span class="icon">🩸</span><h3>Medical Sciences</h3>
+                </div>
+                <p><strong>Topic:</strong> The Renin-Angiotensin-Aldosterone System (RAAS).</p>
+                <p>This is the master control system for your blood pressure. It is a chain reaction.</p>
+                <img src="https://i.ibb.co/gFFCBhRC/IMG-20260105-WA0000.jpg" alt="RAAS System Diagram" class="content-img">
+                <p><strong>The Mechanism:</strong></p>
+                <ul>
+                    <li><strong>Step 1 (Kidneys):</strong> Low blood pressure detected. Kidneys release <strong>Renin</strong>.</li>
+                    <li><strong>Step 2 (Liver):</strong> Renin converts a protein into <strong>Angiotensin I</strong> (inactive).</li>
+                    <li><strong>Step 3 (Lungs):</strong> ACE (Angiotensin-Converting Enzyme) turns it into <strong>Angiotensin II</strong>.</li>
+                    <li><strong>Step 4 (The Effect):</strong> Angiotensin II is a potent vasoconstrictor (tightens veins) and tells the adrenal glands to release <strong>Aldosterone</strong> (which retains salt and water).</li>
+                </ul>
+                <p style="background: rgba(179, 136, 255, 0.1); padding: 15px; border-radius: 8px;"><strong>Prodigy Note:</strong> Blood pressure medication often works by blocking Step 3 (ACE Inhibitors) or Step 4 (ARBs). If you block the enzyme, the veins relax.</p>
+
+                <div class="section-title fin">
+                    <span class="icon">📊</span><h3>Finance</h3>
+                </div>
+                <p><strong>Topic:</strong> The Sharpe Ratio (Risk-Adjusted Return).</p>
+                <p>Making money is easy. Keeping it while making more is hard. The Sharpe Ratio tells you if an investment is "smart" or just "lucky/risky."</p>
+                <p><strong>The Formula:</strong></p>
+                <div class="math-block">$$\text{Sharpe Ratio} = \frac{R_p - R_f}{\sigma_p}$$</div>
+                <ul>
+                    <li>$R_p$ = Return of the Portfolio (e.g., your trading profit).</li>
+                    <li>$R_f$ = Risk-Free Rate (e.g., US Treasury Bonds, ~4%).</li>
+                    <li>$\sigma_p$ (Sigma) = Standard Deviation (Volatility/Risk).</li>
+                </ul>
+                <div class="scenario-box" style="border-color: var(--accent-green);">
+                    <strong>Analysis:</strong><br>
+                    • <strong>Trader A</strong> makes 20% profit but has wild swings (high risk).<br>
+                    • <strong>Trader B</strong> makes 15% profit but has a smooth line (low risk).<br><br>
+                    <strong>Verdict:</strong> Trader B likely has a higher Sharpe Ratio. Institutional investors (big banks) prefer Trader B. Don't just look at the profit percentage; look at the <em>smoothness</em> of the curve.
+                </div>
+
+                <div class="section-title spi">
+                    <span class="icon">🔥</span><h3>Spirituality</h3>
+                </div>
+                <p><strong>Topic:</strong> Sanctification (Positional vs. Progressive).</p>
+                <p>We discussed "Justification" (Legal standing). Now we discuss "Sanctification" (Becoming holy).</p>
+                <ul>
+                    <li><strong>Positional Sanctification:</strong> Happened instantly when you believed. You are set apart. (Hebrews 10:10).</li>
+                    <li><strong>Progressive Sanctification:</strong> The daily, painful process of aligning your behavior with your status. It is a war.</li>
+                </ul>
+                <p><strong>The Analogy:</strong><br>
+                Imagine a Prince who was raised in the slums.
+                <br><strong>Positional:</strong> The DNA test proves he is a Prince. He has the title instantly.
+                <br><strong>Progressive:</strong> He still speaks and eats like a street urchin. He must <em>learn</em> to act like a Prince.</p>
+                <p><strong>Lesson:</strong> Do not despair when you sin. It doesn't mean you aren't a Prince; it means you are still in training.</p>
+
+                <div class="section-title" style="color: #ffab40;">
+                    <span class="icon">📚</span><h3>Vocabulary</h3>
+                </div>
+                <div class="vocab-item">
+                    <div style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Perspicacious (Adj)</div>
+                    <p>Having a ready insight into and understanding of things; mentally sharp.</p>
+                    <p><em>Example: "Musa's <strong>perspicacious</strong> analysis of the crime scene revealed details the other officers missed."</em></p>
+                </div>
+                <div class="vocab-item">
+                    <div style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Sycophant (Noun)</div>
+                    <p>A person who acts obsequiously toward someone important in order to gain advantage.</p>
+                    <p><em>Example: "A leader surrounds himself with critics, but a tyrant surrounds himself with <strong>sycophants</strong>."</em></p>
+                </div>
+                <div class="vocab-item">
+                    <div style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Inchoate (Adj)</div>
+                    <p>Just begun and so not fully formed or developed; rudimentary.</p>
+                    <p><em>Example: "My plans for the new induction heater are still <strong>inchoate</strong>; I have the concept, but not the schematic."</em></p>
+                </div>
+
+                <div class="judgment-block">
+                    <span class="icon" style="display:block; font-size: 2rem; margin-bottom: 10px;">🔨</span>
+                    <h3 style="color: var(--accent-red); margin-top:0;">MY JUDGMENT</h3>
+                    <p>The <strong>Miller Plateau</strong> teaches us that the transition is the most dangerous part. Switching from "Student" to "Engineer," or "Boy" to "Man," generates heat.</p>
+                    <p>You are in the plateau right now. The voltage is high, the current is high. Do not get stuck there. Push through the transition with high-current discipline.</p>
+                    <p>If you linger in the middle, you will burn.</p>
+                    <div style="font-family: var(--font-serif); font-style: italic; color: #fff; margin-top: 20px;">"I would that you were cold or hot. So then because you are lukewarm... I will spew you out of my mouth." — Revelation 3:15-16</div>
+                </div>
+            </article>
         </div>
-        <p><strong>Topic:</strong> 3-Phase Power (Star vs. Delta) - Power Distribution & Motor Connections.</p>
-        <p>Why do we use 3-phase power instead of single-phase? Because it provides constant power (no zero-crossing pulsations) and is 150% more efficient for the same amount of wire.</p>
+        <div id="2026-01-04" class="daily-dose">
+            <article class="card">
+                <div class="dose-header">
+                    <span class="date-badge">January 4, 2026 (Sunday)</span>
+                    <div class="intro-quote">"It is Sunday. A day of rest for the body, but never for the mind. Let’s feed the intellect."</div>
+                </div>
 
-        <a href="https://ibb.co/7x63170q" target="_blank">
-            <img src="https://i.ibb.co/mrMncQP3/IMG-20260104-WA0029.jpg" alt="Star Delta Connections" class="content-img">
-        </a>
+                <div class="section-title eng">
+                    <span class="icon">🔌</span><h3>Engineering</h3>
+                </div>
+                <p><strong>Topic:</strong> 3-Phase Power (Star vs. Delta) - Power Distribution & Motor Connections.</p>
+                <p>Why do we use 3-phase power instead of single-phase? Because it provides constant power (no zero-crossing pulsations) and is 150% more efficient for the same amount of wire.</p>
+                <img src="https://i.ibb.co/mrMncQP3/IMG-20260104-WA0029.jpg" alt="Star Delta Connections" class="content-img">
+                <p><strong>The Two Connections:</strong></p>
+                <ul>
+                    <li><strong>Star (Wye, Y):</strong> Connects ends of three coils to a common <strong>Neutral</strong> point. Used for Power Transmission and low-voltage distribution (homes).</li>
+                    <li><strong>Delta ($\Delta$):</strong> Connects end of one coil to the start of the next (End-to-End). No Neutral. Used for High Power Motors and Transmission.</li>
+                </ul>
+                <p><strong>The Mathematics:</strong></p>
+                <ul>
+                    <li><strong>Star Connection:</strong>
+                        <br>Line Voltage: $V_L = \sqrt{3} \times V_{ph}$
+                        <br>Line Current: $I_L = I_{ph}$
+                    </li>
+                    <li><strong>Delta Connection:</strong>
+                        <br>Line Voltage: $V_L = V_{ph}$
+                        <br>Line Current: $I_L = \sqrt{3} \times I_{ph}$
+                    </li>
+                </ul>
+                <p><strong>Power Formula (For both):</strong></p>
+                <div class="math-block">$$P = \sqrt{3} \cdot V_L \cdot I_L \cdot \cos\theta$$</div>
+                <div style="text-align:center; font-size:0.9rem; color:#888;">(Where $\cos\theta$ is the Power Factor)</div>
+                <div class="scenario-box" style="border-color: var(--accent-blue);">
+                    <strong>Calculated Example:</strong><br>
+                    You have a 3-Phase Motor connected in <strong>Delta</strong>.<br>
+                    Given: $V_L = 400V$, $I_L = 10A$, $PF = 0.85$.
+                    <br><br>
+                    $$P = 1.732 \times 400 \times 10 \times 0.85$$
+                    $$P \approx 5,888 \text{ Watts} \approx 5.9 \text{ kW}$$
+                    <br>
+                    <strong>Implication:</strong> If you accidentally connect a motor designed for "Star" into "Delta," the phase voltage increases by $\sqrt{3}$ (1.732x). The current will spike massively, and you will burn the windings instantly. Always check the nameplate.
+                </div>
 
-        <p><strong>The Two Connections:</strong></p>
-        <ul>
-            <li><strong>Star (Wye, Y):</strong> Connects ends of three coils to a common <strong>Neutral</strong> point. Used for Power Transmission and low-voltage distribution (homes).</li>
-            <li><strong>Delta ($\Delta$):</strong> Connects end of one coil to the start of the next (End-to-End). No Neutral. Used for High Power Motors and Transmission.</li>
-        </ul>
+                <div class="section-title law">
+                    <span class="icon">🇿🇦</span><h3>Law Enforcement</h3>
+                </div>
+                <p><strong>Topic:</strong> The Exclusionary Rule (Section 35(5)) - Constitutional Admissibility in South Africa.</p>
+                <p>We discussed the "Fruit of the Poisonous Tree" (a US concept). In South Africa, this is codified in <strong>Section 35(5) of the Constitution</strong>.</p>
+                <p><strong>The Law:</strong><br>
+                Evidence obtained in a manner that violates any right in the Bill of Rights <strong>must be excluded</strong> if the admission of that evidence would:</p>
+                <ul>
+                    <li>Render the trial unfair, OR</li>
+                    <li>Be detrimental to the administration of justice.</li>
+                </ul>
+                <div class="scenario-box" style="border-color: var(--accent-red);">
+                    <strong>Scenario for Musa:</strong><br>
+                    Musa arrests a suspect but forgets to read them their rights (Section 35(1) - right to remain silent). The suspect then confesses.<br><br>
+                    <strong>The Court's Decision:</strong> Because the right to silence was violated, the confession is "tainted." The judge will likely <strong>exclude</strong> the confession under Section 35(5). The suspect might walk free, even if he is guilty, because the <em>process</em> was flawed.<br><br>
+                    <strong>Lesson:</strong> Process is not paperwork. Process is liberty. A good detective protects the process as much as the evidence.
+                </div>
 
-        <p><strong>The Mathematics:</strong></p>
-        <ul>
-            <li><strong>Star Connection:</strong>
-                <br>Line Voltage: $V_L = \sqrt{3} \times V_{ph}$
-                <br>Line Current: $I_L = I_{ph}$
-            </li>
-            <li><strong>Delta Connection:</strong>
-                <br>Line Voltage: $V_L = V_{ph}$
-                <br>Line Current: $I_L = \sqrt{3} \times I_{ph}$
-            </li>
-        </ul>
+                <div class="section-title med">
+                    <span class="icon">🧠</span><h3>Medical Sciences</h3>
+                </div>
+                <p><strong>Topic:</strong> The Autonomic Nervous System (ANS) - Fight or Flight vs. Rest and Digest.</p>
+                <p>Your body has an automatic pilot called the ANS. It has two opposing modes.</p>
+                <img src="https://i.ibb.co/DfXmTLLk/IMG-20260104-WA0028.jpg" alt="Nervous System Diagram" class="content-img">
+                <ul>
+                    <li><strong>1. Sympathetic Nervous System (The Accelerator):</strong><br>
+                    <strong>Trigger:</strong> Stress/Danger.<br>
+                    <strong>Neurotransmitter:</strong> Norepinephrine / Adrenaline.<br>
+                    <strong>Effect:</strong> Pupils dilate (tunnel vision), heart rate spikes, digestion stops (dry mouth), glucose floods the blood.<br>
+                    <em>Application:</em> This is what happens when you trade NFP (Non-Farm Payrolls) or see a blue light in the rearview mirror.
+                    </li>
+                    <br>
+                    <li><strong>2. Parasympathetic Nervous System (The Brake):</strong><br>
+                    <strong>Trigger:</strong> Safety/Relaxation.<br>
+                    <strong>Neurotransmitter:</strong> Acetylcholine.<br>
+                    <strong>Effect:</strong> Heart rate slows, digestion resumes, healing occurs.<br>
+                    <strong>The Vagus Nerve:</strong> This is the main highway for the parasympathetic system.
+                    </li>
+                </ul>
+                <p style="background: rgba(179, 136, 255, 0.1); padding: 15px; border-radius: 8px;"><strong>Prodigy Note:</strong> You cannot learn or digest food in a Sympathetic state. If you are stressed, your brain physically routes blood <em>away</em> from the Prefrontal Cortex (logic) to the Amygdala (survival). Calm down to get smart.</p>
 
-        <p><strong>Power Formula (For both):</strong></p>
-        <div class="math-block">
-            $$P = \sqrt{3} \cdot V_L \cdot I_L \cdot \cos\theta$$
+                <div class="section-title fin">
+                    <span class="icon">📉</span><h3>Finance</h3>
+                </div>
+                <p><strong>Topic:</strong> The Rule of 72 - Mental Math for Compound Interest.</p>
+                <p>You don't need a calculator to know when you'll be rich. You need the <strong>Rule of 72</strong>.</p>
+                <p><strong>The Formula:</strong><br>
+                To find the number of years it takes to <strong>double</strong> your money at a given interest rate:</p>
+                <div class="math-block">$$\text{Years to Double} = \frac{72}{\text{Interest Rate}}$$</div>
+                <p><strong>Examples:</strong></p>
+                <ul>
+                    <li><strong>Bank Savings Account (4%):</strong><br> $72 / 4 = 18$ years to double. (Too slow. You will die poor).</li>
+                    <li><strong>S&P 500 / Indices Average (10%):</strong><br> $72 / 10 = 7.2$ years to double.</li>
+                    <li><strong>Successful Trading/Business (24%):</strong><br> $72 / 24 = 3$ years to double.</li>
+                </ul>
+                <div class="scenario-box" style="border-color: var(--accent-green);">
+                    <strong>Implication:</strong><br>
+                    If you are 22 years old now.<br>
+                    • At 10% return, your money doubles 4 times by age 50 ($2^{4} = 16x$ your money).<br>
+                    • At 24% return, your money doubles 9 times by age 50 ($2^{9} = 512x$ your money).<br>
+                    <strong>Chase the rate of return (safely).</strong>
+                </div>
+
+                <div class="section-title spi">
+                    <span class="icon">✝️</span><h3>Spirituality</h3>
+                </div>
+                <p><strong>Topic:</strong> Regeneration (Born Again) - Monergism vs. Synergism.</p>
+                <p><strong>Regeneration</strong> is the theological term for being "born again."</p>
+                <p style="font-family: var(--font-serif); font-style: italic; color: #fff; text-align: center; margin: 20px 0;">
+                    "I will give you a new heart and put a new spirit in you; I will remove from you your heart of stone and give you a heart of flesh." <br>— Ezekiel 36:26
+                </p>
+                <p><strong>The Depth:</strong><br>
+                Notice who is doing the work in that verse. "I will give," "I will remove." It does not say "You must change yourself."</p>
+                <p>A dead man cannot perform CPR on himself. God must restart the heart first (Regeneration), and <em>then</em> you believe (Faith).</p>
+                <p><strong>Lesson:</strong> Stop trying to fix your sins with willpower. You need a heart transplant, not a behavior modification.</p>
+
+                <div class="section-title" style="color: #ffab40;">
+                    <span class="icon">📚</span><h3>Vocabulary</h3>
+                </div>
+                <div class="vocab-item">
+                    <div style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Ameliorate (Verb)</div>
+                    <p>To make (something bad or unsatisfactory) better.</p>
+                    <p><em>Example: "The new induction heating coil design will <strong>ameliorate</strong> the efficiency losses we saw in the prototype."</em></p>
+                </div>
+                <div class="vocab-item">
+                    <div style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Pernicious (Adj)</div>
+                    <p>Having a harmful effect, especially in a gradual or subtle way.</p>
+                    <p><em>Example: "Inflation is a <strong>pernicious</strong> tax; it slowly eats your wealth without you ever seeing a bill."</em></p>
+                </div>
+                <div class="vocab-item">
+                    <div style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Epistemology (Noun)</div>
+                    <p>The theory of knowledge, especially with regard to its methods, validity, and scope. (How do we know what we know?)</p>
+                    <p><em>Example: "In law, the <strong>epistemology</strong> of evidence is crucial; we must know how the facts were derived, not just what they are."</em></p>
+                </div>
+
+                <div class="judgment-block">
+                    <span class="icon" style="display:block; font-size: 2rem; margin-bottom: 10px;">🔨</span>
+                    <h3 style="color: var(--accent-red); margin-top:0;">MY JUDGMENT</h3>
+                    <p>For you and Musa:</p>
+                    <p>It is Sunday. Did you utilize the "Rest and Digest" (Parasympathetic) mode today, or were you stressing about tomorrow?</p>
+                    <p>You cannot run a motor in Star connection when it needs Delta—it will underperform.<br>
+                    You cannot run a human in Sympathetic mode 24/7—it will burn out.</p>
+                    <p>If you did not rest today, you are not being productive; you are being inefficient. Even God rested on the 7th day. Are you stronger than Him?</p>
+                    <div style="font-family: var(--font-serif); font-style: italic; color: #fff; margin-top: 20px;">"Be still, and know that I am God." — Psalm 46:10</div>
+                </div>
+            </article>
         </div>
-        <div style="text-align:center; font-size:0.9rem; color:#888;">(Where $\cos\theta$ is the Power Factor)</div>
-
-        <div class="scenario-box" style="border-color: var(--accent-blue);">
-            <strong>Calculated Example:</strong><br>
-            You have a 3-Phase Motor connected in <strong>Delta</strong>.<br>
-            Given: $V_L = 400V$, $I_L = 10A$, $PF = 0.85$.
-            <br><br>
-            $$P = 1.732 \times 400 \times 10 \times 0.85$$
-            $$P \approx 5,888 \text{ Watts} \approx 5.9 \text{ kW}$$
-            <br>
-            <strong>Implication:</strong> If you accidentally connect a motor designed for "Star" into "Delta," the phase voltage increases by $\sqrt{3}$ (1.732x). The current will spike massively, and you will burn the windings instantly. Always check the nameplate.
-        </div>
-
-        <div class="section-title law">
-            <span class="icon">🇿🇦</span>
-            <h3>Law Enforcement</h3>
-        </div>
-        <p><strong>Topic:</strong> The Exclusionary Rule (Section 35(5)) - Constitutional Admissibility in South Africa.</p>
-        <p>We discussed the "Fruit of the Poisonous Tree" (a US concept). In South Africa, this is codified in <strong>Section 35(5) of the Constitution</strong>.</p>
-
-        <p><strong>The Law:</strong><br>
-        Evidence obtained in a manner that violates any right in the Bill of Rights <strong>must be excluded</strong> if the admission of that evidence would:</p>
-        <ul>
-            <li>Render the trial unfair, OR</li>
-            <li>Be detrimental to the administration of justice.</li>
-        </ul>
-
-        <div class="scenario-box" style="border-color: var(--accent-red);">
-            <strong>Scenario for Musa:</strong><br>
-            Musa arrests a suspect but forgets to read them their rights (Section 35(1) - right to remain silent). The suspect then confesses.<br><br>
-            <strong>The Court's Decision:</strong> Because the right to silence was violated, the confession is "tainted." The judge will likely <strong>exclude</strong> the confession under Section 35(5). The suspect might walk free, even if he is guilty, because the <em>process</em> was flawed.<br><br>
-            <strong>Lesson:</strong> Process is not paperwork. Process is liberty. A good detective protects the process as much as the evidence.
-        </div>
-
-        <div class="section-title med">
-            <span class="icon">🧠</span>
-            <h3>Medical Sciences</h3>
-        </div>
-        <p><strong>Topic:</strong> The Autonomic Nervous System (ANS) - Fight or Flight vs. Rest and Digest.</p>
-        <p>Your body has an automatic pilot called the ANS. It has two opposing modes.</p>
-
-        <a href="https://ibb.co/VYyb533D" target="_blank">
-            <img src="https://i.ibb.co/DfXmTLLk/IMG-20260104-WA0028.jpg" alt="Nervous System Diagram" class="content-img">
-        </a>
-
-        <ul>
-            <li><strong>1. Sympathetic Nervous System (The Accelerator):</strong><br>
-            <strong>Trigger:</strong> Stress/Danger.<br>
-            <strong>Neurotransmitter:</strong> Norepinephrine / Adrenaline.<br>
-            <strong>Effect:</strong> Pupils dilate (tunnel vision), heart rate spikes, digestion stops (dry mouth), glucose floods the blood.<br>
-            <em>Application:</em> This is what happens when you trade NFP (Non-Farm Payrolls) or see a blue light in the rearview mirror.
-            </li>
-            <br>
-            <li><strong>2. Parasympathetic Nervous System (The Brake):</strong><br>
-            <strong>Trigger:</strong> Safety/Relaxation.<br>
-            <strong>Neurotransmitter:</strong> Acetylcholine.<br>
-            <strong>Effect:</strong> Heart rate slows, digestion resumes, healing occurs.<br>
-            <strong>The Vagus Nerve:</strong> This is the main highway for the parasympathetic system.
-            </li>
-        </ul>
-
-        <p style="background: rgba(179, 136, 255, 0.1); padding: 15px; border-radius: 8px;"><strong>Prodigy Note:</strong> You cannot learn or digest food in a Sympathetic state. If you are stressed, your brain physically routes blood <em>away</em> from the Prefrontal Cortex (logic) to the Amygdala (survival). Calm down to get smart.</p>
-
-        <div class="section-title fin">
-            <span class="icon">📉</span>
-            <h3>Finance</h3>
-        </div>
-        <p><strong>Topic:</strong> The Rule of 72 - Mental Math for Compound Interest.</p>
-        <p>You don't need a calculator to know when you'll be rich. You need the <strong>Rule of 72</strong>.</p>
-
-        <p><strong>The Formula:</strong><br>
-        To find the number of years it takes to <strong>double</strong> your money at a given interest rate:</p>
-        
-        <div class="math-block">
-            $$\text{Years to Double} = \frac{72}{\text{Interest Rate}}$$
-        </div>
-
-        <p><strong>Examples:</strong></p>
-        <ul>
-            <li><strong>Bank Savings Account (4%):</strong><br> $72 / 4 = 18$ years to double. (Too slow. You will die poor).</li>
-            <li><strong>S&P 500 / Indices Average (10%):</strong><br> $72 / 10 = 7.2$ years to double.</li>
-            <li><strong>Successful Trading/Business (24%):</strong><br> $72 / 24 = 3$ years to double.</li>
-        </ul>
-
-        <div class="scenario-box" style="border-color: var(--accent-green);">
-            <strong>Implication:</strong><br>
-            If you are 22 years old now.<br>
-            • At 10% return, your money doubles 4 times by age 50 ($2^{4} = 16x$ your money).<br>
-            • At 24% return, your money doubles 9 times by age 50 ($2^{9} = 512x$ your money).<br>
-            <strong>Chase the rate of return (safely).</strong>
-        </div>
-
-        <div class="section-title spi">
-            <span class="icon">✝️</span>
-            <h3>Spirituality</h3>
-        </div>
-        <p><strong>Topic:</strong> Regeneration (Born Again) - Monergism vs. Synergism.</p>
-        <p><strong>Regeneration</strong> is the theological term for being "born again."</p>
-        
-        <p style="font-family: var(--font-serif); font-style: italic; color: #fff; text-align: center; margin: 20px 0;">
-            "I will give you a new heart and put a new spirit in you; I will remove from you your heart of stone and give you a heart of flesh." <br>— Ezekiel 36:26
-        </p>
-
-        <p><strong>The Depth:</strong><br>
-        Notice who is doing the work in that verse. "I will give," "I will remove." It does not say "You must change yourself."</p>
-        <p>A dead man cannot perform CPR on himself. God must restart the heart first (Regeneration), and <em>then</em> you believe (Faith).</p>
-        <p><strong>Lesson:</strong> Stop trying to fix your sins with willpower. You need a heart transplant, not a behavior modification.</p>
-
-        <div class="section-title" style="color: #ffab40;">
-            <span class="icon">📚</span>
-            <h3>Vocabulary</h3>
-        </div>
-
-        <div class="vocab-item">
-            <div style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Ameliorate (Verb)</div>
-            <p>To make (something bad or unsatisfactory) better.</p>
-            <p><em>Example: "The new induction heating coil design will <strong>ameliorate</strong> the efficiency losses we saw in the prototype."</em></p>
-        </div>
-
-        <div class="vocab-item">
-            <div style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Pernicious (Adj)</div>
-            <p>Having a harmful effect, especially in a gradual or subtle way.</p>
-            <p><em>Example: "Inflation is a <strong>pernicious</strong> tax; it slowly eats your wealth without you ever seeing a bill."</em></p>
         </div>
 
-        <div class="vocab-item">
-            <div style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Epistemology (Noun)</div>
-            <p>The theory of knowledge, especially with regard to its methods, validity, and scope. (How do we know what we know?)</p>
-            <p><em>Example: "In law, the <strong>epistemology</strong> of evidence is crucial; we must know how the facts were derived, not just what they are."</em></p>
-        </div>
-
-        <div class="judgment-block">
-            <span class="icon" style="display:block; font-size: 2rem; margin-bottom: 10px;">🔨</span>
-            <h3 style="color: var(--accent-red); margin-top:0;">MY JUDGMENT</h3>
-            
-            <p>For you and Musa:</p>
-            <p>It is Sunday. Did you utilize the "Rest and Digest" (Parasympathetic) mode today, or were you stressing about tomorrow?</p>
-            <p>You cannot run a motor in Star connection when it needs Delta—it will underperform.<br>
-            You cannot run a human in Sympathetic mode 24/7—it will burn out.</p>
-            <p>If you did not rest today, you are not being productive; you are being inefficient. Even God rested on the 7th day. Are you stronger than Him?</p>
-
-            <div style="font-family: var(--font-serif); font-style: italic; color: #fff; margin-top: 20px;">"Be still, and know that I am God." — Psalm 46:10</div>
-        </div>
-    </article>
     <footer>
         Daily Intellect Dose System | Boipelo Maakwe & Musawenkosi
     </footer>
-</div>
+
+    <script>
+        // 1. Set the default dates dynamically
+        const today = new Date();
+        const yest = new Date(today);
+        yest.setDate(yest.getDate() - 1);
+
+        // Format dates as YYYY-MM-DD
+        const formatDate = (date) => date.toISOString().split('T')[0];
+        const todayStr = formatDate(today);
+        const yestStr = formatDate(yest);
+
+        // 2. The Main Function to Load Content
+        function loadDate(dateType) {
+            // Hide all current content
+            document.querySelectorAll('.daily-dose').forEach(el => el.classList.remove('active'));
+            document.getElementById('errorMessage').style.display = 'none';
+
+            let targetId = "";
+
+            if (dateType === 'today') {
+                targetId = todayStr;
+                // Auto-fill the picker
+                document.getElementById('datePicker').value = todayStr;
+            } else if (dateType === 'yesterday') {
+                targetId = yestStr;
+                document.getElementById('datePicker').value = yestStr;
+            } else {
+                // User picked from calendar
+                targetId = dateType;
+            }
+
+            // Find the element with that ID
+            const content = document.getElementById(targetId);
+
+            if (content) {
+                content.classList.add('active');
+            } else {
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+        }
+        
+        // OPTIONAL: UNCOMMENT THIS IF YOU WANT IT TO AUTO-LOAD TODAY ON STARTUP
+        // loadDate('today');
+    </script>
 
 </body>
 </html>
