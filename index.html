@@ -165,7 +165,7 @@
             padding: 20px; 
             border-radius: 8px; 
             text-align: center; 
-            overflow-x: auto; 
+            overflow-x: auto; /* IMPORTANT: Allows scrolling if math is too wide */
             margin: 20px 0; 
             border-left: 3px solid var(--accent-blue); 
             color: var(--text-primary);
@@ -186,7 +186,8 @@
             padding: 20px; 
             border-radius: 8px; 
             border-left: 3px solid #777; 
-            margin-top: 15px; 
+            margin-top: 15px;
+            overflow-x: auto; /* IMPORTANT: Prevents overlapping on small screens */
         }
 
         .vocab-item {
@@ -393,7 +394,8 @@
                     <strong>Calculated Example:</strong><br>
                     You have a 3-Phase Motor connected in <strong>Delta</strong>.<br>
                     Given: $V_L = 400V$, $I_L = 10A$, $PF = 0.85$.<br><br>
-                    $$P = 1.732 \times 400 \times 10 \times 0.85 \approx 5,888 \text{ Watts} \approx 5.9 \text{ kW}$$
+                    $$P = 1.732 \times 400 \times 10 \times 0.85$$
+                    $$P \approx 5,888 \text{ Watts} \approx 5.9 \text{ kW}$$
                     <br>
                     <strong>Implication:</strong> If you accidentally connect a motor designed for "Star" into "Delta," the phase voltage increases by $\sqrt{3}$ (1.732x). The current will spike massively, and you will burn the windings instantly. Always check the nameplate.
                 </div>
