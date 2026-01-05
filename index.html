@@ -250,55 +250,75 @@
                 
                 <img src="https://i.ibb.co/qF37YqcL/k-QC1h-2.jpg" alt="Miller Plateau" class="content-img">
                 
-                <p><strong>The Physics:</strong><br>
-                Between the Gate (G) and Drain (D) of every MOSFET, there is a tiny, invisible "parasitic" capacitor ($C_{gd}$).<br>
-                When you turn the MOSFET ON, the Gate voltage ($V_{gs}$) rises. But when the Drain voltage starts to drop, it "fights" the Gate through this capacitor. The Gate voltage gets <strong>stuck</strong> flat for a few microseconds. This flat line is the Miller Plateau.</p>
+                <p><strong>The Physics (Deep Dive):</strong><br>
+                Between the Gate (G) and Drain (D) of every MOSFET, there is a tiny, invisible "parasitic" capacitor called $C_{gd}$. This is the enemy.</p>
+                <p>When you turn the MOSFET ON, the Gate voltage ($V_{gs}$) rises nicely at first. But the moment the Drain voltage starts to drop, it "fights" the Gate through this capacitor. The current you are pumping into the gate stops raising the voltage; instead, it is used up just to fight the feedback from the Drain. The Gate voltage gets <strong>stuck</strong> flat for a few microseconds. This flat line is the Miller Plateau.</p>
 
                 <p><strong>The Danger Zone:</strong><br>
-                During the plateau, the MOSFET is acting like a resistor (Linear Region). It is carrying high current AND high voltage simultaneously.<br>
+                During the plateau, the MOSFET is acting like a resistor (Linear Region). It is carrying high current AND high voltage simultaneously. This is the worst possible state.</p>
+                <p><strong>The Math:</strong><br>
                 $$P_{loss} = V_{ds} \times I_d$$</p>
-                <p>If $V_{ds}=300V$ and $I_d=20A$, your power loss is <strong>6,000 Watts</strong> during that tiny plateau. This is why your MOSFETs get hot even if they are "efficient."</p>
+                <p>If your supply is $300V$ and the current is $20A$, your power loss is <strong>6,000 Watts</strong> during that tiny plateau. This generates massive heat spikes. This is why your MOSFETs get hot even if they are "efficient."</p>
 
                 <div class="scenario-box" style="border-color: var(--accent-blue);">
-                    <strong>Fix:</strong> You need a Gate Driver that can push high current (Amps, not milliAmps) to charge that parasitic capacitor quickly and shorten the plateau.
+                    <strong>Lab Test & Fix:</strong><br>
+                    Hook an oscilloscope to the Gate pin of your ZVS driver. You will see the voltage rise, <em>stop</em> flat at around 4-5V, and then rise again. That stop is the Miller Effect.<br><br>
+                    <strong>The Solution:</strong> You need a Gate Driver that can push high current (Amps, not milliAmps) to charge that parasitic capacitor quickly and shorten the plateau.
                 </div>
 
                 <div class="section-title law"><span style="font-size:1.5rem">⚖️</span><h3>Law Enforcement</h3></div>
-                <p><strong>Topic:</strong> <em>Dolus Eventualis</em> (Legal Intent).</p>
-                <p>In South African criminal law, "Intent" isn't just "I wanted to kill him."</p>
-                <p>A person acts with <em>Dolus Eventualis</em> if:</p>
+                <p><strong>Topic:</strong> <em>Dolus Eventualis</em> (Legal Intent in South Africa).</p>
+                <p>In South African criminal law, "Intent" ($Dolus$) isn't just "I wanted to kill him." There is a darker, more subtle form called <em>Dolus Eventualis</em>.</p>
+                <p><strong>The Definition:</strong><br>
+                A person acts with <em>Dolus Eventualis</em> if:</p>
                 <ul>
-                    <li>They <strong>foresaw the possibility</strong> that their action could result in death.</li>
-                    <li>They <strong>reconciled themselves</strong> to that possibility (proceeded anyway, reckless).</li>
+                    <li>1. They <strong>foresaw the possibility</strong> that their action could result in death.</li>
+                    <li>2. They <strong>reconciled themselves</strong> to that possibility (i.e., they proceeded anyway, reckless of the consequences).</li>
                 </ul>
 
                 <div class="scenario-box" style="border-color: var(--accent-red);">
                     <strong>Scenario for Musa:</strong><br>
-                    A suspect shoots through a closed door. He says "I didn't know who was behind it."<br>
-                    <strong>Verdict:</strong> Did he foresee someone <em>might</em> be there? Yes. Did he shoot? Yes. Guilty of Murder via <em>Dolus Eventualis</em>.
+                    A suspect shoots through a closed door. He argues, "I didn't know who was behind it, so I didn't <em>intend</em> to kill anyone specific."<br><br>
+                    <strong>The Verdict:</strong> Did he foresee that <em>someone</em> might be behind the door? Yes. Did he shoot anyway? Yes. He is guilty of Murder via <em>Dolus Eventualis</em>, even if he didn't target a specific person. (Reference: <em>S v Pistorius</em>).
                 </div>
 
                 <div class="section-title med"><span style="font-size:1.5rem">🩸</span><h3>Medical Sciences</h3></div>
                 <p><strong>Topic:</strong> The Renin-Angiotensin-Aldosterone System (RAAS).</p>
-                <p>This is the master control system for blood pressure.</p>
+                <p>This is the master control system for your blood pressure. It is a biological chain reaction.</p>
                 
                 <img src="https://i.ibb.co/gFFCBhRC/IMG-20260105-WA0000.jpg" alt="RAAS" class="content-img">
                 
-                <p><strong>The Mechanism:</strong><br>
-                1. <strong>Kidneys:</strong> Release Renin.<br>
-                2. <strong>Liver:</strong> Makes Angiotensin I.<br>
-                3. <strong>Lungs:</strong> Convert it to Angiotensin II (using ACE).<br>
-                4. <strong>Veins:</strong> Constrict to raise pressure.</p>
+                <p><strong>The Mechanism (Step-by-Step):</strong></p>
+                <ul>
+                    <li><strong>Step 1 (Kidneys):</strong> Low blood pressure detected. Kidneys release <strong>Renin</strong>.</li>
+                    <li><strong>Step 2 (Liver):</strong> Renin converts a protein into <strong>Angiotensin I</strong> (inactive).</li>
+                    <li><strong>Step 3 (Lungs):</strong> ACE (Angiotensin-Converting Enzyme) turns it into <strong>Angiotensin II</strong>.</li>
+                    <li><strong>Step 4 (The Effect):</strong> Angiotensin II is a potent vasoconstrictor (tightens veins) and tells the adrenal glands to release <strong>Aldosterone</strong> (which retains salt and water).</li>
+                </ul>
+                <p style="background: rgba(179, 136, 255, 0.1); padding: 15px; border-radius: 8px;"><strong>Prodigy Note:</strong> Blood pressure medication often works by blocking Step 3 (ACE Inhibitors) or Step 4 (ARBs). If you block the enzyme, the veins relax.</p>
 
                 <div class="section-title fin"><span style="font-size:1.5rem">📊</span><h3>Finance</h3></div>
-                <p><strong>Topic:</strong> The Sharpe Ratio.</p>
-                <p>Making money is easy. Keeping it is hard. The Sharpe Ratio measures risk.</p>
+                <p><strong>Topic:</strong> The Sharpe Ratio (Risk-Adjusted Return).</p>
+                <p>Making money is easy. Keeping it while making more is hard. The Sharpe Ratio tells you if an investment is "smart" or just "lucky/risky."</p>
                 <div class="math-block">$$\text{Sharpe Ratio} = \frac{R_p - R_f}{\sigma_p}$$</div>
+                <ul>
+                    <li>$R_p$ = Return of the Portfolio (e.g., your trading profit).</li>
+                    <li>$R_f$ = Risk-Free Rate (e.g., US Treasury Bonds, ~4%).</li>
+                    <li>$\sigma_p$ (Sigma) = Standard Deviation (Volatility/Risk).</li>
+                </ul>
                 <p><strong>Lesson:</strong> Don't just look at profit percentage. Look at the smoothness of the curve (Volatility). Banks prefer smooth, low-risk profits over lucky gambling.</p>
 
                 <div class="section-title spi"><span style="font-size:1.5rem">🔥</span><h3>Spirituality</h3></div>
                 <p><strong>Topic:</strong> Sanctification (Positional vs. Progressive).</p>
-                <p><strong>Positional:</strong> You are a Prince instantly when you believe (Status).<br><strong>Progressive:</strong> You must learn to act like a Prince daily (Behavior).</p>
+                <p>We discussed "Justification" (Legal standing). Now we discuss "Sanctification" (Becoming holy).</p>
+                <ul>
+                    <li><strong>Positional Sanctification:</strong> Happened instantly when you believed. You are set apart. (Hebrews 10:10).</li>
+                    <li><strong>Progressive Sanctification:</strong> The daily, painful process of aligning your behavior with your status. It is a war.</li>
+                </ul>
+                <p><strong>The Analogy:</strong><br>
+                Imagine a Prince who was raised in the slums.
+                <br><strong>Positional:</strong> The DNA test proves he is a Prince. He has the title instantly.
+                <br><strong>Progressive:</strong> He still speaks and eats like a street urchin. He must <em>learn</em> to act like a Prince.</p>
                 <p><strong>Lesson:</strong> Do not despair when you sin. It doesn't mean you aren't a Prince; it means you are still in training.</p>
 
                 <div class="section-title" style="color: #ffab40;"><span style="font-size:1.5rem">📚</span><h3>Vocabulary</h3></div>
@@ -318,13 +338,16 @@
                 <div class="vocab-item">
                     <div style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Inchoate (Adj)</div>
                     <p>Just begun and so not fully formed or developed; rudimentary.</p>
-                    <p><em>Example: "My plans for the new induction heater are still <strong>inchoate</strong>."</em></p>
+                    <p><em>Example: "My plans for the new induction heater are still <strong>inchoate</strong>; I have the concept, but not the schematic."</em></p>
                 </div>
 
                 <div class="judgment-block">
                     <span style="display:block; font-size: 2rem; margin-bottom: 10px;">🔨</span>
                     <h3 style="color: var(--accent-red); margin-top:0;">MY JUDGMENT</h3>
-                    <p>The <strong>Miller Plateau</strong> teaches us that the transition is the most dangerous part. You are in the plateau right now. Do not get stuck. Push through with high current.</p>
+                    <p>The <strong>Miller Plateau</strong> teaches us that the transition is the most dangerous part. Switching from "Student" to "Engineer," or "Boy" to "Man," generates heat.</p>
+                    <p>You are in the plateau right now. The voltage is high, the current is high. Do not get stuck there. Push through the transition with high-current discipline.</p>
+                    <p>If you linger in the middle, you will burn.</p>
+                    <div style="font-family: var(--font-serif); font-style: italic; color: var(--text-secondary); margin-top: 20px;">"I would that you were cold or hot. So then because you are lukewarm... I will spew you out of my mouth." — Revelation 3:15-16</div>
                 </div>
 
                 <button class="confirm-btn" onclick="confirmRead('January 5')">
@@ -337,63 +360,122 @@
             <article class="card">
                 <div class="dose-header">
                     <span class="date-badge">January 4, 2026 (Sunday)</span>
-                    <div style="font-size: 1.1rem; font-style: italic; color: var(--text-secondary);">"It is Sunday. A day of rest for the body, but never for the mind."</div>
+                    <div style="font-size: 1.1rem; font-style: italic; color: var(--text-secondary);">"It is Sunday. A day of rest for the body, but never for the mind. Let’s feed the intellect."</div>
                 </div>
 
                 <div class="section-title eng"><span style="font-size:1.5rem">🔌</span><h3>Engineering</h3></div>
-                <p><strong>Topic:</strong> 3-Phase Power (Star vs. Delta).</p>
+                <p><strong>Topic:</strong> 3-Phase Power (Star vs. Delta) - Power Distribution & Motor Connections.</p>
+                <p>Why do we use 3-phase power instead of single-phase? Because it provides constant power (no zero-crossing pulsations) and is 150% more efficient for the same amount of wire.</p>
                 <img src="https://i.ibb.co/mrMncQP3/IMG-20260104-WA0029.jpg" alt="Star Delta" class="content-img">
-                <p><strong>Star (Y):</strong> Has Neutral. High Voltage ($V_L = \sqrt{3}V_{ph}$).<br><strong>Delta ($\Delta$):</strong> No Neutral. High Current ($I_L = \sqrt{3}I_{ph}$).</p>
-                <div class="math-block">$$P = \sqrt{3} \cdot V_L \cdot I_L \cdot \cos\theta$$</div>
+                
+                <p><strong>The Two Connections:</strong></p>
+                <ul>
+                    <li><strong>Star (Wye, Y):</strong> Connects ends of three coils to a common <strong>Neutral</strong> point. Used for Power Transmission and low-voltage distribution (homes).</li>
+                    <li><strong>Delta ($\Delta$):</strong> Connects end of one coil to the start of the next (End-to-End). No Neutral. Used for High Power Motors and Transmission.</li>
+                </ul>
 
+                <p><strong>The Mathematics:</strong></p>
+                <ul>
+                    <li><strong>Star Connection:</strong>
+                        <br>Line Voltage: $V_L = \sqrt{3} \times V_{ph}$
+                        <br>Line Current: $I_L = I_{ph}$
+                    </li>
+                    <li><strong>Delta Connection:</strong>
+                        <br>Line Voltage: $V_L = V_{ph}$
+                        <br>Line Current: $I_L = \sqrt{3} \times I_{ph}$
+                    </li>
+                </ul>
+
+                <p><strong>Power Formula (For both):</strong></p>
+                <div class="math-block">$$P = \sqrt{3} \cdot V_L \cdot I_L \cdot \cos\theta$$</div>
+                
                 <div class="scenario-box" style="border-color: var(--accent-blue);">
                     <strong>Calculated Example:</strong><br>
-                    Given $V_L = 400V$, $I_L = 10A$, $PF = 0.85$ (Delta).<br>
-                    $$P = 1.732 \times 400 \times 10 \times 0.85 \approx 5.9 \text{ kW}$$
+                    You have a 3-Phase Motor connected in <strong>Delta</strong>.<br>
+                    Given: $V_L = 400V$, $I_L = 10A$, $PF = 0.85$.<br><br>
+                    $$P = 1.732 \times 400 \times 10 \times 0.85 \approx 5,888 \text{ Watts} \approx 5.9 \text{ kW}$$
+                    <br>
+                    <strong>Implication:</strong> If you accidentally connect a motor designed for "Star" into "Delta," the phase voltage increases by $\sqrt{3}$ (1.732x). The current will spike massively, and you will burn the windings instantly. Always check the nameplate.
                 </div>
 
                 <div class="section-title law"><span style="font-size:1.5rem">🇿🇦</span><h3>Law Enforcement</h3></div>
-                <p><strong>Topic:</strong> Exclusionary Rule (Section 35(5)).</p>
-                <p>Evidence obtained by violating rights must be thrown out. Process is liberty.</p>
+                <p><strong>Topic:</strong> The Exclusionary Rule (Section 35(5)) - Constitutional Admissibility in South Africa.</p>
+                <p>We discussed the "Fruit of the Poisonous Tree" (a US concept). In South Africa, this is codified in <strong>Section 35(5) of the Constitution</strong>.</p>
+                <p><strong>The Law:</strong><br>
+                Evidence obtained in a manner that violates any right in the Bill of Rights <strong>must be excluded</strong> if the admission of that evidence would:</p>
+                <ul>
+                    <li>Render the trial unfair, OR</li>
+                    <li>Be detrimental to the administration of justice.</li>
+                </ul>
                 <div class="scenario-box" style="border-color: var(--accent-red);">
-                    <strong>Scenario:</strong> Musa forgets to read rights. Suspect confesses. Confession is excluded. Suspect walks.
+                    <strong>Scenario for Musa:</strong><br>
+                    Musa arrests a suspect but forgets to read them their rights (Section 35(1) - right to remain silent). The suspect then confesses.<br><br>
+                    <strong>The Court's Decision:</strong> Because the right to silence was violated, the confession is "tainted." The judge will likely <strong>exclude</strong> the confession under Section 35(5). The suspect might walk free, even if he is guilty, because the <em>process</em> was flawed.
                 </div>
 
                 <div class="section-title med"><span style="font-size:1.5rem">🧠</span><h3>Medical Sciences</h3></div>
-                <p><strong>Topic:</strong> ANS (Sympathetic vs. Parasympathetic).</p>
+                <p><strong>Topic:</strong> The Autonomic Nervous System (ANS) - Fight or Flight vs. Rest and Digest.</p>
+                <p>Your body has an automatic pilot called the ANS. It has two opposing modes.</p>
                 <img src="https://i.ibb.co/DfXmTLLk/IMG-20260104-WA0028.jpg" alt="ANS" class="content-img">
-                <p>You cannot learn in Sympathetic (Stress) mode. You must be in Parasympathetic (Rest) mode to digest knowledge.</p>
+                <ul>
+                    <li><strong>1. Sympathetic Nervous System (The Accelerator):</strong><br>
+                    Trigger: Stress/Danger. Effect: Pupils dilate (tunnel vision), heart rate spikes, digestion stops (dry mouth), glucose floods the blood.</li>
+                    <li><strong>2. Parasympathetic Nervous System (The Brake):</strong><br>
+                    Trigger: Safety/Relaxation. Effect: Heart rate slows, digestion resumes, healing occurs. The Vagus Nerve is key here.</li>
+                </ul>
+                <p style="background: rgba(179, 136, 255, 0.1); padding: 15px; border-radius: 8px;"><strong>Prodigy Note:</strong> You cannot learn or digest food in a Sympathetic state. If you are stressed, your brain physically routes blood <em>away</em> from the Prefrontal Cortex (logic) to the Amygdala (survival). Calm down to get smart.</p>
 
                 <div class="section-title fin"><span style="font-size:1.5rem">📉</span><h3>Finance</h3></div>
-                <p><strong>Topic:</strong> Rule of 72.</p>
+                <p><strong>Topic:</strong> The Rule of 72 - Mental Math for Compound Interest.</p>
+                <p>You don't need a calculator to know when you'll be rich. You need the <strong>Rule of 72</strong>.</p>
                 <div class="math-block">$$\text{Years to Double} = \frac{72}{\text{Interest Rate}}$$</div>
-                <p>At 24% return, money doubles every 3 years. By age 50, that is $512x$ your money.</p>
+                <p><strong>Examples:</strong></p>
+                <ul>
+                    <li><strong>Bank Savings Account (4%):</strong> $72 / 4 = 18$ years to double. (Too slow. You will die poor).</li>
+                    <li><strong>S&P 500 / Indices Average (10%):</strong> $72 / 10 = 7.2$ years to double.</li>
+                    <li><strong>Successful Trading/Business (24%):</strong> $72 / 24 = 3$ years to double.</li>
+                </ul>
 
                 <div class="section-title spi"><span style="font-size:1.5rem">✝️</span><h3>Spirituality</h3></div>
-                <p><strong>Topic:</strong> Regeneration (Ezekiel 36:26).</p>
-                <p>A dead man cannot perform CPR on himself. God must restart the heart (Regeneration) before you can believe (Faith).</p>
+                <p><strong>Topic:</strong> Regeneration (Born Again) - Monergism vs. Synergism.</p>
+                <p><strong>Regeneration</strong> is the theological term for being "born again."</p>
+                <p style="font-family: var(--font-serif); font-style: italic; color: var(--text-primary); text-align: center; margin: 20px 0;">
+                    "I will give you a new heart and put a new spirit in you; I will remove from you your heart of stone and give you a heart of flesh." <br>— Ezekiel 36:26
+                </p>
+                <p><strong>The Depth:</strong><br>
+                Notice who is doing the work in that verse. "I will give," "I will remove." It does not say "You must change yourself."</p>
+                <p>A dead man cannot perform CPR on himself. God must restart the heart first (Regeneration), and <em>then</em> you believe (Faith).</p>
+                <p><strong>Lesson:</strong> Stop trying to fix your sins with willpower. You need a heart transplant, not a behavior modification.</p>
 
                 <div class="section-title" style="color: #ffab40;"><span style="font-size:1.5rem">📚</span><h3>Vocabulary</h3></div>
                 
                 <div class="vocab-item">
                     <div style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Ameliorate (Verb)</div>
                     <p>To make (something bad or unsatisfactory) better.</p>
+                    <p><em>Example: "The new induction heating coil design will <strong>ameliorate</strong> the efficiency losses we saw in the prototype."</em></p>
                 </div>
 
                 <div class="vocab-item">
                     <div style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Pernicious (Adj)</div>
                     <p>Having a harmful effect, especially in a gradual or subtle way.</p>
+                    <p><em>Example: "Inflation is a <strong>pernicious</strong> tax; it slowly eats your wealth without you ever seeing a bill."</em></p>
                 </div>
 
                 <div class="vocab-item">
                     <div style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Epistemology (Noun)</div>
-                    <p>The theory of knowledge (How do we know what we know?).</p>
+                    <p>The theory of knowledge, especially with regard to its methods, validity, and scope. (How do we know what we know?)</p>
+                    <p><em>Example: "In law, the <strong>epistemology</strong> of evidence is crucial; we must know how the facts were derived, not just what they are."</em></p>
                 </div>
 
                 <div class="judgment-block">
                     <span style="display:block; font-size: 2rem; margin-bottom: 10px;">🔨</span>
                     <h3 style="color: var(--accent-red); margin-top:0;">MY JUDGMENT</h3>
-                    <p>It is Sunday. Did you utilize the "Rest and Digest" mode? If you did not rest today, you are not being productive; you are being inefficient.</p>
+                    <p>For you and Musa:</p>
+                    <p>It is Sunday. Did you utilize the "Rest and Digest" (Parasympathetic) mode today, or were you stressing about tomorrow?</p>
+                    <p>You cannot run a motor in Star connection when it needs Delta—it will underperform.<br>
+                    You cannot run a human in Sympathetic mode 24/7—it will burn out.</p>
+                    <p>If you did not rest today, you are not being productive; you are being inefficient. Even God rested on the 7th day. Are you stronger than Him?</p>
+                    <div style="font-family: var(--font-serif); font-style: italic; color: var(--text-secondary); margin-top: 20px;">"Be still, and know that I am God." — Psalm 46:10</div>
                 </div>
 
                 <button class="confirm-btn" onclick="confirmRead('January 4')">
@@ -412,7 +494,6 @@
         // ============================================
         // CONFIGURATION: YOUR PHONE NUMBER
         // ============================================
-        // Replace this with your WhatsApp number (International code, no +)
         const MY_WHATSAPP_NUMBER = "27822119454"; 
         
         // ============================================
