@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Intellect Dose System v15.0</title>
+    <title>Intellect Dose System v15.1</title>
     
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
     
-    <!-- MathJax -->
     <script>
       window.MathJax = {
         tex: { 
@@ -24,13 +22,10 @@
     <style>
         /* === CORE DESIGN SYSTEM === */
         :root {
-            --transition-speed: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            --glass-bg: rgba(20, 20, 20, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            --transition-speed: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* === BOIPELO PERSONA === */
+        /* === BOIPELO PERSONA (Dark/Cyber/Tech) === */
         [data-persona="boipelo"] {
             --bg-primary: #050505;
             --bg-secondary: #0f0f0f;
@@ -38,26 +33,23 @@
             --text-primary: #00e5ff;
             --text-secondary: #64ffda;
             --text-body: #cfd8dc;
-            --text-muted: #8899a6;
+            --text-muted: #607d8b;
             --accent-primary: #2979ff;
             --accent-secondary: #ff1744;
             --accent-gold: #ffea00;
-            --border-color: rgba(0, 229, 255, 0.1);
-            --border-radius: 4px;
+            --border-color: rgba(0, 229, 255, 0.15);
+            --border-radius: 6px;
             --font-heading: 'Inter', sans-serif;
             --font-body: 'JetBrains Mono', monospace;
-            --font-special: 'JetBrains Mono', monospace;
-            --shadow-primary: 0 0 40px rgba(0, 229, 255, 0.1);
-            --gradient-primary: linear-gradient(135deg, #00e5ff22, #2979ff22);
+            --shadow-primary: 0 0 30px rgba(0, 229, 255, 0.05);
             --musa-only: none;
-            --boipelo-only: block;
         }
 
-        /* === MUSA PERSONA === */
+        /* === MUSA PERSONA (Elegant/Gold/Royal) === */
         [data-persona="musa"] {
             --bg-primary: #1a1518;
             --bg-secondary: #221c20;
-            --bg-tertiary: #262024;
+            --bg-tertiary: #2a2428;
             --text-primary: #ffcdd2;
             --text-secondary: #d4af37;
             --text-body: #ede7f6;
@@ -65,1487 +57,391 @@
             --accent-primary: #d4af37;
             --accent-secondary: #ef9a9a;
             --accent-gold: #d4af37;
-            --border-color: rgba(212, 175, 55, 0.15);
-            --border-radius: 24px;
+            --border-color: rgba(212, 175, 55, 0.2);
+            --border-radius: 16px;
             --font-heading: 'Playfair Display', serif;
             --font-body: 'Inter', sans-serif;
-            --font-special: 'Playfair Display', serif;
             --shadow-primary: 0 20px 60px rgba(0, 0, 0, 0.4);
-            --gradient-primary: linear-gradient(135deg, #d4af3722, #ffcdd222);
             --musa-only: block;
-            --boipelo-only: none;
         }
 
         /* === RESET & BASE === */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-            height: 100%;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             background-color: var(--bg-primary);
             color: var(--text-body);
             font-family: var(--font-body);
             min-height: 100vh;
-            line-height: 1.8;
-            overflow-x: hidden;
+            line-height: 1.6;
             transition: all var(--transition-speed);
-            position: relative;
         }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(0, 229, 255, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.02) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        /* === AUTHENTICATION LAYER === */
+        /* === AUTH LAYER === */
         #auth-layer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-primary);
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-primary); z-index: 9999;
+            display: flex; justify-content: center; align-items: center;
             transition: opacity 0.6s ease;
         }
 
-        .auth-container {
+        .auth-card {
             background: var(--bg-tertiary);
             border: 1px solid var(--border-color);
+            padding: 3rem; width: 100%; max-width: 400px;
             border-radius: var(--border-radius);
-            padding: 3rem;
-            max-width: 420px;
-            width: 90%;
             box-shadow: var(--shadow-primary);
-            backdrop-filter: blur(10px);
-        }
-
-        .auth-title {
-            font-family: var(--font-heading);
-            font-size: 2rem;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-            text-align: center;
-        }
-
-        .auth-subtitle {
-            color: var(--text-muted);
-            text-align: center;
-            margin-bottom: 2rem;
-            font-size: 0.9rem;
-        }
-
-        .input-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .input-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         .auth-input {
-            width: 100%;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.05);
+            width: 100%; padding: 1rem; margin-bottom: 1rem;
+            background: rgba(255,255,255,0.05);
             border: 1px solid var(--border-color);
-            border-radius: calc(var(--border-radius) / 2);
-            color: var(--text-body);
-            font-family: var(--font-body);
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .auth-input:focus {
-            outline: none;
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 0 2px rgba(41, 121, 255, 0.2);
+            color: var(--text-primary); font-family: inherit;
         }
 
         .auth-btn {
-            width: 100%;
-            padding: 1rem;
-            background: var(--accent-primary);
-            color: var(--bg-primary);
-            border: none;
-            border-radius: calc(var(--border-radius) / 2);
-            font-family: var(--font-heading);
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            width: 100%; padding: 1rem;
+            background: var(--accent-primary); color: #000;
+            border: none; font-weight: bold; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 2px;
+            transition: 0.3s;
         }
-
-        .auth-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(41, 121, 255, 0.3);
-        }
-
-        .auth-error {
-            color: var(--accent-secondary);
-            font-size: 0.9rem;
-            margin-top: 1rem;
-            text-align: center;
-            display: none;
-        }
+        
+        .auth-btn:hover { filter: brightness(1.2); }
 
         /* === MAIN LAYOUT === */
-        .main-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 2rem;
-            min-height: 100vh;
-            opacity: 0;
-            animation: fadeIn 1s ease forwards;
+        .layout {
+            display: grid; grid-template-columns: 260px 1fr;
+            max-width: 1400px; margin: 0 auto; min-height: 100vh;
+            opacity: 0; transition: opacity 1s ease;
         }
 
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
-
-        /* === SIDEBAR === */
         .sidebar {
-            position: sticky;
-            top: 2rem;
-            height: calc(100vh - 4rem);
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
+            padding: 2rem; border-right: 1px solid var(--border-color);
+            position: sticky; top: 0; height: 100vh; overflow-y: auto;
         }
 
-        .user-card {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            box-shadow: var(--shadow-primary);
+        .main-content { padding: 3rem; overflow-y: auto; }
+
+        /* === COMPONENTS === */
+        .user-profile {
+            margin-bottom: 3rem; text-align: center;
+            padding-bottom: 2rem; border-bottom: 1px solid var(--border-color);
         }
 
-        .user-avatar {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: var(--gradient-primary);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-
-        .user-name {
-            font-family: var(--font-heading);
-            font-size: 1.2rem;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .user-role {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .nav-container {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            flex-grow: 1;
-            box-shadow: var(--shadow-primary);
-        }
-
-        .nav-title {
-            font-family: var(--font-heading);
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .nav-list {
-            list-style: none;
-        }
-
-        .nav-item {
-            margin-bottom: 0.5rem;
+        .avatar {
+            width: 80px; height: 80px; margin: 0 auto 1rem;
+            background: var(--accent-primary); color: var(--bg-primary);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; font-weight: bold;
         }
 
         .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            color: var(--text-body);
-            text-decoration: none;
-            border-radius: calc(var(--border-radius) / 2);
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
+            display: block; padding: 1rem; margin-bottom: 0.5rem;
+            color: var(--text-muted); text-decoration: none;
+            border-radius: var(--border-radius); transition: 0.3s;
+            border: 1px solid transparent;
         }
 
-        .nav-link:hover {
-            background: rgba(255, 255, 255, 0.05);
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.03);
             color: var(--text-primary);
+            border-color: var(--border-color);
         }
 
-        .nav-link.active {
-            background: rgba(41, 121, 255, 0.1);
-            color: var(--text-primary);
-            border-left: 3px solid var(--accent-primary);
-        }
-
-        .nav-icon {
-            font-size: 1.2rem;
-            opacity: 0.7;
-        }
-
-        /* === CONTENT AREA === */
-        .content-area {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-        }
-
-        .header-bar {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
-            padding: 1.5rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: var(--shadow-primary);
-        }
-
-        .header-title h1 {
-            font-family: var(--font-heading);
-            font-size: 1.8rem;
-            color: var(--text-primary);
-            margin-bottom: 0.25rem;
-        }
-
-        .header-subtitle {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-        }
-
-        .header-controls {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .control-btn {
-            padding: 0.5rem 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            border-radius: calc(var(--border-radius) / 2);
-            color: var(--text-body);
-            font-family: var(--font-body);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-        }
-
-        .control-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--accent-primary);
-            color: var(--text-primary);
-        }
-
-        /* === DATE SELECTOR === */
-        .date-selector {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            box-shadow: var(--shadow-primary);
-        }
-
-        .date-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .date-card {
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            border-radius: calc(var(--border-radius) / 2);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        .date-card:hover {
-            transform: translateY(-2px);
-            border-color: var(--accent-primary);
-            background: rgba(41, 121, 255, 0.05);
-        }
-
-        .date-card.active {
-            background: rgba(41, 121, 255, 0.1);
-            border-color: var(--accent-primary);
-            color: var(--text-primary);
-        }
-
-        .date-card .day {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 0.25rem;
-        }
-
-        .date-card .date {
-            font-family: var(--font-heading);
-            font-size: 1.1rem;
-            color: var(--text-body);
-        }
-
-        .date-picker-container {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .custom-date-input {
-            flex-grow: 1;
-            padding: 0.75rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            border-radius: calc(var(--border-radius) / 2);
-            color: var(--text-body);
-            font-family: var(--font-body);
-        }
-
-        /* === DOSE VIEWER === */
-        .dose-viewer {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-primary);
-            overflow: hidden;
-        }
-
+        /* === DOSE CARDS === */
         .dose-header {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 2rem;
+            margin-bottom: 3rem; padding-bottom: 1rem;
             border-bottom: 1px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: flex-end;
         }
 
-        .dose-date {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background: var(--accent-primary);
-            color: var(--bg-primary);
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            margin-bottom: 1rem;
+        .section-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 2rem; margin-bottom: 2rem;
+            position: relative; overflow: hidden;
         }
 
-        .dose-quote {
-            font-family: var(--font-heading);
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            font-style: italic;
-            margin-bottom: 1rem;
-        }
-
-        .dose-content {
-            padding: 2rem;
-            max-height: 70vh;
-            overflow-y: auto;
-        }
-
-        .dose-content::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .dose-content::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .dose-content::-webkit-scrollbar-thumb {
-            background: var(--accent-primary);
-            border-radius: 3px;
-        }
-
-        /* === SECTIONS === */
-        .section {
-            margin-bottom: 3rem;
-            padding-bottom: 2rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .section:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .section-icon {
-            font-size: 1.8rem;
-            color: var(--accent-primary);
+        .section-card::before {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 4px; height: 100%; background: var(--accent-primary);
         }
 
         .section-title {
-            font-family: var(--font-heading);
-            font-size: 1.4rem;
-            color: var(--text-primary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            color: var(--text-primary); font-family: var(--font-heading);
+            font-size: 1.4rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 10px;
         }
 
         .section-subtitle {
-            color: var(--text-secondary);
-            font-weight: 600;
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
+            color: var(--accent-primary); font-size: 0.9rem;
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1.5rem;
         }
 
-        .content-text {
-            margin-bottom: 1.5rem;
-            font-size: 1.05rem;
-            line-height: 1.9;
-        }
-
-        .content-image {
-            width: 100%;
-            max-width: 600px;
-            border-radius: calc(var(--border-radius) / 2);
-            margin: 1.5rem auto;
-            display: block;
+        .math-container {
+            background: rgba(0,0,0,0.3); padding: 1.5rem;
+            border-radius: 4px; margin: 1.5rem 0; overflow-x: auto;
             border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-primary);
         }
 
-        .math-block {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 2rem;
-            border-radius: calc(var(--border-radius) / 2);
-            border-left: 4px solid var(--accent-primary);
-            margin: 2rem 0;
-            overflow-x: auto;
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--text-secondary);
-        }
-
-        .scenario-box {
-            background: rgba(255, 23, 68, 0.05);
-            border: 1px solid rgba(255, 23, 68, 0.2);
-            border-radius: calc(var(--border-radius) / 2);
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-        }
-
-        .vocab-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .vocab-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            border-radius: calc(var(--border-radius) / 2);
-            padding: 1.5rem;
-        }
-
-        .vocab-term {
-            color: var(--accent-gold);
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-        }
-
-        .vocab-example {
-            color: var(--text-muted);
-            font-style: italic;
-            margin-top: 0.5rem;
-            font-size: 0.95rem;
-        }
-
-        .judgment-block {
-            background: rgba(255, 23, 68, 0.05);
+        .judgment-box {
             border: 2px solid var(--accent-secondary);
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            margin-top: 3rem;
-            text-align: center;
+            background: rgba(255, 23, 68, 0.05);
+            padding: 2rem; text-align: center; margin-top: 4rem;
         }
 
-        .confirm-read-btn {
-            width: 100%;
-            padding: 1.5rem;
-            background: linear-gradient(135deg, var(--accent-primary), var(--text-secondary));
-            color: var(--bg-primary);
-            border: none;
-            border-radius: calc(var(--border-radius) / 2);
-            font-family: var(--font-heading);
-            font-weight: 600;
-            font-size: 1.1rem;
-            cursor: pointer;
-            margin-top: 2rem;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        /* === UTILS === */
+        .hidden { display: none !important; }
+        .fade-in { opacity: 1 !important; }
+        .btn-small {
+            background: transparent; border: 1px solid var(--border-color);
+            color: var(--text-muted); padding: 0.5rem 1rem; cursor: pointer;
+            margin-left: 10px; border-radius: 4px;
         }
+        .btn-small:hover { color: var(--text-primary); border-color: var(--text-primary); }
 
-        .confirm-read-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(41, 121, 255, 0.3);
-        }
-
-        /* === LOVE LAB (MUSA ONLY) === */
-        #love-lab {
-            display: var(--musa-only);
-            background: var(--gradient-primary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            box-shadow: var(--shadow-primary);
-        }
-
-        .love-lab-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .love-lab-title {
-            font-family: var(--font-heading);
-            font-size: 1.5rem;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .fact-display {
-            min-height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: calc(var(--border-radius) / 2);
-            margin-bottom: 1.5rem;
-            font-size: 1.1rem;
-            line-height: 1.8;
-            text-align: center;
-            font-style: italic;
-        }
-
-        .fact-controls {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .fact-btn {
-            padding: 0.75rem 1.5rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            border-radius: 50px;
-            color: var(--text-body);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: var(--font-body);
-        }
-
-        .fact-btn:hover {
-            background: var(--accent-primary);
-            color: var(--bg-primary);
-            border-color: var(--accent-primary);
-        }
-
-        .fact-progress {
-            height: 2px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 1px;
-            overflow: hidden;
-        }
-
-        .fact-progress-bar {
-            height: 100%;
-            background: var(--accent-primary);
-            width: 0%;
-            transition: width 30s linear;
-        }
-
-        /* === RESPONSIVE DESIGN === */
-        @media (max-width: 1024px) {
-            .main-container {
-                grid-template-columns: 1fr;
+        /* === PRINT STYLES === */
+        @media print {
+            body { background: white; color: black; }
+            .sidebar, .header-controls, #auth-layer { display: none; }
+            .layout { display: block; max-width: 100%; margin: 0; }
+            .section-card, .judgment-box { 
+                border: 1px solid #ccc; background: white; 
+                color: black; break-inside: avoid;
             }
-            
-            .sidebar {
-                position: static;
-                height: auto;
-            }
-            
-            .dose-content {
-                max-height: 60vh;
-            }
+            .math-container { background: #f5f5f5; border: 1px solid #ddd; color: black; }
+            h1, h2, h3, p { color: black !important; }
+            a { text-decoration: none; color: black; }
         }
 
         @media (max-width: 768px) {
-            .main-container {
-                padding: 1rem;
-            }
-            
-            .header-bar {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-            }
-            
-            .date-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .vocab-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* === UTILITIES === */
-        .hidden {
-            display: none !important;
-        }
-
-        .fade-in {
-            animation: fadeIn 0.6s ease forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* === PERSONA SWITCHER === */
-        .persona-switcher {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            z-index: 1000;
-        }
-
-        .switch-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--accent-primary);
-            border: none;
-            color: var(--bg-primary);
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .switch-btn:hover {
-            transform: scale(1.1) rotate(15deg);
+            .layout { grid-template-columns: 1fr; }
+            .sidebar { height: auto; position: relative; border-bottom: 1px solid var(--border-color); }
         }
     </style>
 </head>
 <body>
 
-    <!-- AUTHENTICATION LAYER -->
     <div id="auth-layer">
-        <div class="auth-container">
-            <h2 class="auth-title">INTELLECT DOSE SYSTEM</h2>
-            <p class="auth-subtitle">v15.0 • Premium Access Required</p>
+        <div class="auth-card">
+            <h2 style="color: var(--text-primary); margin-bottom: 0.5rem; text-align: center;">INTELLECT DOSE</h2>
+            <p style="color: var(--text-muted); text-align: center; margin-bottom: 2rem; font-size: 0.9rem;">v15.1 System Access</p>
             
-            <div class="input-group">
-                <label class="input-label">Username</label>
-                <input type="text" id="username" class="auth-input" placeholder="Enter username">
-            </div>
-            
-            <div class="input-group">
-                <label class="input-label">Password</label>
-                <input type="password" id="password" class="auth-input" placeholder="Enter password">
-            </div>
-            
-            <button class="auth-btn" onclick="authenticate()">Access System</button>
-            
-            <div id="auth-error" class="auth-error">
-                Invalid credentials. Please try again.
-            </div>
-            
-            <div style="margin-top: 2rem; font-size: 0.8rem; color: var(--text-muted); text-align: center;">
-                <p>Authorized Users:</p>
-                <p>• boipelo / engineer314 (Director Boipelo)</p>
-                <p>• musa / muse271 (Queen Musa)</p>
-            </div>
+            <input type="text" id="username" class="auth-input" placeholder="Identity Protocol (Username)">
+            <input type="password" id="password" class="auth-input" placeholder="Access Key">
+            <button class="auth-btn" onclick="login()">Initialize</button>
+            <p id="error-msg" style="color: var(--accent-secondary); text-align: center; margin-top: 1rem; display: none;">Access Denied.</p>
         </div>
     </div>
 
-    <!-- MAIN INTERFACE -->
-    <div class="main-container hidden" id="main-interface">
-        <!-- Sidebar -->
+    <div class="layout hidden" id="app-layout">
         <aside class="sidebar">
-            <div class="user-card">
-                <div class="user-avatar" id="user-avatar">
-                    <span>B</span>
-                </div>
-                <h3 class="user-name" id="user-name">Loading...</h3>
-                <p class="user-role" id="user-role">SYSTEM USER</p>
+            <div class="user-profile">
+                <div class="avatar" id="user-avatar">B</div>
+                <h3 id="user-name" style="color: var(--text-primary);">User</h3>
+                <p id="user-role" style="color: var(--text-muted); font-size: 0.8rem;">Ready</p>
             </div>
 
-            <nav class="nav-container">
-                <h4 class="nav-title">Navigation</h4>
-                <ul class="nav-list">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link active" onclick="showSection('today')">
-                            <span class="nav-icon">📖</span>
-                            Today's Dose
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link" onclick="showSection('archive')">
-                            <span class="nav-icon">🗂️</span>
-                            Archive
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link" onclick="showSection('progress')">
-                            <span class="nav-icon">📊</span>
-                            Progress
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link" onclick="showSection('vocabulary')">
-                            <span class="nav-icon">📚</span>
-                            Vocabulary
-                        </a>
-                    </li>
-                    <li class="nav-item" id="musa-nav-item" style="display: var(--musa-only);">
-                        <a href="#" class="nav-link" onclick="showSection('love-lab')">
-                            <span class="nav-icon">❤️</span>
-                            Love Lab
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link" onclick="logout()">
-                            <span class="nav-icon">🚪</span>
-                            Logout
-                        </a>
-                    </li>
-                </ul>
+            <nav>
+                <a href="#" class="nav-link active" onclick="loadDose('2026-01-05')">Today (Jan 5)</a>
+                <a href="#" class="nav-link" onclick="loadDose('2026-01-04')">Archive: Jan 4</a>
+                <a href="#" class="nav-link" onclick="loadDose('2026-01-03')">Archive: Jan 3</a>
+                <div id="musa-menu" style="display: none; margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                    <a href="#" class="nav-link" style="color: var(--accent-gold);">❤️ Love Lab</a>
+                </div>
+                <a href="#" class="nav-link" onclick="logout()" style="margin-top: 2rem;">Disconnect</a>
             </nav>
         </aside>
 
-        <!-- Main Content -->
-        <main class="content-area">
-            <!-- Header -->
-            <header class="header-bar">
-                <div class="header-title">
-                    <h1 id="greeting">Proverbs 31 & Psalm 112</h1>
-                    <div class="header-subtitle">Daily Intellect Dose System v15.0</div>
+        <main class="main-content">
+            <header class="dose-header">
+                <div>
+                    <h1 id="dose-date" style="color: var(--text-primary); font-family: var(--font-heading);">Date Loading...</h1>
+                    <p id="dose-quote" style="color: var(--text-muted); font-style: italic;">Quote Loading...</p>
                 </div>
                 <div class="header-controls">
-                    <button class="control-btn" onclick="toggleDarkMode()">
-                        🌓 Theme
-                    </button>
-                    <button class="control-btn" onclick="printDose()">
-                        🖨️ Print
-                    </button>
+                    <button class="btn-small" onclick="window.print()">🖨️ Print</button>
+                    <button class="btn-small" onclick="togglePersona()">⚡ Toggle Persona</button>
                 </div>
             </header>
 
-            <!-- Date Selector -->
-            <div class="date-selector" id="date-selector">
-                <h4 style="color: var(--text-secondary); margin-bottom: 1rem;">Select Date:</h4>
-                <div class="date-grid" id="date-grid">
-                    <!-- Date cards will be injected here -->
+            <div id="content-area">
                 </div>
-                <div class="date-picker-container">
-                    <input type="date" class="custom-date-input" id="custom-date" onchange="loadCustomDate()">
-                    <button class="control-btn" onclick="loadDate('today')">Today</button>
-                    <button class="control-btn" onclick="loadDate('yesterday')">Yesterday</button>
-                </div>
-            </div>
-
-            <!-- Love Lab (Musa Only) -->
-            <div id="love-lab" class="hidden">
-                <div class="love-lab-header">
-                    <h3 class="love-lab-title">The Psychology of Us</h3>
-                    <p style="color: var(--text-muted);">Scientific Insights into Human Connection</p>
-                </div>
-                <div class="fact-display" id="fact-display">
-                    Initializing Love Database...
-                </div>
-                <div class="fact-controls">
-                    <button class="fact-btn" onclick="prevFact()">← Previous</button>
-                    <button class="fact-btn" onclick="nextFact()">Next →</button>
-                    <button class="fact-btn" onclick="randomFact()">Random</button>
-                </div>
-                <div class="fact-progress">
-                    <div class="fact-progress-bar" id="fact-progress-bar"></div>
-                </div>
-                <div style="text-align: center; margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;">
-                    Fact <span id="fact-counter">1</span> of <span id="fact-total">500</span>
-                </div>
-            </div>
-
-            <!-- Dose Viewer -->
-            <div class="dose-viewer" id="dose-viewer">
-                <div class="dose-header">
-                    <div class="dose-date" id="current-date">January 5, 2026</div>
-                    <div class="dose-quote" id="daily-quote">"Monday is the day of execution. Theory ends; practice begins."</div>
-                </div>
-                <div class="dose-content" id="dose-content">
-                    <!-- Dose content will be injected here -->
-                </div>
-            </div>
-
-            <!-- Other sections will be added here -->
         </main>
     </div>
 
-    <!-- Persona Switcher -->
-    <div class="persona-switcher">
-        <button class="switch-btn" onclick="togglePersona()">
-            <span id="persona-icon">⚡</span>
-        </button>
-    </div>
-
     <script>
-        // ====== AUTHENTICATION SYSTEM ======
+        // === CONFIGURATION ===
         const USERS = {
-            'boipelo': {
-                password: 'engineer314',
-                name: 'Director Boipelo',
-                role: 'System Administrator',
-                avatar: 'B',
-                greeting: 'Psalm 112 • SYSTEM: ONLINE',
-                persona: 'boipelo'
-            },
-            'musa': {
-                password: 'muse271',
-                name: 'Queen Musa',
-                role: 'Chief Insight Officer',
-                avatar: 'M',
-                greeting: 'Proverbs 31 • For Her Majesty',
-                persona: 'musa'
-            }
+            'boipelo': { pass: 'engineer314', name: 'Director Boipelo', role: 'ENG-3 | TRADER', persona: 'boipelo' },
+            'musa': { pass: 'muse271', name: 'Queen Musa', role: 'CHIEF INSIGHT OFFICER', persona: 'musa' }
         };
 
         let currentUser = null;
-        let currentPersona = 'boipelo';
 
-        function authenticate() {
-            const username = document.getElementById('username').value.trim().toLowerCase();
-            const password = document.getElementById('password').value;
-            const errorDiv = document.getElementById('auth-error');
+        // === CONTENT DATABASE ===
+        const DB = {
+            '2026-01-05': {
+                quote: "\"Monday is the day of execution. Theory ends; practice begins.\"",
+                sections: [
+                    {
+                        icon: "⚡", title: "Engineering", subtitle: "MOSFETs: The Miller Plateau",
+                        text: "In your induction heater projects, the MOSFET isn't just a switch; it's a dynamic system. As you turn it ON, voltage drops and current rises. However, there is a dangerous zone called the 'Miller Plateau'. This is caused by the parasitic capacitance ($C_{gd}$) between the Gate and Drain. During switching, your gate current is stolen to charge this capacitor, causing the voltage to stall. This is where switching losses explode ($P = V \cdot I$).",
+                        math: "$$P_{loss} \\approx f_{sw} \\cdot \\frac{1}{2} V_{ds} I_d (t_{rise} + t_{fall})$$"
+                    },
+                    {
+                        icon: "📊", title: "Finance", subtitle: "Risk Management: The Sharpe Ratio",
+                        text: "You are trading US30. Profit alone is a poor metric. The Sharpe Ratio measures risk-adjusted return. A high return with high volatility (gambling) gives a low score. A moderate return with stability gives a high score. Banks want high Sharpe Ratios, not just lucky streaks.",
+                        math: "$$S_a = \\frac{E[R_a - R_b]}{\\sigma_a}$$"
+                    },
+                    {
+                        icon: "🩸", title: "Medical Science", subtitle: "RAAS: Blood Pressure Control",
+                        text: "The Renin-Angiotensin-Aldosterone System is how your body regulates long-term blood pressure. Low pressure triggers the kidneys to release Renin. This eventually produces Angiotensin II, a potent vasoconstrictor that squeezes veins and tells kidneys to keep salt (and water), raising pressure.",
+                        math: ""
+                    },
+                    {
+                        icon: "⚖️", title: "Law", subtitle: "Dolus Eventualis",
+                        text: "In SA Law, you are guilty of murder even if you didn't 'mean' to kill a specific person, provided you (1) foresaw the possibility that your action could kill someone and (2) reconciled yourself to that risk and acted anyway (Recklessness).",
+                        math: ""
+                    },
+                    {
+                        icon: "📚", title: "Vocabulary", subtitle: "Word Power",
+                        text: "1. **Perspicacious** (Adj): Having a ready insight into things; sharp. <br>2. **Sycophant** (Noun): A person who acts obsequiously to gain advantage. <br>3. **Inchoate** (Adj): Just begun and so not fully formed."
+                    }
+                ],
+                judgment: "The Miller Plateau teaches us that the transition is the most dangerous part. You are transitioning from student to Engineer. Do not get stuck in the plateau. Push through with high current."
+            },
+            '2026-01-04': {
+                quote: "\"Sunday: Rest the body, sharpen the spirit.\"",
+                sections: [
+                    {
+                        icon: "🔌", title: "Engineering", subtitle: "3-Phase: Star vs Delta",
+                        text: "Why 3-phase? Constant power delivery. In Star (Y) connection, we have a Neutral point. $V_{line} = \sqrt{3} V_{phase}$. In Delta ($\Delta$), there is no neutral, used for high power transmission.",
+                        math: "$$P_{total} = \sqrt{3} \cdot V_L \cdot I_L \cdot \cos(\phi)$$"
+                    },
+                    {
+                        icon: "✝️", title: "Spirituality", subtitle: "Sanctification",
+                        text: "Positional Sanctification is your status (Holy). Progressive Sanctification is your state (Behavior). Do not confuse your standing with God with your current stumbling.",
+                        math: ""
+                    }
+                ],
+                judgment: "A motor wired in Star when it needs Delta will run weak. A man living for pleasure when he is built for purpose will fail. Check your wiring."
+            },
+            '2026-01-03': {
+                quote: "\"Saturday Strategy Session.\"",
+                sections: [
+                    {
+                        icon: "📡", title: "Engineering", subtitle: "Skin Effect",
+                        text: "At high frequencies, current crowds to the surface of the conductor, leaving the center empty. This increases effective resistance.",
+                        math: "$$\\delta = \\sqrt{\\frac{2\\rho}{\\omega\\mu}}$$"
+                    }
+                ],
+                judgment: "Don't be like a high-frequency wire: superficial with an empty core. Depth requires lower frequency (slowing down)."
+            }
+        };
 
-            if (USERS[username] && USERS[username].password === password) {
-                currentUser = USERS[username];
-                currentPersona = currentUser.persona;
-                
-                // Update UI
-                document.documentElement.setAttribute('data-persona', currentPersona);
-                document.getElementById('user-name').textContent = currentUser.name;
-                document.getElementById('user-role').textContent = currentUser.role;
-                document.getElementById('user-avatar').innerHTML = `<span>${currentUser.avatar}</span>`;
-                document.getElementById('greeting').textContent = currentUser.greeting;
-                
-                // Show main interface
+        // === AUTH LOGIC ===
+        function login() {
+            const u = document.getElementById('username').value.trim().toLowerCase();
+            const p = document.getElementById('password').value;
+            const err = document.getElementById('error-msg');
+
+            if (USERS[u] && USERS[u].pass === p) {
+                currentUser = USERS[u];
+                // Hide Auth, Show App
                 document.getElementById('auth-layer').style.opacity = '0';
                 setTimeout(() => {
                     document.getElementById('auth-layer').classList.add('hidden');
-                    document.getElementById('main-interface').classList.remove('hidden');
-                    document.getElementById('main-interface').classList.add('fade-in');
+                    document.getElementById('app-layout').classList.remove('hidden');
+                    document.getElementById('app-layout').classList.add('fade-in');
+                    initApp();
                 }, 600);
-                
-                // Initialize system
-                initializeSystem();
             } else {
-                errorDiv.style.display = 'block';
-                setTimeout(() => {
-                    errorDiv.style.display = 'none';
-                }, 3000);
+                err.style.display = 'block';
             }
         }
 
         function logout() {
-            currentUser = null;
-            document.getElementById('main-interface').classList.add('hidden');
-            document.getElementById('auth-layer').classList.remove('hidden');
-            document.getElementById('auth-layer').style.opacity = '1';
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
+            location.reload();
         }
 
-        // ====== LOVE FACTS DATABASE (500+ FACTS) ======
-        const loveFacts = generateLoveFacts(500);
-
-        function generateLoveFacts(count) {
-            const topics = ['Psychology', 'Neuroscience', 'Biology', 'Chemistry', 'Anthropology', 'Sociology', 'Evolutionary Biology', 'Cognitive Science'];
-            const verbs = ['enhances', 'reduces', 'increases', 'decreases', 'triggers', 'activates', 'strengthens', 'weakens', 'regulates', 'stimulates'];
-            const effects = ['oxytocin', 'dopamine', 'serotonin', 'cortisol', 'immune response', 'heart rate', 'blood pressure', 'stress levels', 'pain tolerance', 'memory formation'];
-            const times = ['within 20 seconds', 'after 4 minutes', 'within 6 months', 'over 2 years', 'instantly', 'gradually', 'during childhood', 'in adulthood'];
-            const contexts = ['during eye contact', 'while holding hands', 'after physical intimacy', 'during conflict resolution', 'when sharing laughter', 'through active listening', 'via acts of service'];
+        // === APP LOGIC ===
+        function initApp() {
+            // Set User Info
+            document.getElementById('user-name').innerText = currentUser.name;
+            document.getElementById('user-role').innerText = currentUser.role;
+            document.getElementById('user-avatar').innerText = currentUser.name.charAt(0);
             
-            const facts = [];
+            // Apply Persona Theme
+            document.documentElement.setAttribute('data-persona', currentUser.persona);
             
-            // Core facts (more specific)
-            const coreFacts = [
-                "Eye contact for 4 minutes synchronizes heart rates between partners through neural coupling.",
-                "Hugging releases oxytocin, which reduces cortisol levels by up to 30% within 20 seconds.",
-                "The 'Mere Exposure Effect' proves we develop preference for faces we see repeatedly, with optimal exposure at 10-20 encounters.",
-                "Dopamine levels in new love match those in cocaine addiction, creating biological dependency that lasts 12-18 months.",
-                "Secure attachment forms when caregivers respond appropriately 70% of the time—perfection is impossible, repair is essential.",
-                "Vasopressin receptor gene variations predict monogamy in male mammals with 85% accuracy.",
-                "Kissing samples Major Histocompatibility Complex (MHC) proteins, allowing subconscious genetic compatibility assessment.",
-                "Couples who laugh together daily show 50% lower divorce rates over 10-year periods.",
-                "Physical touch increases natural killer cell activity, boosting immune function by 30%.",
-                "The prefrontal cortex deactivates during intense romantic attraction, literally impairing judgment.",
-                "Heartbreak activates the same anterior cingulate cortex pathways as physical pain, with measurable neural overlap.",
-                "Synchronized breathing during intimacy creates entrainment, lowering blood pressure by 15-20 mmHg.",
-                "Pheromone detection occurs through the vomeronasal organ, which communicates directly with the hypothalamus.",
-                "The '5:1 ratio' (five positive interactions per negative one) predicts relationship survival with 94% accuracy.",
-                "Novel experiences together release dopamine at levels comparable to new love, regardless of relationship duration.",
-                "Testosterone decreases 30% in men during early attachment, while increasing 20% in women—biological convergence.",
-                "Shared adversity creates stronger bonds than shared pleasure, through cortisol-coordinated memory encoding.",
-                "Verbal affirmation activates the ventral striatum reward center similarly to monetary gain.",
-                "Cuddling post-conflict releases endogenous opioids that reduce inflammatory markers by 40%.",
-                "Genetic compatibility through HLA diversity predicts relationship satisfaction and offspring health."
-            ];
-            
-            facts.push(...coreFacts);
-            
-            // Generate remaining facts
-            while (facts.length < count) {
-                const topic = topics[Math.floor(Math.random() * topics.length)];
-                const verb = verbs[Math.floor(Math.random() * verbs.length)];
-                const effect = effects[Math.floor(Math.random() * effects.length)];
-                const time = times[Math.floor(Math.random() * times.length)];
-                const context = contexts[Math.floor(Math.random() * contexts.length)];
-                
-                const fact = `${topic}: Love ${verb} ${effect} ${time} ${context}, according to longitudinal studies.`;
-                facts.push(fact);
+            if(currentUser.persona === 'musa') {
+                document.getElementById('musa-menu').style.display = 'block';
             }
-            
-            // Shuffle and return
-            return shuffleArray(facts.slice(0, count));
+
+            // Load Default Date (Today)
+            loadDose('2026-01-05');
         }
 
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
+        function loadDose(dateKey) {
+            const data = DB[dateKey];
+            const container = document.getElementById('content-area');
+            
+            // Update Active Link
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (!data) {
+                container.innerHTML = `<div class="section-card"><h3>Data not archived.</h3></div>`;
+                return;
             }
-            return array;
-        }
 
-        let currentFactIndex = 0;
-        let factTimer;
+            // Update Header
+            document.getElementById('dose-date').innerText = new Date(dateKey).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('dose-quote').innerText = data.quote;
 
-        function initializeLoveLab() {
-            document.getElementById('fact-total').textContent = loveFacts.length;
-            showFact(currentFactIndex);
-            startFactRotation();
-        }
-
-        function showFact(index) {
-            currentFactIndex = (index + loveFacts.length) % loveFacts.length;
-            const factDisplay = document.getElementById('fact-display');
-            factDisplay.style.opacity = '0';
+            // Generate Content
+            let html = '';
             
-            setTimeout(() => {
-                factDisplay.textContent = `"${loveFacts[currentFactIndex]}"`;
-                factDisplay.style.opacity = '1';
-                document.getElementById('fact-counter').textContent = currentFactIndex + 1;
-                resetProgressBar();
-            }, 300);
-        }
-
-        function nextFact() {
-            showFact(currentFactIndex + 1);
-        }
-
-        function prevFact() {
-            showFact(currentFactIndex - 1);
-        }
-
-        function randomFact() {
-            const randomIndex = Math.floor(Math.random() * loveFacts.length);
-            showFact(randomIndex);
-        }
-
-        function startFactRotation() {
-            clearInterval(factTimer);
-            factTimer = setInterval(nextFact, 30000); // 30 seconds
-        }
-
-        function resetProgressBar() {
-            const progressBar = document.getElementById('fact-progress-bar');
-            progressBar.style.transition = 'none';
-            progressBar.style.width = '0%';
-            
-            setTimeout(() => {
-                progressBar.style.transition = 'width 30s linear';
-                progressBar.style.width = '100%';
-            }, 100);
-        }
-
-        // ====== DOSE MANAGEMENT ======
-        const doses = {
-            '2026-01-05': getJanuary5Dose(),
-            '2026-01-04': getJanuary4Dose(),
-            '2026-01-03': getJanuary3Dose(),
-            '2026-01-02': getJanuary2Dose(),
-            '2026-01-01': getJanuary1Dose()
-        };
-
-        function initializeSystem() {
-            // Initialize date selector
-            initializeDateGrid();
-            
-            // Initialize love lab if Musa
-            if (currentPersona === 'musa') {
-                initializeLoveLab();
-            }
-            
-            // Load today's dose
-            loadDate('today');
-            
-            // Update persona-specific elements
-            updatePersonaUI();
-        }
-
-        function initializeDateGrid() {
-            const dateGrid = document.getElementById('date-grid');
-            dateGrid.innerHTML = '';
-            
-            const dates = Object.keys(doses).sort().reverse();
-            
-            dates.forEach(date => {
-                const dateObj = new Date(date);
-                const day = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
-                const dateStr = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                
-                const card = document.createElement('div');
-                card.className = 'date-card';
-                card.dataset.date = date;
-                card.innerHTML = `
-                    <div class="day">${day}</div>
-                    <div class="date">${dateStr}</div>
-                `;
-                card.onclick = () => loadSpecificDate(date);
-                
-                dateGrid.appendChild(card);
-            });
-            
-            // Mark today as active
-            const today = new Date().toISOString().split('T')[0];
-            document.querySelector(`.date-card[data-date="${today}"]`)?.classList.add('active');
-        }
-
-        function loadDate(type) {
-            let targetDate;
-            const today = new Date();
-            
-            switch(type) {
-                case 'today':
-                    targetDate = today.toISOString().split('T')[0];
-                    break;
-                case 'yesterday':
-                    const yesterday = new Date(today);
-                    yesterday.setDate(yesterday.getDate() - 1);
-                    targetDate = yesterday.toISOString().split('T')[0];
-                    break;
-                default:
-                    targetDate = type;
-            }
-            
-            loadSpecificDate(targetDate);
-        }
-
-        function loadSpecificDate(date) {
-            // Update active date card
-            document.querySelectorAll('.date-card').forEach(card => {
-                card.classList.remove('active');
-            });
-            document.querySelector(`.date-card[data-date="${date}"]`)?.classList.add('active');
-            
-            // Update custom date picker
-            document.getElementById('custom-date').value = date;
-            
-            // Load dose
-            const dose = doses[date];
-            if (dose) {
-                displayDose(dose, date);
-            } else {
-                // Show error or empty state
-                document.getElementById('dose-content').innerHTML = `
-                    <div style="text-align: center; padding: 4rem;">
-                        <h3 style="color: var(--text-secondary); margin-bottom: 1rem;">No Dose Available</h3>
-                        <p style="color: var(--text-muted);">No intellect dose found for this date.</p>
-                    </div>
-                `;
-                
-                const dateObj = new Date(date);
-                document.getElementById('current-date').textContent = 
-                    dateObj.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                document.getElementById('daily-quote').textContent = '"Knowledge waits for no one."';
-            }
-        }
-
-        function loadCustomDate() {
-            const date = document.getElementById('custom-date').value;
-            if (date) {
-                loadSpecificDate(date);
-            }
-        }
-
-        function displayDose(dose, date) {
-            const dateObj = new Date(date);
-            document.getElementById('current-date').textContent = 
-                dateObj.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-            
-            document.getElementById('daily-quote').textContent = dose.quote;
-            
-            // Build dose content
-            let contentHTML = '';
-            
-            dose.sections.forEach(section => {
-                contentHTML += `
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-icon">${section.icon}</div>
-                            <h3 class="section-title">${section.title}</h3>
+            data.sections.forEach(sec => {
+                html += `
+                    <div class="section-card">
+                        <div class="section-title">
+                            <span>${sec.icon}</span> ${sec.title}
                         </div>
-                        
-                        <p class="section-subtitle">${section.subtitle}</p>
-                        
-                        ${section.content.map(paragraph => `
-                            <p class="content-text">${paragraph}</p>
-                        `).join('')}
-                        
-                        ${section.image ? `
-                            <img src="${section.image.src}" alt="${section.image.alt}" class="content-image">
-                            <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;">
-                                ${section.image.caption}
-                            </p>
-                        ` : ''}
-                        
-                        ${section.math ? `
-                            <div class="math-block">${section.math}</div>
-                        ` : ''}
-                        
-                        ${section.scenario ? `
-                            <div class="scenario-box">
-                                <strong>${scenario.title}:</strong> ${scenario.content}
-                            </div>
-                        ` : ''}
+                        <div class="section-subtitle">${sec.subtitle}</div>
+                        <p>${sec.text}</p>
+                        ${sec.math ? `<div class="math-container">${sec.math}</div>` : ''}
                     </div>
                 `;
             });
-            
-            // Add vocabulary section
-            contentHTML += `
-                <div class="section">
-                    <div class="section-header">
-                        <div class="section-icon">📚</div>
-                        <h3 class="section-title">Vocabulary</h3>
-                    </div>
-                    <div class="vocab-grid">
-                        ${dose.vocabulary.map(word => `
-                            <div class="vocab-card">
-                                <div class="vocab-term">${word.term} (${word.type}):</div>
-                                <div>${word.definition}</div>
-                                <div class="vocab-example">"${word.example}"</div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-            
-            // Add judgment section
-            contentHTML += `
-                <div class="judgment-block">
+
+            html += `
+                <div class="judgment-box">
                     <h3 style="color: var(--accent-secondary); margin-bottom: 1rem;">MY JUDGMENT</h3>
-                    <p style="font-size: 1.1rem; line-height: 1.8;">${dose.judgment}</p>
+                    <p style="font-size: 1.1rem;">${data.judgment}</p>
                 </div>
-                
-                <button class="confirm-read-btn" onclick="confirmRead('${date}')">
-                    ✅ I Have Completed This Dose
-                </button>
             `;
-            
-            document.getElementById('dose-content').innerHTML = contentHTML;
-            
-            // Render MathJax
+
+            container.innerHTML = html;
+
+            // Trigger MathJax Reprocess
             if (window.MathJax) {
                 MathJax.typesetPromise();
             }
         }
 
-        function confirmRead(date) {
-            const dateObj = new Date(date);
-            const dateStr = dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-            
-            // Send WhatsApp notification
-            const phone = "27822119454";
-            const message = `Hi Boipelo, I have completed the Intellect Dose for ${dateStr}.`;
-            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
-            
-            // Show confirmation
-            alert(`Dose for ${dateStr} marked as completed!`);
-        }
-
-        // ====== UI CONTROLS ======
         function togglePersona() {
-            if (currentUser) {
-                currentPersona = currentPersona === 'boipelo' ? 'musa' : 'boipelo';
-                document.documentElement.setAttribute('data-persona', currentPersona);
-                updatePersonaUI();
-                
-                // Reinitialize love lab if switching to Musa
-                if (currentPersona === 'musa') {
-                    initializeLoveLab();
-                }
-            }
+            const newPersona = document.documentElement.getAttribute('data-persona') === 'boipelo' ? 'musa' : 'boipelo';
+            document.documentElement.setAttribute('data-persona', newPersona);
         }
 
-        function updatePersonaUI() {
-            const icon = document.getElementById('persona-icon');
-            icon.textContent = currentPersona === 'boipelo' ? '⚡' : '👑';
-        }
-
-        function showSection(section) {
-            // Update active nav link
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            // Show/hide sections
-            document.getElementById('dose-viewer').classList.toggle('hidden', section !== 'today');
-            document.getElementById('love-lab').classList.toggle('hidden', section !== 'love-lab');
-            document.getElementById('date-selector').classList.toggle('hidden', section !== 'today');
-            
-            // TODO: Implement other sections
-        }
-
-        function toggleDarkMode() {
-            // This would toggle between light/dark modes
-            alert('Theme switching will be implemented in v15.1');
-        }
-
-        function printDose() {
-            window.print();
-        }
-
-        // ====== DOSE CONTENT ======
-        // Due to character limits, I'll include detailed content for January 5 as an example
-        // The other dates would follow the same structure with full educational content
-
-        function getJanuary5Dose() {
-            return {
-                date: "2026-01-05",
-                quote: "\"Monday is the day of execution. Theory ends; practice begins.\"",
-                sections: [
-                    {
-                        icon: "⚡",
-                        title: "Engineering",
-                        subtitle: "Topic: MOSFET Switching & The Miller Plateau (Power Electronics)",
-                        content: [
-                            "In power electronics, particularly when building an induction heater (like your ZVS driver), we often model the MOSFET as a perfect switch—either ON or OFF. This is a dangerous simplification. The reality is that the transition state involves complex parasitic capacitance.",
-                            "The Phenomenon: When you apply voltage to the Gate, the MOSFET begins to turn on. However, between the Gate and the Drain, there exists a tiny, invisible capacitor called the Miller Capacitor ($C_{gd}$). As the Drain voltage starts to plummet (as the switch closes), it couples through this capacitor back to the Gate.",
-                            "This negative feedback loop fights the Gate driver. The current you are pumping into the Gate stops raising the Gate voltage and is instead used entirely to charge/discharge this parasitic capacitor. On an oscilloscope, this looks like a flat line in the voltage rise—the \"Miller Plateau.\"",
-                            "The Mathematical Danger: Power loss is defined as Voltage times Current. Ideally, when Current is high, Voltage is zero (ON). When Voltage is high, Current is zero (OFF). But during the plateau, both are high.",
-                            "If $V_{ds} = 300V$ and $I_d = 20A$, the instantaneous power dissipation during that microsecond is 6,000 Watts. This creates a massive thermal spike that can explode the silicon die."
-                        ],
-                        image: {
-                            src: "https://i.ibb.co/qF37YqcL/k-QC1h-2.jpg",
-                            alt: "Miller Plateau Diagram",
-                            caption: "Fig. 1: Miller Plateau in MOSFET switching characteristics"
-                        },
-                        math: "$$P_{loss} = \\int_{t_{on}}^{t_{off}} v_{ds}(t) \\cdot i_d(t) \\, dt$$",
-                        scenario: {
-                            title: "The Fix",
-                            content: "You cannot remove the capacitance (it is physical). You must overcome it. Use a Gate Driver capable of sourcing high peak currents (2A - 5A) to charge $C_{gd}$ as fast as possible, minimizing the time spent in the plateau."
-                        }
-                    },
-                    {
-                        icon: "⚖️",
-                        title: "Law Enforcement",
-                        subtitle: "Topic: Dolus Eventualis (Legal Intent)",
-                        content: [
-                            "In South African criminal law, intent ($Dolus$) is not binary. The most complex form is Dolus Eventualis.",
-                            "The Definition: A perpetrator acts with Dolus Eventualis if: (1) They subjectively foresaw the possibility that their act could result in the unlawful consequence (e.g., death). (2) They reconciled themselves to that possibility (i.e., they proceeded anyway, reckless of the outcome)."
-                        ],
-                        scenario: {
-                            title: "Scenario for Musa",
-                            content: "A suspect shoots through a closed bathroom door. He claims, 'I didn't know who was behind it, so I didn't intend to kill anyone specific.' Verdict: The court asks: Did he foresee that someone might be behind the door? Yes. Did he shoot anyway? Yes. He is guilty of Murder via Dolus Eventualis. (Reference: S v Pistorius)."
-                        }
-                    },
-                    {
-                        icon: "🩸",
-                        title: "Medical Sciences",
-                        subtitle: "Topic: The Renin-Angiotensin-Aldosterone System (RAAS)",
-                        content: [
-                            "This is the body's master hydraulic control system for long-term blood pressure regulation.",
-                            "The Cascade: Step 1 (Kidneys): Detect low pressure/sodium. Release enzyme Renin. Step 2 (Liver): Renin acts on Angiotensinogen to create Angiotensin I (inactive). Step 3 (Lungs): Angiotensin-Converting Enzyme (ACE) turns it into Angiotensin II. Step 4 (The Effect): Angiotensin II causes vasoconstriction (tightening veins) and triggers the release of Aldosterone, which forces kidneys to retain salt and water.",
-                            "Clinical Significance: Hypertension drugs (ACE inhibitors, ARBs) target this system. Understanding RAAS explains why high salt intake causes chronic hypertension through aldosterone-mediated water retention."
-                        ],
-                        image: {
-                            src: "https://i.ibb.co/gFFCBhRC/IMG-20260105-WA0000.jpg",
-                            alt: "RAAS System Diagram",
-                            caption: "Fig. 2: Renin-Angiotensin-Aldosterone System pathway"
-                        }
-                    },
-                    {
-                        icon: "📊",
-                        title: "Finance",
-                        subtitle: "Topic: The Sharpe Ratio (Risk-Adjusted Return)",
-                        content: [
-                            "Amateur traders look at returns (%). Professional fund managers look at the Sharpe Ratio. It answers the question: 'Is this profit due to skill, or did you just take a massive risk?'",
-                            "Where $\\sigma_p$ (Sigma) is the Standard Deviation (Volatility). A high return with high volatility results in a low Sharpe Ratio. A moderate return with almost zero volatility (a straight line up) results in a high Sharpe Ratio. This is what banks buy.",
-                            "Practical Application: A Sharpe Ratio above 1.0 is good, above 2.0 is excellent, above 3.0 is world-class. Most retail traders have negative Sharpe Ratios despite occasional wins."
-                        ],
-                        math: "$$\\text{Sharpe Ratio} = \\frac{R_p - R_f}{\\sigma_p}$$"
-                    },
-                    {
-                        icon: "✝️",
-                        title: "Spirituality",
-                        subtitle: "Topic: Sanctification (Positional vs. Progressive)",
-                        content: [
-                            "Confusion here causes depression. We must distinguish between your Status and your State.",
-                            "Positional Sanctification (Status): Happened instantly at salvation. You were 'set apart' (Holy). This is objective and unchangeable. (Hebrews 10:10).",
-                            "Progressive Sanctification (State): The daily, painful process of aligning your behavior with your status. It is a war against the flesh.",
-                            "The Lesson: When you sin, you do not lose your Position (Prince); you simply dirty your State. Do not let the devil convince you that a dirty uniform means you are no longer a soldier."
-                        ]
-                    }
-                ],
-                vocabulary: [
-                    {
-                        term: "Perspicacious",
-                        type: "Adj",
-                        definition: "Having a ready insight into and understanding of things; mentally sharp.",
-                        example: "Musa's perspicacious analysis of the crime scene revealed details the other officers missed."
-                    },
-                    {
-                        term: "Sycophant",
-                        type: "Noun",
-                        definition: "A person who acts obsequiously toward someone important in order to gain advantage.",
-                        example: "A leader surrounds himself with critics, but a tyrant surrounds himself with sycophants."
-                    },
-                    {
-                        term: "Inchoate",
-                        type: "Adj",
-                        definition: "Just begun and so not fully formed or developed; rudimentary.",
-                        example: "My plans for the new induction heater are still inchoate; I have the concept, but not the schematic."
-                    }
-                ],
-                judgment: "The Miller Plateau teaches us that the transition is the most dangerous part. Switching from 'Student' to 'Engineer,' or 'Boy' to 'Man,' generates heat. You are in the plateau right now. Do not get stuck. Push through with high-current discipline."
-            };
-        }
-
-        // Similar functions for other dates would be defined here...
-        // For brevity, I'll include placeholders
-
-        function getJanuary4Dose() {
-            return {
-                date: "2026-01-04",
-                quote: "\"It is Sunday. A day of rest for the body, but never for the mind. Let's feed the intellect.\"",
-                sections: [
-                    {
-                        icon: "🔌",
-                        title: "Engineering",
-                        subtitle: "Topic: 3-Phase Power (Star vs. Delta)",
-                        content: [
-                            "Why do we use 3-phase power? Because it provides constant power transfer (no zero-crossing pulsations) and is 150% more efficient for the same amount of wire conductor material compared to single-phase.",
-                            "The Two Topologies: Star (Wye, Y) connects the ends of three coils to a common Neutral point. Used for Power Transmission and low-voltage distribution because it offers two voltages (Phase and Line). Delta ($\\Delta$) connects the end of one coil to the start of the next. No Neutral. Used for high-power motors and transmission.",
-                            "Star Math: $V_{Line} = \\sqrt{3} \\times V_{Phase}$ and $I_{Line} = I_{Phase}$. Delta Math: $V_{Line} = V_{Phase}$ and $I_{Line} = \\sqrt{3} \\times I_{Phase}$."
-                        ],
-                        math: "$$P = \\sqrt{3} \\cdot V_L \\cdot I_L \\cdot \\cos\\theta$$"
-                    }
-                ],
-                vocabulary: [
-                    {term: "Ameliorate", type: "Verb", definition: "To make (something bad or unsatisfactory) better.", example: "The new induction heating coil design will ameliorate the efficiency losses we saw in the prototype."},
-                    {term: "Pernicious", type: "Adj", definition: "Having a harmful effect, especially in a gradual or subtle way.", example: "Inflation is a pernicious tax; it slowly eats your wealth without you ever seeing a bill."},
-                    {term: "Epistemology", type: "Noun", definition: "The theory of knowledge (How do we know what we know?).", example: "In law, the epistemology of evidence is crucial; we must know how the facts were derived."}
-                ],
-                judgment: "Did you rest today? Even God rested on the 7th day. Are you stronger than Him? You cannot run a motor in Star connection when it needs Delta—it will underperform. You cannot run a human in Sympathetic mode 24/7—it will burn out."
-            };
-        }
-
-        function getJanuary3Dose() {
-            return {
-                date: "2026-01-03",
-                quote: "\"Saturday is for strategy. While they sleep, we plan.\"",
-                sections: [],
-                vocabulary: [],
-                judgment: "The Skin Effect warns us: If you operate at too high a frequency (too busy, too fast), you lose depth. The core becomes empty. Slow down the frequency to utilize the full cross-section of your soul."
-            };
-        }
-
-        function getJanuary2Dose() {
-            return {
-                date: "2026-01-02",
-                quote: "\"Friday is not for parties. It is for finishing what you started.\"",
-                sections: [],
-                vocabulary: [],
-                judgment: "Just as $\\vec{J} = \\sigma \\vec{E}$ requires a field to drive current, you need a Vision (Field) to drive your daily Action (Current). High conductivity (skill) without a field (vision) results in zero movement."
-            };
-        }
-
-        function getJanuary1Dose() {
-            return {
-                date: "2026-01-01",
-                quote: "\"Day One. The foundation determines the height of the skyscraper.\"",
-                sections: [],
-                vocabulary: [],
-                judgment: "Entropy is your enemy. As we start this year, remember: If you do nothing, you do not stay the same; you get worse. You must input energy to build the future."
-            };
-        }
-
-        // ====== INITIALIZATION ======
-        // The system initializes when the user authenticates
+        // Enter key to login
+        document.getElementById('password').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') login();
+        });
     </script>
 </body>
-    </html>
+</html>
