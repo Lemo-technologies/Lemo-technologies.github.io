@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Intellect Dose | Boipelo Maakwe</title>
+    <title>Daily Intellect Dose</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Merriweather:ital,wght@0,300;0,700;1,300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     
     <script>
       window.MathJax = {
@@ -16,236 +16,240 @@
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <style>
-        /* COLOR PALETTES (CSS VARIABLES) */
+        /* === BASE VARIABLES === */
         :root {
-            /* Default Dark Mode */
-            --bg-color: #0f1115;
-            --card-bg: #1a1d23;
-            --dashboard-bg: #1e2229;
-            --text-primary: #e0e0e0;
-            --text-secondary: #b0b0b0;
-            --border-color: #333;
-            --accent-gold: #ffc107;
-            --accent-blue: #64ffda;
-            --accent-red: #ff5252;
-            --accent-purple: #b388ff;
-            --accent-green: #69f0ae;
-            --shadow: 0 10px 30px rgba(0,0,0,0.3);
-            --font-main: 'Inter', sans-serif;
-            --font-serif: 'Merriweather', serif;
+            --transition-speed: 0.4s;
         }
 
-        /* Light Mode Override */
-        [data-theme="light"] {
-            --bg-color: #f0f2f5;
-            --card-bg: #ffffff;
-            --dashboard-bg: #e4e6eb;
-            --text-primary: #1a1d23;
-            --text-secondary: #4b4b4b;
-            --border-color: #ccc;
-            --accent-gold: #d32f2f;
-            --accent-blue: #00796b;
-            --accent-red: #d32f2f;
-            --accent-purple: #6a1b9a;
-            --accent-green: #2e7d32;
-            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+        /* === PERSONA 1: BOIPELO (Engineering / Masculine / Tech) === */
+        [data-persona="boipelo"] {
+            --bg-color: #0b0c10;           /* Deep Industrial Black */
+            --card-bg: #1f2833;            /* Gunmetal Grey */
+            --text-primary: #66fcf1;       /* Neon Cyan */
+            --text-body: #c5c6c7;          /* Soft Grey */
+            --accent-main: #45a29e;        /* Muted Teal */
+            --accent-red: #ff5252;         /* Alert Red */
+            --accent-gold: #ffd700;        /* Industrial Gold */
+            --border-radius: 4px;          /* Sharp corners */
+            --font-head: 'Inter', sans-serif;
+            --font-body: 'JetBrains Mono', monospace;
+            --border-style: 1px solid #45a29e;
+            --shadow: 0 0 15px rgba(102, 252, 241, 0.1);
+            --btn-bg: #45a29e;
+            --btn-text: #0b0c10;
         }
 
+        /* === PERSONA 2: MUSA (Elegant / Feminine / Journal) === */
+        [data-persona="musa"] {
+            --bg-color: #1a1518;           /* Warm Espresso Dark */
+            --card-bg: #262024;            /* Soft Plum/Brown */
+            --text-primary: #ffd1dc;       /* Pastel Rose */
+            --text-body: #e6e6e6;          /* White-ish */
+            --accent-main: #d4af37;        /* Elegant Gold */
+            --accent-red: #ff8a80;         /* Soft Red */
+            --accent-gold: #d4af37;        /* Gold */
+            --border-radius: 20px;         /* Soft corners */
+            --font-head: 'Playfair Display', serif;
+            --font-body: 'Inter', sans-serif;
+            --border-style: 1px solid rgba(212, 175, 55, 0.3);
+            --shadow: 0 10px 40px rgba(0,0,0,0.4);
+            --btn-bg: #d4af37;
+            --btn-text: #1a1518;
+        }
+
+        /* === GLOBAL STYLES === */
         body {
             background-color: var(--bg-color);
-            color: var(--text-primary);
-            font-family: var(--font-main);
+            color: var(--text-body);
+            font-family: var(--font-body);
             margin: 0; padding: 20px;
-            text-align: center;
-            transition: background-color 0.3s, color 0.3s;
+            transition: all var(--transition-speed) ease;
             line-height: 1.7;
         }
 
-        .container { max-width: 800px; margin: 0 auto; text-align: left; }
+        h1, h2, h3 { 
+            font-family: var(--font-head); 
+            color: var(--text-primary);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
 
-        /* DASHBOARD CONTROLS */
+        /* WELCOME SCREEN */
+        #welcome-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 9999;
+            display: flex; flex-direction: column; 
+            justify-content: center; align-items: center;
+            transition: opacity 0.5s;
+        }
+        
+        .persona-btn {
+            width: 200px; padding: 20px; margin: 15px;
+            font-size: 1.2rem; cursor: pointer;
+            border: 2px solid #333; background: #111; color: #fff;
+            border-radius: 12px; transition: 0.3s;
+        }
+        .persona-btn:hover { transform: scale(1.05); border-color: #fff; }
+
+        /* DASHBOARD & CARDS */
         .dashboard {
-            background: var(--dashboard-bg);
+            background: var(--card-bg);
             padding: 30px;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 40px;
+            border-radius: var(--border-radius);
+            border: var(--border-style);
+            margin: 0 auto 40px auto;
+            max-width: 800px;
             text-align: center;
             box-shadow: var(--shadow);
-            transition: background 0.3s;
         }
 
-        .btn-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
         
-        button {
-            background: var(--accent-blue);
-            color: #fff;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: transform 0.2s;
-        }
-        
-        button:active { transform: scale(0.95); }
-        button.secondary { background: var(--card-bg); color: var(--text-primary); border: 1px solid var(--border-color); }
-
-        .theme-toggle {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            margin-bottom: 15px;
-            font-size: 0.9rem;
-            padding: 8px 16px;
-        }
-
-        .confirm-btn {
-            background: #25D366; /* WhatsApp Green */
-            color: white;
-            width: 100%;
-            margin-top: 40px;
-            padding: 15px;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-        }
-
-        input[type="date"] {
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            background: var(--card-bg);
-            color: var(--text-primary);
-            font-family: var(--font-main);
-            font-size: 1rem;
-        }
-
-        /* HIDDEN CONTENT LOGIC */
-        .daily-dose { display: none; animation: fadeIn 0.5s; }
-        .daily-dose.active { display: block; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* CONTENT ELEMENTS */
         .card { 
             background-color: var(--card-bg); 
-            border-radius: 16px; 
+            border-radius: var(--border-radius); 
             padding: 30px; 
-            border: 1px solid var(--border-color); 
+            border: var(--border-style); 
             box-shadow: var(--shadow);
-            transition: background 0.3s;
             margin-bottom: 50px;
+            animation: slideUp 0.5s ease-out;
         }
-        
-        .dose-header { border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 30px; text-align: center; }
-        .date-badge { background: rgba(100, 255, 218, 0.1); color: var(--accent-blue); padding: 5px 12px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; display: inline-block; margin-bottom: 15px; }
-        
-        .section-title { color: var(--accent-gold); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-top: 40px; margin-bottom: 15px; display: flex; align-items: center; }
-        .section-title h3 { margin: 0 0 0 10px; font-size: 1.3rem; text-transform: uppercase; }
-        
-        /* Specific Colors for Sections */
-        .eng h3 { color: var(--accent-blue); }
-        .law h3 { color: var(--accent-red); }
-        .med h3 { color: var(--accent-purple); }
-        .fin h3 { color: var(--accent-green); }
-        
-        p { margin-bottom: 18px; }
-        strong { font-weight: 700; color: var(--text-primary); }
+        @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
 
-        .math-block { 
-            background: var(--bg-color); 
-            padding: 20px; 
-            border-radius: 8px; 
-            text-align: center; 
-            overflow-x: auto; /* IMPORTANT: Allows scrolling if math is too wide */
-            margin: 20px 0; 
-            border-left: 3px solid var(--accent-blue); 
-            color: var(--text-primary);
+        .date-badge {
+            background: var(--text-primary);
+            color: var(--bg-color);
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
         }
+
+        /* CONTENT ELEMENTS */
+        .section-title {
+            color: var(--accent-main);
+            border-bottom: 1px solid var(--accent-main);
+            padding-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            display: flex; align-items: center;
+        }
+        .section-title h3 { margin: 0 0 0 10px; font-size: 1.3rem; }
         
         .content-img { 
-            max-width: 100%; 
-            height: auto; 
-            display: block; 
-            margin: 20px auto; 
-            border-radius: 8px; 
-            border: 1px solid var(--border-color);
+            width: 100%; border-radius: var(--border-radius); 
+            border: var(--border-style); margin: 20px 0; 
             box-shadow: var(--shadow);
         }
         
-        .scenario-box { 
-            background: rgba(125, 125, 125, 0.05); 
-            padding: 20px; 
-            border-radius: 8px; 
-            border-left: 3px solid #777; 
-            margin-top: 15px;
-            overflow-x: auto; /* IMPORTANT: Prevents overlapping on small screens */
+        /* SCROLL SAFETY FOR MATH */
+        .math-block {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            overflow-x: auto; /* CRITICAL: Enables scrolling */
+            border-left: 3px solid var(--text-primary);
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            margin: 20px 0;
+            white-space: nowrap; /* Keeps equations on one line inside scroll */
         }
 
-        .vocab-item {
-            background: rgba(255, 193, 7, 0.05);
+        .scenario-box {
+            background: rgba(255,255,255,0.03);
             padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 15px;
+            border-radius: var(--border-radius);
+            border-left: 3px solid var(--accent-main);
+            margin-top: 20px;
+        }
+        
+        .vocab-item {
+            background: rgba(255,255,255,0.03);
+            padding: 15px;
+            border-radius: var(--border-radius);
             border-left: 3px solid var(--accent-gold);
+            margin-bottom: 15px;
         }
 
         .judgment-block {
             border: 2px solid var(--accent-red);
-            background: linear-gradient(180deg, rgba(255, 82, 82, 0.05) 0%, rgba(15, 17, 21, 0) 100%);
+            background: linear-gradient(180deg, rgba(255, 0, 0, 0.05) 0%, rgba(0,0,0,0) 100%);
             text-align: center;
-            padding: 40px;
+            padding: 30px;
             margin-top: 50px;
-            border-radius: 10px;
+            border-radius: var(--border-radius);
         }
+
+        .confirm-btn {
+            background: var(--btn-bg);
+            color: var(--btn-text);
+            width: 100%; padding: 15px; margin-top: 30px;
+            font-weight: bold; border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer; font-size: 1rem;
+        }
+
+        /* CONTROLS */
+        input[type="date"] {
+            padding: 10px; border-radius: 8px; border: 1px solid #555;
+            background: var(--bg-color); color: var(--text-body);
+        }
+        .nav-btn {
+            background: transparent; border: 1px solid var(--text-primary);
+            color: var(--text-primary); padding: 10px 20px;
+            border-radius: var(--border-radius); margin: 5px; cursor: pointer;
+        }
+        .nav-btn:hover { background: var(--text-primary); color: var(--bg-color); }
         
-        .error-msg { color: var(--accent-red); font-weight: bold; margin-top: 20px; display: none; }
-        footer { margin-top: 50px; color: var(--text-secondary); font-size: 0.8rem; text-align: center; }
+        .daily-dose { display: none; }
+        .daily-dose.active { display: block; }
+        .error-msg { color: #ff5252; display: none; margin-top: 15px; }
+
     </style>
 </head>
 <body>
 
-    <header>
-        <h1 style="margin-bottom: 5px;">For my Proverbs 31</h1>
-        <div style="color: var(--text-secondary); margin-bottom: 30px;">Engineering • Law • Medical • Finance • Spirituality</div>
+    <div id="welcome-overlay">
+        <h2 style="color:white; margin-bottom:40px;">Who is accessing the terminal?</h2>
+        <div style="display:flex; flex-wrap:wrap; justify-content:center;">
+            <button class="persona-btn" onclick="selectPersona('boipelo')" style="border-color:#64ffda;">
+                👨‍💻 Director Boipelo
+            </button>
+            <button class="persona-btn" onclick="selectPersona('musa')" style="border-color:#d4af37;">
+                👑 Queen Musa
+            </button>
+        </div>
+    </div>
+
+    <header style="text-align: center; margin-bottom: 40px;">
+        <h1 id="greeting">Proverbs 31 Download</h1>
+        <div style="opacity: 0.7;">Engineering • Law • Medical • Finance • Spirituality</div>
+        <button onclick="resetPersona()" style="background:transparent; border:none; color:#777; font-size:0.8rem; margin-top:10px; cursor:pointer; border-bottom:1px solid #777;">(Switch User)</button>
     </header>
 
     <div class="dashboard">
-        <button class="theme-toggle" onclick="toggleTheme()">Contrast Mode: 🌗</button>
-
-        <h3 style="margin-top: 10px; color: var(--text-primary);">Select Date</h3>
-        
-        <div class="btn-group">
-            <button onclick="loadDate('today')">Read Today</button>
-            <button class="secondary" onclick="loadDate('yesterday')">Read Yesterday</button>
+        <h3>Select Date</h3>
+        <div>
+            <button class="nav-btn" onclick="loadDate('today')">Today</button>
+            <button class="nav-btn" onclick="loadDate('yesterday')">Yesterday</button>
         </div>
-
-        <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
-            <span style="color: var(--text-secondary);">Or pick date:</span>
+        <div style="margin-top: 15px;">
             <input type="date" id="datePicker" onchange="loadDate(this.value)">
         </div>
-
-        <div id="errorMessage" class="error-msg">❌ No Intellect Dose found for this date.</div>
+        <div id="errorMessage" class="error-msg">No Intellect Dose found for this date.</div>
     </div>
 
     <div class="container">
 
         <div id="2026-01-05" class="daily-dose">
             <article class="card">
-                <div class="dose-header">
-                    <span class="date-badge">January 5, 2026 (Monday)</span>
-                    <div style="font-size: 1.1rem; font-style: italic; color: var(--text-secondary);">"Monday is the day of execution. Theory ends; practice begins."</div>
-                </div>
+                <span class="date-badge">January 5, 2026 (Monday)</span>
+                <p style="font-style:italic; opacity:0.8;">"Monday is the day of execution. Theory ends; practice begins."</p>
 
-                <div class="section-title eng"><span style="font-size:1.5rem">⚡</span><h3>Engineering</h3></div>
+                <div class="section-title"><span style="font-size:1.5rem">⚡</span><h3>Engineering</h3></div>
                 <p><strong>Topic:</strong> MOSFET Switching & The Miller Plateau (Power Electronics).</p>
                 <p>You are building an induction heater. You think your MOSFET switches "instantly" from OFF to ON. <strong>You are wrong.</strong> There is a hidden delay that causes heat and explosions. It is called the <strong>Miller Plateau</strong>.</p>
                 
@@ -257,17 +261,17 @@
 
                 <p><strong>The Danger Zone:</strong><br>
                 During the plateau, the MOSFET is acting like a resistor (Linear Region). It is carrying high current AND high voltage simultaneously. This is the worst possible state.</p>
-                <p><strong>The Math:</strong><br>
-                $$P_{loss} = V_{ds} \times I_d$$</p>
+                <p><strong>The Math:</strong></p>
+                <div class="math-block">$$P_{loss} = V_{ds} \times I_d$$</div>
                 <p>If your supply is $300V$ and the current is $20A$, your power loss is <strong>6,000 Watts</strong> during that tiny plateau. This generates massive heat spikes. This is why your MOSFETs get hot even if they are "efficient."</p>
 
-                <div class="scenario-box" style="border-color: var(--accent-blue);">
+                <div class="scenario-box">
                     <strong>Lab Test & Fix:</strong><br>
                     Hook an oscilloscope to the Gate pin of your ZVS driver. You will see the voltage rise, <em>stop</em> flat at around 4-5V, and then rise again. That stop is the Miller Effect.<br><br>
                     <strong>The Solution:</strong> You need a Gate Driver that can push high current (Amps, not milliAmps) to charge that parasitic capacitor quickly and shorten the plateau.
                 </div>
 
-                <div class="section-title law"><span style="font-size:1.5rem">⚖️</span><h3>Law Enforcement</h3></div>
+                <div class="section-title"><span style="font-size:1.5rem">⚖️</span><h3>Law Enforcement</h3></div>
                 <p><strong>Topic:</strong> <em>Dolus Eventualis</em> (Legal Intent in South Africa).</p>
                 <p>In South African criminal law, "Intent" ($Dolus$) isn't just "I wanted to kill him." There is a darker, more subtle form called <em>Dolus Eventualis</em>.</p>
                 <p><strong>The Definition:</strong><br>
@@ -277,13 +281,13 @@
                     <li>2. They <strong>reconciled themselves</strong> to that possibility (i.e., they proceeded anyway, reckless of the consequences).</li>
                 </ul>
 
-                <div class="scenario-box" style="border-color: var(--accent-red);">
+                <div class="scenario-box">
                     <strong>Scenario for Musa:</strong><br>
                     A suspect shoots through a closed door. He argues, "I didn't know who was behind it, so I didn't <em>intend</em> to kill anyone specific."<br><br>
                     <strong>The Verdict:</strong> Did he foresee that <em>someone</em> might be behind the door? Yes. Did he shoot anyway? Yes. He is guilty of Murder via <em>Dolus Eventualis</em>, even if he didn't target a specific person. (Reference: <em>S v Pistorius</em>).
                 </div>
 
-                <div class="section-title med"><span style="font-size:1.5rem">🩸</span><h3>Medical Sciences</h3></div>
+                <div class="section-title"><span style="font-size:1.5rem">🩸</span><h3>Medical Sciences</h3></div>
                 <p><strong>Topic:</strong> The Renin-Angiotensin-Aldosterone System (RAAS).</p>
                 <p>This is the master control system for your blood pressure. It is a biological chain reaction.</p>
                 
@@ -296,9 +300,11 @@
                     <li><strong>Step 3 (Lungs):</strong> ACE (Angiotensin-Converting Enzyme) turns it into <strong>Angiotensin II</strong>.</li>
                     <li><strong>Step 4 (The Effect):</strong> Angiotensin II is a potent vasoconstrictor (tightens veins) and tells the adrenal glands to release <strong>Aldosterone</strong> (which retains salt and water).</li>
                 </ul>
-                <p style="background: rgba(179, 136, 255, 0.1); padding: 15px; border-radius: 8px;"><strong>Prodigy Note:</strong> Blood pressure medication often works by blocking Step 3 (ACE Inhibitors) or Step 4 (ARBs). If you block the enzyme, the veins relax.</p>
+                <div class="scenario-box">
+                    <strong>Prodigy Note:</strong> Blood pressure medication often works by blocking Step 3 (ACE Inhibitors) or Step 4 (ARBs). If you block the enzyme, the veins relax.
+                </div>
 
-                <div class="section-title fin"><span style="font-size:1.5rem">📊</span><h3>Finance</h3></div>
+                <div class="section-title"><span style="font-size:1.5rem">📊</span><h3>Finance</h3></div>
                 <p><strong>Topic:</strong> The Sharpe Ratio (Risk-Adjusted Return).</p>
                 <p>Making money is easy. Keeping it while making more is hard. The Sharpe Ratio tells you if an investment is "smart" or just "lucky/risky."</p>
                 <div class="math-block">$$\text{Sharpe Ratio} = \frac{R_p - R_f}{\sigma_p}$$</div>
@@ -309,7 +315,7 @@
                 </ul>
                 <p><strong>Lesson:</strong> Don't just look at profit percentage. Look at the smoothness of the curve (Volatility). Banks prefer smooth, low-risk profits over lucky gambling.</p>
 
-                <div class="section-title spi"><span style="font-size:1.5rem">🔥</span><h3>Spirituality</h3></div>
+                <div class="section-title"><span style="font-size:1.5rem">🔥</span><h3>Spirituality</h3></div>
                 <p><strong>Topic:</strong> Sanctification (Positional vs. Progressive).</p>
                 <p>We discussed "Justification" (Legal standing). Now we discuss "Sanctification" (Becoming holy).</p>
                 <ul>
@@ -322,49 +328,45 @@
                 <br><strong>Progressive:</strong> He still speaks and eats like a street urchin. He must <em>learn</em> to act like a Prince.</p>
                 <p><strong>Lesson:</strong> Do not despair when you sin. It doesn't mean you aren't a Prince; it means you are still in training.</p>
 
-                <div class="section-title" style="color: #ffab40;"><span style="font-size:1.5rem">📚</span><h3>Vocabulary</h3></div>
+                <div class="section-title"><span style="font-size:1.5rem">📚</span><h3>Vocabulary</h3></div>
                 
                 <div class="vocab-item">
-                    <div style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Perspicacious (Adj)</div>
+                    <div style="font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Perspicacious (Adj)</div>
                     <p>Having a ready insight into and understanding of things; mentally sharp.</p>
                     <p><em>Example: "Musa's <strong>perspicacious</strong> analysis of the crime scene revealed details the other officers missed."</em></p>
                 </div>
 
                 <div class="vocab-item">
-                    <div style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Sycophant (Noun)</div>
+                    <div style="font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Sycophant (Noun)</div>
                     <p>A person who acts obsequiously toward someone important in order to gain advantage.</p>
                     <p><em>Example: "A leader surrounds himself with critics, but a tyrant surrounds himself with <strong>sycophants</strong>."</em></p>
                 </div>
 
                 <div class="vocab-item">
-                    <div style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Inchoate (Adj)</div>
+                    <div style="font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Inchoate (Adj)</div>
                     <p>Just begun and so not fully formed or developed; rudimentary.</p>
                     <p><em>Example: "My plans for the new induction heater are still <strong>inchoate</strong>; I have the concept, but not the schematic."</em></p>
                 </div>
 
                 <div class="judgment-block">
                     <span style="display:block; font-size: 2rem; margin-bottom: 10px;">🔨</span>
-                    <h3 style="color: var(--accent-red); margin-top:0;">MY JUDGMENT</h3>
+                    <h3 style="margin-top:0;">MY JUDGMENT</h3>
                     <p>The <strong>Miller Plateau</strong> teaches us that the transition is the most dangerous part. Switching from "Student" to "Engineer," or "Boy" to "Man," generates heat.</p>
                     <p>You are in the plateau right now. The voltage is high, the current is high. Do not get stuck there. Push through the transition with high-current discipline.</p>
                     <p>If you linger in the middle, you will burn.</p>
-                    <div style="font-family: var(--font-serif); font-style: italic; color: var(--text-secondary); margin-top: 20px;">"I would that you were cold or hot. So then because you are lukewarm... I will spew you out of my mouth." — Revelation 3:15-16</div>
+                    <div style="font-family: 'Playfair Display', serif; font-style: italic; opacity: 0.8; margin-top: 20px;">"I would that you were cold or hot. So then because you are lukewarm... I will spew you out of my mouth." — Revelation 3:15-16</div>
                 </div>
 
-                <button class="confirm-btn" onclick="confirmRead('January 5')">
-                    ✅ I Have Read This Dose
-                </button>
+                <button class="confirm-btn" onclick="confirmRead('January 5')">✅ I Have Read This Dose</button>
             </article>
         </div>
-        
+
         <div id="2026-01-04" class="daily-dose">
             <article class="card">
-                <div class="dose-header">
-                    <span class="date-badge">January 4, 2026 (Sunday)</span>
-                    <div style="font-size: 1.1rem; font-style: italic; color: var(--text-secondary);">"It is Sunday. A day of rest for the body, but never for the mind. Let’s feed the intellect."</div>
-                </div>
+                <span class="date-badge">January 4, 2026 (Sunday)</span>
+                <p style="font-style:italic; opacity:0.8;">"It is Sunday. A day of rest for the body, but never for the mind. Let’s feed the intellect."</p>
 
-                <div class="section-title eng"><span style="font-size:1.5rem">🔌</span><h3>Engineering</h3></div>
+                <div class="section-title"><span style="font-size:1.5rem">🔌</span><h3>Engineering</h3></div>
                 <p><strong>Topic:</strong> 3-Phase Power (Star vs. Delta) - Power Distribution & Motor Connections.</p>
                 <p>Why do we use 3-phase power instead of single-phase? Because it provides constant power (no zero-crossing pulsations) and is 150% more efficient for the same amount of wire.</p>
                 <img src="https://i.ibb.co/mrMncQP3/IMG-20260104-WA0029.jpg" alt="Star Delta" class="content-img">
@@ -390,7 +392,7 @@
                 <p><strong>Power Formula (For both):</strong></p>
                 <div class="math-block">$$P = \sqrt{3} \cdot V_L \cdot I_L \cdot \cos\theta$$</div>
                 
-                <div class="scenario-box" style="border-color: var(--accent-blue);">
+                <div class="scenario-box">
                     <strong>Calculated Example:</strong><br>
                     You have a 3-Phase Motor connected in <strong>Delta</strong>.<br>
                     Given: $V_L = 400V$, $I_L = 10A$, $PF = 0.85$.<br><br>
@@ -400,7 +402,7 @@
                     <strong>Implication:</strong> If you accidentally connect a motor designed for "Star" into "Delta," the phase voltage increases by $\sqrt{3}$ (1.732x). The current will spike massively, and you will burn the windings instantly. Always check the nameplate.
                 </div>
 
-                <div class="section-title law"><span style="font-size:1.5rem">🇿🇦</span><h3>Law Enforcement</h3></div>
+                <div class="section-title"><span style="font-size:1.5rem">🇿🇦</span><h3>Law Enforcement</h3></div>
                 <p><strong>Topic:</strong> The Exclusionary Rule (Section 35(5)) - Constitutional Admissibility in South Africa.</p>
                 <p>We discussed the "Fruit of the Poisonous Tree" (a US concept). In South Africa, this is codified in <strong>Section 35(5) of the Constitution</strong>.</p>
                 <p><strong>The Law:</strong><br>
@@ -409,13 +411,13 @@
                     <li>Render the trial unfair, OR</li>
                     <li>Be detrimental to the administration of justice.</li>
                 </ul>
-                <div class="scenario-box" style="border-color: var(--accent-red);">
+                <div class="scenario-box">
                     <strong>Scenario for Musa:</strong><br>
                     Musa arrests a suspect but forgets to read them their rights (Section 35(1) - right to remain silent). The suspect then confesses.<br><br>
                     <strong>The Court's Decision:</strong> Because the right to silence was violated, the confession is "tainted." The judge will likely <strong>exclude</strong> the confession under Section 35(5). The suspect might walk free, even if he is guilty, because the <em>process</em> was flawed.
                 </div>
 
-                <div class="section-title med"><span style="font-size:1.5rem">🧠</span><h3>Medical Sciences</h3></div>
+                <div class="section-title"><span style="font-size:1.5rem">🧠</span><h3>Medical Sciences</h3></div>
                 <p><strong>Topic:</strong> The Autonomic Nervous System (ANS) - Fight or Flight vs. Rest and Digest.</p>
                 <p>Your body has an automatic pilot called the ANS. It has two opposing modes.</p>
                 <img src="https://i.ibb.co/DfXmTLLk/IMG-20260104-WA0028.jpg" alt="ANS" class="content-img">
@@ -425,9 +427,11 @@
                     <li><strong>2. Parasympathetic Nervous System (The Brake):</strong><br>
                     Trigger: Safety/Relaxation. Effect: Heart rate slows, digestion resumes, healing occurs. The Vagus Nerve is key here.</li>
                 </ul>
-                <p style="background: rgba(179, 136, 255, 0.1); padding: 15px; border-radius: 8px;"><strong>Prodigy Note:</strong> You cannot learn or digest food in a Sympathetic state. If you are stressed, your brain physically routes blood <em>away</em> from the Prefrontal Cortex (logic) to the Amygdala (survival). Calm down to get smart.</p>
+                <div class="scenario-box">
+                    <strong>Prodigy Note:</strong> You cannot learn or digest food in a Sympathetic state. If you are stressed, your brain physically routes blood <em>away</em> from the Prefrontal Cortex (logic) to the Amygdala (survival). Calm down to get smart.
+                </div>
 
-                <div class="section-title fin"><span style="font-size:1.5rem">📉</span><h3>Finance</h3></div>
+                <div class="section-title"><span style="font-size:1.5rem">📉</span><h3>Finance</h3></div>
                 <p><strong>Topic:</strong> The Rule of 72 - Mental Math for Compound Interest.</p>
                 <p>You don't need a calculator to know when you'll be rich. You need the <strong>Rule of 72</strong>.</p>
                 <div class="math-block">$$\text{Years to Double} = \frac{72}{\text{Interest Rate}}$$</div>
@@ -438,10 +442,10 @@
                     <li><strong>Successful Trading/Business (24%):</strong> $72 / 24 = 3$ years to double.</li>
                 </ul>
 
-                <div class="section-title spi"><span style="font-size:1.5rem">✝️</span><h3>Spirituality</h3></div>
+                <div class="section-title"><span style="font-size:1.5rem">✝️</span><h3>Spirituality</h3></div>
                 <p><strong>Topic:</strong> Regeneration (Born Again) - Monergism vs. Synergism.</p>
                 <p><strong>Regeneration</strong> is the theological term for being "born again."</p>
-                <p style="font-family: var(--font-serif); font-style: italic; color: var(--text-primary); text-align: center; margin: 20px 0;">
+                <p style="font-family: 'Playfair Display', serif; font-style: italic; text-align: center; margin: 20px 0;">
                     "I will give you a new heart and put a new spirit in you; I will remove from you your heart of stone and give you a heart of flesh." <br>— Ezekiel 36:26
                 </p>
                 <p><strong>The Depth:</strong><br>
@@ -449,113 +453,107 @@
                 <p>A dead man cannot perform CPR on himself. God must restart the heart first (Regeneration), and <em>then</em> you believe (Faith).</p>
                 <p><strong>Lesson:</strong> Stop trying to fix your sins with willpower. You need a heart transplant, not a behavior modification.</p>
 
-                <div class="section-title" style="color: #ffab40;"><span style="font-size:1.5rem">📚</span><h3>Vocabulary</h3></div>
+                <div class="section-title"><span style="font-size:1.5rem">📚</span><h3>Vocabulary</h3></div>
                 
                 <div class="vocab-item">
-                    <div style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Ameliorate (Verb)</div>
+                    <div style="font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Ameliorate (Verb)</div>
                     <p>To make (something bad or unsatisfactory) better.</p>
                     <p><em>Example: "The new induction heating coil design will <strong>ameliorate</strong> the efficiency losses we saw in the prototype."</em></p>
                 </div>
 
                 <div class="vocab-item">
-                    <div style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Pernicious (Adj)</div>
+                    <div style="font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Pernicious (Adj)</div>
                     <p>Having a harmful effect, especially in a gradual or subtle way.</p>
                     <p><em>Example: "Inflation is a <strong>pernicious</strong> tax; it slowly eats your wealth without you ever seeing a bill."</em></p>
                 </div>
 
                 <div class="vocab-item">
-                    <div style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Epistemology (Noun)</div>
+                    <div style="font-weight: 800; font-size: 1.2rem; margin-bottom: 5px;">Epistemology (Noun)</div>
                     <p>The theory of knowledge, especially with regard to its methods, validity, and scope. (How do we know what we know?)</p>
                     <p><em>Example: "In law, the <strong>epistemology</strong> of evidence is crucial; we must know how the facts were derived, not just what they are."</em></p>
                 </div>
 
                 <div class="judgment-block">
                     <span style="display:block; font-size: 2rem; margin-bottom: 10px;">🔨</span>
-                    <h3 style="color: var(--accent-red); margin-top:0;">MY JUDGMENT</h3>
+                    <h3 style="margin-top:0;">MY JUDGMENT</h3>
                     <p>For you and Musa:</p>
                     <p>It is Sunday. Did you utilize the "Rest and Digest" (Parasympathetic) mode today, or were you stressing about tomorrow?</p>
                     <p>You cannot run a motor in Star connection when it needs Delta—it will underperform.<br>
                     You cannot run a human in Sympathetic mode 24/7—it will burn out.</p>
                     <p>If you did not rest today, you are not being productive; you are being inefficient. Even God rested on the 7th day. Are you stronger than Him?</p>
-                    <div style="font-family: var(--font-serif); font-style: italic; color: var(--text-secondary); margin-top: 20px;">"Be still, and know that I am God." — Psalm 46:10</div>
+                    <div style="font-family: 'Playfair Display', serif; font-style: italic; opacity: 0.8; margin-top: 20px;">"Be still, and know that I am God." — Psalm 46:10</div>
                 </div>
 
-                <button class="confirm-btn" onclick="confirmRead('January 4')">
-                    ✅ I Have Read This Dose
-                </button>
+                <button class="confirm-btn" onclick="confirmRead('January 4')">✅ I Have Read This Dose</button>
             </article>
         </div>
 
     </div>
 
-    <footer>
-        Daily Intellect Dose System | Boipelo Maakwe
-    </footer>
-
     <script>
-        // ============================================
-        // CONFIGURATION: YOUR PHONE NUMBER
-        // ============================================
-        const MY_WHATSAPP_NUMBER = "27822119454"; 
-        
-        // ============================================
-        // LOGIC START
-        // ============================================
-
-        // 1. DATE LOGIC
+        // 1. DATE SETUP
         const today = new Date();
         const yest = new Date(today);
         yest.setDate(yest.getDate() - 1);
         const formatDate = (date) => date.toISOString().split('T')[0];
-        const todayStr = formatDate(today);
-        const yestStr = formatDate(yest);
+        
+        // 2. PERSONA ENGINE
+        function selectPersona(who) {
+            const html = document.documentElement;
+            html.setAttribute('data-persona', who);
+            localStorage.setItem('userPersona', who);
+            
+            // Hide Overlay
+            document.getElementById('welcome-overlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('welcome-overlay').style.display = 'none';
+            }, 500);
 
-        function loadDate(dateType) {
+            // Custom Greeting
+            const greet = document.getElementById('greeting');
+            if(who === 'boipelo') greet.innerHTML = "Proverbs 31 Download <span style='font-size:0.4em; display:block; color:#64ffda; letter-spacing:2px; margin-top:5px;'>// SYSTEM: ONLINE</span>";
+            if(who === 'musa') greet.innerHTML = "Proverbs 31 Download <span style='font-size:0.4em; display:block; color:#d4af37; font-family:\"Playfair Display\", serif; letter-spacing:1px; margin-top:5px; font-style:italic;'>~ For Her Majesty ~</span>";
+        }
+
+        function checkPersona() {
+            const saved = localStorage.getItem('userPersona');
+            if (saved) {
+                selectPersona(saved);
+            }
+        }
+
+        function resetPersona() {
+            localStorage.removeItem('userPersona');
+            location.reload();
+        }
+
+        // 3. CONTENT LOADING
+        function loadDate(type) {
             document.querySelectorAll('.daily-dose').forEach(el => el.classList.remove('active'));
             document.getElementById('errorMessage').style.display = 'none';
-
-            let targetId = "";
-            if (dateType === 'today') {
-                targetId = todayStr;
-                document.getElementById('datePicker').value = todayStr;
-            } else if (dateType === 'yesterday') {
-                targetId = yestStr;
-                document.getElementById('datePicker').value = yestStr;
-            } else {
-                targetId = dateType;
-            }
-
-            const content = document.getElementById(targetId);
-            if (content) {
-                content.classList.add('active');
-            } else {
-                document.getElementById('errorMessage').style.display = 'block';
-            }
-        }
-
-        // 2. THEME LOGIC
-        function toggleTheme() {
-            const html = document.documentElement;
-            const current = html.getAttribute('data-theme');
-            if (current === 'light') {
-                html.setAttribute('data-theme', 'dark');
-            } else {
-                html.setAttribute('data-theme', 'light');
-            }
-        }
-
-        // 3. MUSA CONFIRM LOGIC
-        function confirmRead(dateName) {
-            const message = `Hi Boipelo, I have successfully finished reading the Daily Intellect Dose for ${dateName}.`;
-            const url = `https://wa.me/${MY_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
             
-            // Open WhatsApp
-            window.open(url, '_blank');
-        }
-        
-        // Auto-load today on start
-        loadDate('today');
-    </script>
+            let target = (type === 'today') ? formatDate(today) : 
+                         (type === 'yesterday') ? formatDate(yest) : type;
+            
+            // Update Picker
+            if(type === 'today' || type === 'yesterday') document.getElementById('datePicker').value = target;
 
+            const el = document.getElementById(target);
+            if(el) el.classList.add('active');
+            else document.getElementById('errorMessage').style.display = 'block';
+        }
+
+        // 4. WHATSAPP CONFIRM
+        function confirmRead(day) {
+            const num = "27685652594"; // YOUR NUMBER
+            const txt = `Hi Boipelo, I have finished the Intellect Dose for ${day}.`;
+            window.open(`https://wa.me/${num}?text=${encodeURIComponent(txt)}`, '_blank');
+        }
+
+        // INIT
+        checkPersona();
+        loadDate('today');
+
+    </script>
 </body>
 </html>
