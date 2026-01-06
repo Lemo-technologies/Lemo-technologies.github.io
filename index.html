@@ -128,7 +128,38 @@ img {
             border-radius: var(--border-radius); border: var(--border-style);
             box-shadow: var(--shadow); margin-bottom: 60px;
         }
-        .dashboard { max-width: 800px; margin: 0 auto 40px auto; text-align: center; }
+            /* === RESPONSIVE LAYOUT (Mobile vs PC) === */
+        .dashboard, .container {
+            width: 92%;              /* Uses 92% of the screen width on phones */
+            max-width: 800px;        /* Default limit for phones/tablets */
+            margin: 0 auto;          /* Centers everything */
+        }
+        
+        .dashboard { margin-bottom: 40px; text-align: center; }
+
+        /* PC / LAPTOP OVERRIDE (Screens wider than 1024px) */
+        @media (min-width: 1024px) {
+            .dashboard, .container {
+                max-width: 1400px;   /* Expands to fill the PC screen */
+                width: 95%;
+            }
+
+            .card {
+                padding: 60px;       /* Bigger spacing inside cards for PC */
+            }
+
+            body {
+                font-size: 1.15rem;  /* Text gets slightly larger on PC for readability */
+            }
+            
+            /* Keep reading lines from getting too long to read comfortably */
+            p, li {
+                max-width: 900px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+
         .container { max-width: 800px; margin: 0 auto; }
         .daily-dose { display: none; }
         .daily-dose.active { display: block; animation: fadeIn 0.6s; }
