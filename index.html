@@ -342,6 +342,11 @@ img {
                 <div class="vocab-item"><strong>Ineluctable (Adj):</strong> Unable to be resisted or avoided; inescapable. <em>"The ineluctable conclusion of the Second Law of Thermodynamics is that the universe will eventually end in heat death."</em></div>
                 <div class="vocab-item"><strong>Perfidious (Adj):</strong> Deceitful and untrustworthy. <em>"The market is a perfidious mistress; it seduces you with green candles before crushing you with a sudden crash."</em></div>
                 <div class="vocab-item"><strong>Inure (Verb):</strong> To accustom (someone) to something, especially something unpleasant. <em>"Years of 4 AM studying had inured the engineering student to fatigue, allowing him to work while others slept."</em></div>
+                <div class="section-title"><span style="font-size:2rem">🎵</span><h3>Sonic Frequency</h3></div>
+                
+                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/3oTuTpF1F3A7rEC6RKsMRz?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
+                <p style="margin-top: 20px; font-size: 1rem; opacity: 0.8;">"Listen to the frequency. This is not just noise; it is alignment. Let the rhythm reset your internal clock for the work ahead."</p>
 
                 <div class="judgment-block">
                     <h3 style="margin-top:0;">MY JUDGMENT</h3>
@@ -891,11 +896,19 @@ img {
             }, 30000); // 30 seconds
         }
 
-        // === SYSTEM LOGIC ===
+                // === SYSTEM LOGIC ===
         const today = new Date();
         const yest = new Date(today);
         yest.setDate(yest.getDate() - 1);
-        const formatDate = (date) => date.toISOString().split('T')[0];
+
+        // Fixed Date Function (Uses Local Time instead of UTC)
+        const formatDate = (date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+
 
         function selectPersona(who) {
             document.documentElement.setAttribute('data-persona', who);
