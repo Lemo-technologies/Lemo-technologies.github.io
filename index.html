@@ -256,12 +256,28 @@
                 <p><strong>The Danger Zone: Voltage Magnification:</strong><br>
                 This is where circuits explode. Although the *total* voltage across the L-C combination is 0V (because they are $180^\circ$ out of phase), the voltage across the <em>individual</em> components is massive.
                 The voltage across the inductor is $V_L = I \times X_L$. Since $I$ is huge, $V_L$ becomes huge. We quantify this gain using the Quality Factor ($Q$).</p>
-                <div class="math-block">$$Q = \frac{1}{R}\sqrt{\frac{L}{C}} \quad \text{and} \quad V_L = V_C = Q \times V_{source}$$</div>
+                <div class="math-block">
+                    $$Q = \frac{1}{R}\sqrt{\frac{L}{C}}$$
+                    $$V_L = V_C = Q \times V_{source}$$
+                </div>
                 
                 <div class="scenario-box"><strong>Lab Scenario & Application:</strong><br>
                 Imagine you are building a Tesla Coil or a high-Q ZVS driver. You use a 24V power supply ($V_s = 24V$). Your coil has an inductance of $200\mu H$, a capacitance of $10nF$, and a very low internal resistance of $2\Omega$.<br><br>
-                <strong>Step 1 (Calculate Q):</strong> $$Q = \frac{1}{2}\sqrt{\frac{200 \times 10^{-6}}{10 \times 10^{-9}}} = 0.5 \times \sqrt{20000} \approx 70.7$$
-                <strong>Step 2 (Calculate Voltage Stress):</strong> $$V_{Capacitor} = 70.7 \times 24V = \mathbf{1,696.8 \text{ Volts}}$$
+                <strong>Step 1 (Calculate Q):</strong>
+                <div class="math-block">
+                    $$\begin{aligned} 
+                    Q &= \frac{1}{2}\sqrt{\frac{200 \cdot 10^{-6}}{10 \cdot 10^{-9}}} \\
+                      &= 0.5 \times \sqrt{20000} \\
+                      &\approx 70.7 
+                    \end{aligned}$$
+                </div>
+                <strong>Step 2 (Calculate Voltage Stress):</strong>
+                <div class="math-block">
+                    $$\begin{aligned}
+                    V_{Cap} &= 70.7 \times 24V \\
+                            &= \mathbf{1,696.8 \text{ Volts}}
+                    \end{aligned}$$
+                </div>
                 <strong>Conclusion:</strong> If you bought a standard 600V capacitor for this 24V circuit, it will catastrophically fail (dielectric breakdown) the moment you hit resonance. This is why you need high-voltage MKP (polypropylene) capacitors arranged in series strings for induction heaters.</div>
 
                 <div class="section-title"><span style="font-size:2rem">⚖️</span><h3>Law Enforcement</h3></div>
@@ -279,7 +295,6 @@
                 <div class="section-title"><span style="font-size:2rem">🩸</span><h3>Medical Sciences</h3></div>
                 <p><strong>Topic: Neurophysiology - The Sodium-Potassium Pump & Refractory Periods.</strong></p>
                 <p>To understand the brain of a prodigy, you must understand the energy cost of thought. The Action Potential (nerve impulse) we discussed requires a reset mechanism. If the neuron cannot reset, it cannot fire again. This reset is powered by the <strong>Sodium-Potassium Pump ($Na^+/K^+$ ATPase)</strong>.</p>
-                [attachment_0](attachment)
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Scheme_sodium-potassium_pump-en.svg/640px-Scheme_sodium-potassium_pump-en.svg.png" alt="Sodium Potassium Pump Diagram" class="content-img">
                 
                 <p><strong>Active Transport Mechanism:</strong><br>
@@ -296,7 +311,7 @@
                 
                 <p><strong>The Full Kelly Formula:</strong><br>
                 The Kelly Criterion calculates the exact bet size ($f^*$) that maximizes the logarithm of wealth over infinite trials.
-                $$f^* = \frac{p(b+1) - 1}{b}$$
+                <div class="math-block">$$f^* = \frac{p(b+1) - 1}{b}$$</div>
                 Where $p$ is your win probability (e.g., 0.55), and $b$ is your payout ratio (e.g., 2.0 for a 2:1 Risk/Reward).</p>
                 
                 <div class="scenario-box"><strong>The "Half-Kelly" Solution:</strong><br>
@@ -826,4 +841,4 @@
 
     </script>
 </body>
-            </html>
+    </html>
