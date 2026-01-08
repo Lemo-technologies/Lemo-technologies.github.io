@@ -1323,6 +1323,109 @@ img {
   </script>
 </div>
 
+<style>
+    #news-ticker-container {
+        position: fixed;
+        /* Adjust this value if it overlaps your market widget! 
+           40px to 60px is usually safe for trading widgets. */
+        bottom: 40px; 
+        left: 0;
+        width: 100%;
+        height: 35px; /* Slim profile */
+        background: rgba(40, 0, 10, 0.95); /* Deep Maroon "Rose" Theme */
+        border-top: 1px solid #d4af37; /* Gold Border */
+        border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        z-index: 9998; /* Just below the top layer */
+        display: flex;
+        align-items: center;
+        font-family: 'JetBrains Mono', monospace;
+        backdrop-filter: blur(5px);
+    }
+
+    .news-label {
+        background: #d4af37;
+        color: #1a0b10;
+        padding: 0 10px;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        font-weight: bold;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        z-index: 10;
+        box-shadow: 5px 0 10px rgba(0,0,0,0.5);
+    }
+
+    .news-scroller {
+        flex: 1;
+        overflow: hidden;
+        white-space: nowrap;
+        position: relative;
+    }
+
+    .news-track {
+        display: inline-block;
+        white-space: nowrap;
+        padding-left: 100%;
+        animation: scroll-left 40s linear infinite;
+        color: #f3e5f5;
+        font-size: 0.8rem;
+        line-height: 35px; /* Vertically center text */
+    }
+
+    .news-headline {
+        display: inline-block;
+        margin-right: 40px;
+    }
+
+    .news-headline::before {
+        content: "🌹"; /* Theme Rose Bullet */
+        margin-right: 8px;
+        font-size: 0.9em;
+    }
+
+    @keyframes scroll-left {
+        0% { transform: translate3d(0, 0, 0); }
+        100% { transform: translate3d(-100%, 0, 0); }
+    }
+</style>
+
+<div id="news-ticker-container">
+    <div class="news-label">SA INTEL</div>
+    <div class="news-scroller">
+        <div class="news-track" id="sa-news-feed">
+            Initializing South African Data Stream...
+        </div>
+    </div>
+</div>
+
+<script>
+    // Fetch News24 South Africa RSS Feed
+    const feedUrl = 'http://feeds.news24.com/articles/news24/SouthAfrica/rss';
+    // Use rss2json proxy to convert XML to JSON for the browser
+    const converter = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`;
+
+    fetch(converter)
+        .then(res => res.json())
+        .then(data => {
+            const track = document.getElementById('sa-news-feed');
+            let headlines = "";
+            
+            // Get top 10 stories
+            data.items.slice(0, 10).forEach(item => {
+                // Clean up title text
+                let title = item.title.replace(/&amp;/g, '&');
+                headlines += `<span class="news-headline">${title}</span>`;
+            });
+            
+            track.innerHTML = headlines;
+        })
+        .catch(err => {
+            console.log("News Feed Error:", err);
+            document.getElementById('sa-news-feed').innerHTML = "<span class='news-headline'>System Alert: News Feed Offline. Reconnecting...</span>";
+        });
+</script>
 
 </body>
     </html>
