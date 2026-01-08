@@ -1077,6 +1077,56 @@ img {
         checkPersona();
         loadDate('today');
 
+        <div id="flower-container"></div>
+
+    <script>
+        function createFlowers() {
+            // Only run if Musa is active
+            if(document.documentElement.getAttribute('data-persona') !== 'musa') return;
+
+            const container = document.getElementById('flower-container');
+            const flowerTypes = ['🌹', '🌸', '🌺', '🌷', '✨']; // The "Expensive" Flora
+            
+            // Create a flower every 800ms
+            setInterval(() => {
+                // Double check persona inside interval to stop if switched
+                if(document.documentElement.getAttribute('data-persona') !== 'musa') {
+                    container.innerHTML = ''; // Clear flowers if switched
+                    return;
+                }
+
+                const flower = document.createElement('div');
+                flower.classList.add('flower');
+                
+                // Randomize Flower
+                flower.innerText = flowerTypes[Math.floor(Math.random() * flowerTypes.length)];
+                
+                // Randomize Position & Size
+                flower.style.left = Math.random() * 100 + 'vw';
+                flower.style.fontSize = (Math.random() * 20 + 15) + 'px'; // 15px to 35px
+                
+                // Randomize Fall Speed (5s to 12s for slow luxury feel)
+                flower.style.animationDuration = (Math.random() * 7 + 5) + 's';
+                
+                container.appendChild(flower);
+
+                // Remove flower after animation to save memory
+                setTimeout(() => {
+                    flower.remove();
+                }, 12000); 
+
+            }, 800);
+        }
+
+        // Hook into your existing persona function
+        // Add "createFlowers();" inside your existing selectPersona function 
+        // specifically under the "if(who === 'musa')" block.
+        
+        // OR simply ensure this runs on load if Musa is saved:
+        if(localStorage.getItem('userPersona') === 'musa') {
+            createFlowers();
+        }
     </script>
+<script>
 </body>
     </html>
