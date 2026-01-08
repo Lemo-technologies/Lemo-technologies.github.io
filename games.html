@@ -141,10 +141,17 @@
         const ctx = canvas.getContext("2d");
         const scoreElement = document.getElementById("score-board");
 
+        // === MEMORY INITIALIZATION ===
+        // Load saved score or default to 0
+        let highScore = localStorage.getItem('snakeHighScore') || 0;
+
         // Game Settings
         const box = 25; // Size of one square
         let score = 0;
         let gameSpeed = 150;
+
+        // Show initial scores
+        scoreElement.innerHTML = "SCORE: " + score + " | BEST: " + highScore;
 
         // Load Snake & Food
         let snake = [];
@@ -175,34 +182,35 @@
             else if (dir == "RIGHT" && d != "LEFT") d = "RIGHT";
             else if (dir == "DOWN" && d != "UP") d = "DOWN";
         }
-// === ADD SWIPE CONTROLS ===
-let touchStartX = 0;
-let touchStartY = 0;
 
-document.addEventListener('touchstart', function(e) {
-    touchStartX = e.changedTouches[0].screenX;
-    touchStartY = e.changedTouches[0].screenY;
-}, false);
+        // === ADD SWIPE CONTROLS ===
+        let touchStartX = 0;
+        let touchStartY = 0;
 
-document.addEventListener('touchend', function(e) {
-    let touchEndX = e.changedTouches[0].screenX;
-    let touchEndY = e.changedTouches[0].screenY;
-    handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
-}, false);
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, false);
 
-function handleSwipe(startX, startY, endX, endY) {
-    let xDiff = endX - startX;
-    let yDiff = endY - startY;
+        document.addEventListener('touchend', function(e) {
+            let touchEndX = e.changedTouches[0].screenX;
+            let touchEndY = e.changedTouches[0].screenY;
+            handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
+        }, false);
 
-    // Detect if swipe was mostly horizontal or vertical
-    if (Math.abs(xDiff) > Math.abs(yDiff)) {
-        if (xDiff > 0 && d != "LEFT") d = "RIGHT";
-        else if (xDiff < 0 && d != "RIGHT") d = "LEFT";
-    } else {
-        if (yDiff > 0 && d != "UP") d = "DOWN";
-        else if (yDiff < 0 && d != "DOWN") d = "UP";
-    }
-}
+        function handleSwipe(startX, startY, endX, endY) {
+            let xDiff = endX - startX;
+            let yDiff = endY - startY;
+
+            // Detect if swipe was mostly horizontal or vertical
+            if (Math.abs(xDiff) > Math.abs(yDiff)) {
+                if (xDiff > 0 && d != "LEFT") d = "RIGHT";
+                else if (xDiff < 0 && d != "RIGHT") d = "LEFT";
+            } else {
+                if (yDiff > 0 && d != "UP") d = "DOWN";
+                else if (yDiff < 0 && d != "DOWN") d = "UP";
+            }
+        }
 
         // Collision Check
         function collision(head, array) {
@@ -232,7 +240,7 @@ function handleSwipe(startX, startY, endX, endY) {
                 ctx.strokeRect(snake[i].x, snake[i].y, box, box);
             }
 
-                        // Draw Food (Pulsing Voltage Effect)
+            // Draw Food (Pulsing Voltage Effect)
             // We use Sine wave math to create a smooth breathing effect
             let time = Date.now() * 0.008; 
             let pulse = 15 + Math.sin(time) * 10; // Glow oscillates between 5px and 25px
@@ -247,7 +255,6 @@ function handleSwipe(startX, startY, endX, endY) {
             
             ctx.shadowBlur = 0; // Reset shadow so the snake doesn't glow red
 
-
             // Old Head Position
             let snakeX = snake[0].x;
             let snakeY = snake[0].y;
@@ -261,7 +268,8 @@ function handleSwipe(startX, startY, endX, endY) {
             // Eat Food
             if (snakeX == food.x && snakeY == food.y) {
                 score++;
-                scoreElement.innerHTML = "SCORE: " + score;
+                // Update score with memory display
+                scoreElement.innerHTML = "SCORE: " + score + " | BEST: " + highScore;
                 food = {
                     x: Math.floor(Math.random() * (canvas.width/box)) * box,
                     y: Math.floor(Math.random() * (canvas.height/box)) * box
@@ -280,7 +288,16 @@ function handleSwipe(startX, startY, endX, endY) {
                 collision(newHead, snake)) {
                 
                 clearInterval(game);
-                alert("SYSTEM FAILURE. Final Score: " + score);
+                
+                // === CHECK & SAVE HIGH SCORE ===
+                if (score > highScore) {
+                    highScore = score;
+                    localStorage.setItem('snakeHighScore', highScore);
+                    alert("NEW SYSTEM RECORD! \nScore: " + score);
+                } else {
+                    alert("SYSTEM FAILURE. \nScore: " + score + "\nBest: " + highScore);
+                }
+                
                 location.reload(); // Restart
             }
 
