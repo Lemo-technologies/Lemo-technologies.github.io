@@ -27,41 +27,66 @@
             --nav-active-color: #00e5ff;
         }
 
-        /* === PERSONA: MUSA (Luxury Glass) === */
+        /* === PERSONA: MUSA (THE R100K QUEEN THEME) === */
         [data-persona="musa"] {
-            --bg-color: #121011;           
-            --card-bg: rgba(30, 25, 28, 0.6); 
-            --text-primary: #ffcdd2;       
-            --text-body: #ede7f6;          
-            --accent-main: #d4af37;        
-            --accent-red: #ef9a9a;         
+            /* The "Velvet" Background is handled by body::before */
+            --bg-color: #1a0b10;
+            
+            /* Hyper-Realistic Glass */
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: 1px solid rgba(255, 205, 210, 0.15);
+            
+            /* Typography & Colors */
+            --text-primary: #ffebd4;       /* Champagne */
+            --text-body: #f3e5f5;          
+            --accent-main: #d4af37;        /* Metallic Gold */
             --accent-gold: #d4af37;        
-            --border-radius: 20px;         
+            
+            --border-radius: 30px;         
             --font-head: 'Playfair Display', serif;
-            --border-style: 1px solid rgba(255, 255, 255, 0.08); /* Subtle premium border */
+            --border-style: 1px solid rgba(255, 255, 255, 0.1); 
             --shadow: 0 20px 50px rgba(0,0,0,0.5);
             --nav-active-color: #d4af37;
         }
 
-        /* GLASS EFFECT FOR MUSA */
-        [data-persona="musa"] .card, 
-        [data-persona="musa"] .nav-container {
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-        }
-
-        /* === LAYOUT === */
+        /* === GLOBAL LAYOUT === */
         body {
             background-color: var(--bg-color);
             color: var(--text-body);
-            font-family: 'Inter', sans-serif; /* Default body font */
+            font-family: 'Inter', sans-serif;
             margin: 0; padding: 20px;
             transition: all var(--transition-speed) ease;
             line-height: 1.8;
-            background-image: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.03) 0%, transparent 70%);
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        .container { max-width: 800px; margin: 0 auto; }
+        /* === DARK PLASMA BACKGROUND EFFECT === */
+        body::before {
+            content: "";
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -10;
+            background-color: #0a0505; 
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(69, 0, 20, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(35, 0, 60, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(60, 40, 0, 0.2) 0%, transparent 60%),
+                radial-gradient(circle at 10% 90%, rgba(40, 0, 0, 0.4) 0%, transparent 40%),
+                radial-gradient(circle at 90% 10%, rgba(0, 20, 40, 0.3) 0%, transparent 40%);
+            background-size: 180% 180%;
+            animation: plasmaMovement 45s ease-in-out infinite alternate, plasmaColorShift 90s linear infinite;
+        }
+        @keyframes plasmaMovement { 0% { background-position: 0% 0%; } 100% { background-position: 0% 50%; } }
+        @keyframes plasmaColorShift { 0% { filter: hue-rotate(0deg) brightness(0.9); } 50% { filter: hue-rotate(180deg) brightness(0.9); } 100% { filter: hue-rotate(360deg) brightness(0.9); } }
+
+        /* === FLOWER ANIMATION CONTAINER === */
+        #flower-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: -1; overflow: hidden; display: none;
+        }
+        [data-persona="musa"] #flower-container { display: block; }
+        .flower { position: absolute; top: -50px; animation: fall linear forwards; opacity: 0.8; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3)); }
+        @keyframes fall { 0% { transform: translateY(0) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
 
         /* === HEADER & NAVIGATION === */
         header { text-align: center; margin-bottom: 50px; }
@@ -74,44 +99,24 @@
         }
 
         .system-badge {
-            opacity: 0.6; 
-            font-size: 0.75rem; 
-            text-transform: uppercase; 
-            letter-spacing: 4px; 
-            margin-bottom: 30px;
-            display: block;
+            opacity: 0.6; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 4px; 
+            margin-bottom: 30px; display: block;
         }
 
         .nav-container {
-            display: inline-flex;
-            gap: 30px;
-            padding: 15px 30px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 20px;
+            display: inline-flex; gap: 30px; padding: 15px 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px;
         }
 
         .nav-link {
-            text-decoration: none;
-            color: var(--text-body);
-            font-family: var(--font-head);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            opacity: 0.5;
-            transition: 0.3s;
-            white-space: nowrap; /* Prevents ugly wrapping */
+            text-decoration: none; color: var(--text-body); font-family: var(--font-head);
+            font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px;
+            opacity: 0.5; transition: 0.3s; white-space: nowrap;
         }
-
         .nav-link:hover { opacity: 1; transform: translateY(-2px); }
-        
-        .nav-link.active {
-            opacity: 1;
-            color: var(--nav-active-color);
-            border-bottom: 1px solid var(--nav-active-color);
-            padding-bottom: 5px;
-        }
+        .nav-link.active { opacity: 1; color: var(--nav-active-color); border-bottom: 1px solid var(--nav-active-color); padding-bottom: 5px; }
 
-        /* === CONTENT CARDS === */
+        /* === CONTENT CARDS (GLASSMORPHISM) === */
         .card {
             background: var(--card-bg); 
             padding: 40px;
@@ -119,77 +124,44 @@
             border: var(--border-style);
             box-shadow: var(--shadow); 
             margin-bottom: 40px;
+            /* Premium Glass properties for Musa */
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
         }
 
         h2 {
-            color: var(--text-primary);
-            border-bottom: 1px solid var(--accent-main);
-            padding-bottom: 15px;
-            margin-top: 0;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            font-family: var(--font-head);
-            font-size: 1.5rem;
-            text-align: center;
+            color: var(--text-primary); border-bottom: 1px solid var(--accent-main);
+            padding-bottom: 15px; margin-top: 0; text-transform: uppercase; letter-spacing: 3px;
+            font-family: var(--font-head); font-size: 1.5rem; text-align: center;
         }
 
-        .intro-text {
-            font-size: 1.1rem;
-            text-align: center;
-            margin-bottom: 40px;
-            font-weight: 300;
-            opacity: 0.9;
-        }
+        .intro-text { font-size: 1.1rem; text-align: center; margin-bottom: 40px; font-weight: 300; opacity: 0.9; }
 
         /* PROTOCOL GRID */
-        .protocol-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 30px;
-        }
+        .protocol-grid { display: grid; grid-template-columns: 1fr; gap: 30px; }
 
         .protocol-item {
-            background: rgba(255,255,255,0.02);
-            padding: 25px;
-            border-radius: var(--border-radius);
-            border-left: 2px solid var(--accent-gold);
+            background: rgba(255,255,255,0.02); padding: 25px;
+            border-radius: var(--border-radius); border-left: 2px solid var(--accent-gold);
             transition: 0.3s;
         }
-        
-        .protocol-item:hover { background: rgba(255,255,255,0.04); }
+        .protocol-item:hover { background: rgba(255,255,255,0.04); transform: translateX(5px); }
 
         .protocol-item h3 {
-            color: var(--accent-main);
-            margin-top: 0;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-            font-family: var(--font-head);
+            color: var(--accent-main); margin-top: 0; text-transform: uppercase;
+            font-size: 0.9rem; letter-spacing: 2px; font-family: var(--font-head);
         }
 
         /* RETURN BUTTON */
         .return-btn-container { text-align: center; margin-top: 50px; }
-        
         .return-btn {
-            background: transparent; 
-            color: var(--accent-main);
-            padding: 15px 40px; 
-            border: 1px solid var(--accent-main);
-            border-radius: 50px;
-            cursor: pointer; 
-            font-size: 0.9rem; 
-            text-transform: uppercase; 
-            letter-spacing: 2px;
-            text-decoration: none;
-            transition: 0.3s;
-            display: inline-block;
-            font-weight: 600;
+            background: transparent; color: var(--accent-main);
+            padding: 15px 40px; border: 1px solid var(--accent-main);
+            border-radius: 50px; cursor: pointer; font-size: 0.9rem;
+            text-transform: uppercase; letter-spacing: 2px; text-decoration: none;
+            transition: 0.3s; display: inline-block; font-weight: 600;
         }
-        .return-btn:hover {
-            background: var(--accent-main);
-            color: #000;
-            box-shadow: 0 0 20px var(--accent-main);
-        }
+        .return-btn:hover { background: var(--accent-main); color: #000; box-shadow: 0 0 20px var(--accent-main); }
 
         footer { 
             margin-top: 80px; text-align: center; color: #555; font-size: 0.8rem; 
@@ -197,8 +169,8 @@
             text-transform: uppercase; letter-spacing: 2px;
         }
 
-        /* === MOBILE OPTIMIZATION === */
-        /* This fixes the ugly wrapping seen in your screenshot */
+        .container { max-width: 800px; margin: 0 auto; position: relative; z-index: 1;}
+
         @media (max-width: 480px) {
             .nav-container { gap: 15px; padding: 15px 10px; width: 100%; justify-content: center; box-sizing: border-box;}
             .nav-link { font-size: 0.75rem; letter-spacing: 1px; }
@@ -208,6 +180,8 @@
     </style>
 </head>
 <body>
+
+    <div id="flower-container"></div>
 
     <header>
         <h1 id="greeting">Daily Intellect Dose</h1>
@@ -283,6 +257,7 @@
                 if(saved === 'musa') {
                     greet.innerHTML = "Proverbs 31";
                     greet.style.color = "#d4af37";
+                    createFlowers(); // Start flowers if Musa
                 }
             } else {
                 document.documentElement.setAttribute('data-persona', 'boipelo');
@@ -292,6 +267,28 @@
         function resetPersona() {
             localStorage.removeItem('userPersona');
             window.location.href = "index.html";
+        }
+
+        function createFlowers() {
+            // Only run if Musa is active
+            if(document.documentElement.getAttribute('data-persona') !== 'musa') return;
+
+            const container = document.getElementById('flower-container');
+            const flowerTypes = ['🌹', '🌸', '🌺', '🌷', '✨']; 
+            
+            setInterval(() => {
+                if(document.documentElement.getAttribute('data-persona') !== 'musa') {
+                    container.innerHTML = ''; return;
+                }
+                const flower = document.createElement('div');
+                flower.classList.add('flower');
+                flower.innerText = flowerTypes[Math.floor(Math.random() * flowerTypes.length)];
+                flower.style.left = Math.random() * 100 + 'vw';
+                flower.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                flower.style.animationDuration = (Math.random() * 7 + 5) + 's';
+                container.appendChild(flower);
+                setTimeout(() => { flower.remove(); }, 12000); 
+            }, 800);
         }
 
         // Initialize Style
