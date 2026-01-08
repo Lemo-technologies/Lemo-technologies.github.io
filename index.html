@@ -42,24 +42,86 @@ img {
             --musa-only: none;
         }
 
-        /* === PERSONA: MUSA (The Muse / Proverbs 31) === */
+                /* === PERSONA: MUSA (THE R100K QUEEN THEME) === */
         [data-persona="musa"] {
-            --bg-color: #1a1518;           
-            --card-bg: #262024;            
-            --text-primary: #ffcdd2;       /* Rose Quartz */
-            --text-body: #ede7f6;          
+            /* The "Velvet" Background */
+            --bg-color: #1a0b10;
+            --bg-gradient: radial-gradient(circle at 50% 0%, #4a2c36 0%, #1a0b10 70%);
+            
+            /* Hyper-Realistic Glass */
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: 1px solid rgba(255, 205, 210, 0.15);
+            --card-highlight: inset 0 0 20px rgba(255, 255, 255, 0.02);
+            
+            /* Typography & Colors */
+            --text-primary: #ffebd4;       /* Champagne */
+            --text-secondary: #e0b4b4;     /* Muted Rose */
+            --text-body: #f3e5f5;          
             --accent-main: #d4af37;        /* Metallic Gold */
-            --accent-red: #ef9a9a;         
-            --accent-gold: #d4af37;        
-            --border-radius: 24px;         
+            --accent-glow: 0 0 15px rgba(212, 175, 55, 0.3);
+            
             --font-head: 'Playfair Display', serif;
             --font-body: 'Inter', sans-serif;
-            --border-style: 1px solid rgba(212, 175, 55, 0.2);
-            --shadow: 0 10px 40px rgba(0,0,0,0.5);
-            --btn-bg: #d4af37;
-            --btn-text: #1a1518;
+            
             --musa-only: block;
         }
+
+        /* === GLOBAL LAYOUT === */
+        body {
+            background-color: var(--bg-color);
+            background-image: var(--bg-gradient); /* Applies the velvet gradient */
+            color: var(--text-body);
+            font-family: var(--font-body);
+            margin: 0; padding: 20px;
+            transition: all 0.5s ease;
+            min-height: 100vh;
+            overflow-x: hidden; /* Prevents scrollbars from floating flowers */
+        }
+
+        /* === HIGH-END GLASSMORPHISM FOR MUSA === */
+        [data-persona="musa"] .card, 
+        [data-persona="musa"] #love-lab, 
+        [data-persona="musa"] .dashboard {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: var(--card-border);
+            border-top: 1px solid rgba(255, 255, 255, 0.2); /* Top light reflection */
+            border-bottom: 1px solid rgba(0, 0, 0, 0.3);    /* Bottom shadow */
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.4),
+                var(--card-highlight); /* Inner Glow */
+            border-radius: 30px;
+        }
+
+        /* === FLOWER ANIMATION CONTAINER === */
+        #flower-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; /* Allows clicking through flowers */
+            z-index: -1; /* Behind text */
+            overflow: hidden;
+            display: none; /* Hidden for Boipelo */
+        }
+        
+        [data-persona="musa"] #flower-container {
+            display: block; /* Visible for Musa */
+        }
+
+        .flower {
+            position: absolute;
+            top: -50px;
+            animation: fall linear forwards;
+            opacity: 0.8;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg) translateX(50px); opacity: 0; }
+        }
+
 
         /* === LAYOUT === */
         body {
