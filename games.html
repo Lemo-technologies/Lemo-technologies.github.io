@@ -175,6 +175,34 @@
             else if (dir == "RIGHT" && d != "LEFT") d = "RIGHT";
             else if (dir == "DOWN" && d != "UP") d = "DOWN";
         }
+// === ADD SWIPE CONTROLS ===
+let touchStartX = 0;
+let touchStartY = 0;
+
+document.addEventListener('touchstart', function(e) {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+}, false);
+
+document.addEventListener('touchend', function(e) {
+    let touchEndX = e.changedTouches[0].screenX;
+    let touchEndY = e.changedTouches[0].screenY;
+    handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
+}, false);
+
+function handleSwipe(startX, startY, endX, endY) {
+    let xDiff = endX - startX;
+    let yDiff = endY - startY;
+
+    // Detect if swipe was mostly horizontal or vertical
+    if (Math.abs(xDiff) > Math.abs(yDiff)) {
+        if (xDiff > 0 && d != "LEFT") d = "RIGHT";
+        else if (xDiff < 0 && d != "RIGHT") d = "LEFT";
+    } else {
+        if (yDiff > 0 && d != "UP") d = "DOWN";
+        else if (yDiff < 0 && d != "DOWN") d = "UP";
+    }
+}
 
         // Collision Check
         function collision(head, array) {
