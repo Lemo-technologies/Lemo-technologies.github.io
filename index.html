@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LEMO-TUTOR | L-4 SCOUT TERMINAL</title>
+    <title>LEMO-TUTOR | TOTAL RECALL</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #00ff88; --bg: #05070a; --glass: rgba(15, 20, 25, 0.95); --border: rgba(255, 255, 255, 0.1); --text: #f0f2f5; }
@@ -38,16 +38,16 @@
 </div>
 
 <div class="app-shell">
-    <header><div class="logo"><span class="glow-dot"></span>LEMO-TUTOR 3.3</div></header>
+    <header><div class="logo"><span class="glow-dot"></span>LEMO-TUTOR 3.4</div></header>
     <div id="chat-container">
-        <div class="message ai-msg">Llama 4 Scout Engine Online. Multimodal analysis active. Post an image or query.</div>
+        <div class="message ai-msg">Memory Systems Online. Conversation persistence enabled. How can I help you, Director?</div>
     </div>
     <div class="input-area-wrapper">
         <div id="preview-box"></div>
         <div class="input-card">
             <button style="background:transparent; border:none; color:var(--accent); font-size:1.5rem; cursor:pointer;" onclick="document.getElementById('imgInp').click()">📎</button>
             <input type="file" id="imgInp" accept="image/*" style="display:none" onchange="handleImg()">
-            <input type="text" id="userInp" placeholder="Ask Lemo-Tutor..." onkeypress="if(event.key==='Enter') execute()">
+            <input type="text" id="userInp" placeholder="Type or upload..." onkeypress="if(event.key==='Enter') execute()">
             <button class="send-btn" onclick="execute()">→</button>
         </div>
     </div>
@@ -56,6 +56,11 @@
 <script>
     let ACTIVE_KEY = localStorage.getItem('L_KEY');
     let imgBase64 = null;
+    // --- THE MEMORY VAULT ---
+    let chatHistory = [
+        { role: "system", content: "You are Lemo-Tutor, a world-class Engineering authority. You remember everything the user says in this session to provide context-aware help." }
+    ];
+
     if(ACTIVE_KEY) document.getElementById('lock-screen').style.display = 'none';
 
     function unlock() {
@@ -90,32 +95,34 @@
         const query = queryBox.value.trim();
         if(!query && !imgBase64) return;
 
-        addMsg(query || "Analyzing visual diagram...", 'user-msg');
+        // 1. Add to local UI
+        addMsg(query || "Analyzing visual data...", 'user-msg');
         queryBox.value = '';
         document.getElementById('preview-box').style.display = 'none';
-        const load = addMsg('<span style="opacity:0.5; letter-spacing:2px;">SCOUTING...</span>', 'ai-msg');
+        const load = addMsg('<span style="opacity:0.5; letter-spacing:2px;">RECALLING...</span>', 'ai-msg');
+
+        // 2. Prepare the memory payload
+        let currentMessageContent;
+        if (imgBase64) {
+            currentMessageContent = [
+                { type: "text", text: query || "Analyze this image." },
+                { type: "image_url", image_url: { url: imgBase64 } }
+            ];
+        } else {
+            currentMessageContent = query;
+        }
+
+        chatHistory.push({ role: "user", content: currentMessageContent });
 
         try {
-            // THE 2026 ENGINE: Llama 4 Scout handles both text and vision natively
-            const model = "meta-llama/llama-4-scout-17b-16e-instruct";
-            
-            let messages = [];
-            if (imgBase64) {
-                messages.push({
-                    role: "user",
-                    content: [
-                        { type: "text", text: query || "Analyze this engineering diagram/problem." },
-                        { type: "image_url", image_url: { url: imgBase64 } }
-                    ]
-                });
-            } else {
-                messages.push({ role: "user", content: query });
-            }
-
             const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('L_KEY')}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ model: model, messages: messages, temperature: 0.2 })
+                body: JSON.stringify({ 
+                    model: "meta-llama/llama-4-scout-17b-16e-instruct", 
+                    messages: chatHistory, 
+                    temperature: 0.4 
+                })
             });
 
             const data = await response.json();
@@ -123,9 +130,12 @@
             imgBase64 = null;
 
             if(data.choices) {
-                addMsg(parse(data.choices[0].message.content), 'ai-msg');
+                const aiResponse = data.choices[0].message.content;
+                // 3. Save AI's response to memory
+                chatHistory.push({ role: "assistant", content: aiResponse });
+                addMsg(parse(aiResponse), 'ai-msg');
             } else {
-                addMsg("SYSTEM FAULT: " + (data.error?.message || "Check Model ID"), 'ai-msg');
+                addMsg("SYSTEM FAULT: Memory Overflow or Key Error.", 'ai-msg');
             }
         } catch(e) {
             document.getElementById(load).remove();
