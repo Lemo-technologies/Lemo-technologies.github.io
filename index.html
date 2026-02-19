@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LEMO-TUTOR | EMPIRE PLATFORM</title>
+    <title>LEMO-TUTOR | MATH PERFECTED</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <style>
-        /* --- LEMO PREMIUM THEME (v6.0) --- */
+        /* --- LEMO PREMIUM THEME (v6.2) --- */
         :root {
             --bg: #05070a;
             --sidebar-bg: #0a0e12;
@@ -191,7 +191,7 @@
         }
         
         .msg { 
-            max-width: 85%; 
+            max-width: 88%; 
             padding: 14px 20px; 
             border-radius: 18px; 
             line-height: 1.6; 
@@ -217,15 +217,28 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.2); 
         }
 
-        /* MARKDOWN STYLES */
+        /* --- MARKDOWN & MATH STYLES (CRITICAL FIX) --- */
         .msg h1, .msg h2, .msg h3 { margin-top: 15px; margin-bottom: 8px; color: var(--accent); font-size: 1.1rem; letter-spacing: 0.5px; }
         .msg p { margin-bottom: 10px; }
         .msg strong { color: #fff; font-weight: 700; }
         .msg ul, .msg ol { padding-left: 20px; margin-bottom: 15px; }
         .msg li { margin-bottom: 6px; }
-        .msg code { background: rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; color: #ff79c6; }
-        .msg pre { background: #080b10; padding: 15px; border-radius: 12px; overflow-x: auto; margin: 15px 0; border: 1px solid var(--border); }
+        
+        /* This keeps the code and math blocks INSIDE the bubble */
+        .msg code { background: rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; color: #ff79c6; overflow-wrap: break-word; }
+        .msg pre { background: #080b10; padding: 15px; border-radius: 12px; overflow-x: auto; margin: 15px 0; border: 1px solid var(--border); max-width: 100%; }
         .msg pre code { background: none; padding: 0; color: #f8f8f2; }
+        
+        /* KaTeX Overflow Fix */
+        .katex-display { 
+            overflow-x: auto; 
+            overflow-y: hidden;
+            padding: 5px 0; 
+            margin: 1em 0; 
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch;
+        }
+        .katex { font-size: 1.1em; } /* Make math slightly larger/readable */
 
         .typing-cursor { display: inline-block; width: 6px; height: 1.2em; background: var(--cursor); margin-left: 5px; border-radius: 2px; vertical-align: middle; animation: blink 1s infinite; }
         @keyframes blink { 0%,100% { opacity:1 } 50% { opacity:0.3 } }
@@ -290,7 +303,7 @@
     <div class="auth-card">
         <span class="auth-logo">🧠</span>
         <div class="auth-title">LEMO</div>
-        <div class="auth-subtitle">Engineering Platform v6.0</div>
+        <div class="auth-subtitle">Engineering Platform v6.2</div>
         
         <input type="email" id="email" class="auth-input" placeholder="Email Address">
         <input type="password" id="password" class="auth-input" placeholder="Password">
@@ -490,7 +503,7 @@
         currentSessionId = null;
         if(clear) {
             document.getElementById('chat-scroller').innerHTML = "";
-            typeMsg("Lemo-Tutor v6.0 Online. I'm ready to solve engineering problems.");
+            typeMsg("Lemo-Tutor v6.2 Online. Ready to calculate.");
         }
         document.querySelectorAll('.history-item').forEach(i => i.classList.remove('active'));
     }
@@ -664,7 +677,7 @@
         const k = document.getElementById('groq-key').value;
         if(k.startsWith('gsk_')) {
             await supabase.from('global_config').upsert({setting_name:'master_groq_key', setting_value:k});
-            alert("Master Key Updated Securely");
+            alert("Master Key Saved.");
             location.reload();
         } else alert("Invalid Key Format");
     }
