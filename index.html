@@ -3,31 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LEMO-TUTOR | PREMIUM</title>
+    <title>LEMO-TUTOR | EMPIRE PLATFORM</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"></script>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <style>
-        /* --- PREMIUM DARK THEME --- */
+        /* --- LEMO PREMIUM THEME (v6.0) --- */
         :root {
             --bg: #05070a;
-            --text: #e0e6ed;
+            --sidebar-bg: #0a0e12;
+            --text: #e2e8f0;
             --accent: #00ff88;
-            --glass: rgba(18, 24, 30, 0.95);
-            --border: rgba(255,255,255,0.08);
+            --accent-dim: rgba(0, 255, 136, 0.1);
+            --glass: rgba(15, 20, 28, 0.96);
+            --border: rgba(255, 255, 255, 0.08);
             --cursor: #00ff88;
+            --user-msg-bg: rgba(0, 255, 136, 0.08);
+            --ai-msg-bg: #11151b;
+            --error: #ff3366;
         }
 
-        /* RESET & BASE */
-        * { margin:0; padding:0; box-sizing:border-box; }
+        /* RESET */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body, html {
             height: 100dvh;
@@ -40,199 +44,363 @@
         }
 
         /* --- SCREEN MANAGEMENT --- */
-        .screen { position: absolute; inset: 0; display: none; flex-direction: column; background: var(--bg); z-index: 10; }
-        .screen.active { display: flex; z-index: 20; }
+        .screen { position: absolute; inset: 0; display: none; flex-direction: column; background: var(--bg); z-index: 50; }
+        .screen.active { display: flex; }
 
-        /* --- AUTH & SETUP STYLES --- */
+        /* --- AUTH & SETUP SCREENS --- */
         #auth-screen, #setup-screen { align-items: center; justify-content: center; background: radial-gradient(circle at top, #111923 0%, #05070a 100%); }
-        .auth-card { width: 85%; max-width: 380px; background: var(--glass); border: 1px solid var(--border); border-radius: 24px; padding: 30px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
-        .auth-input { width: 100%; padding: 14px; background: #0a0e12; border: 1px solid var(--border); border-radius: 12px; color: white; margin-bottom: 12px; outline: none; transition: 0.3s; }
-        .auth-input:focus { border-color: var(--accent); }
-        .primary-btn { width: 100%; padding: 14px; background: var(--accent); color: #000; border: none; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; margin-top: 10px; transition: 0.2s; }
+        
+        .auth-card { 
+            width: 85%; max-width: 380px; 
+            background: var(--glass); 
+            border: 1px solid var(--border); 
+            border-radius: 24px; 
+            padding: 40px 30px; 
+            text-align: center; 
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6); 
+            backdrop-filter: blur(20px);
+        }
+        
+        .auth-logo { font-size: 2rem; margin-bottom: 10px; display: block; }
+        .auth-title { font-size: 1.5rem; font-weight: 700; color: var(--accent); margin-bottom: 5px; letter-spacing: 2px; }
+        .auth-subtitle { font-size: 0.9rem; opacity: 0.6; margin-bottom: 30px; }
+        
+        .auth-input { 
+            width: 100%; padding: 14px; 
+            background: #0f1319; 
+            border: 1px solid var(--border); 
+            border-radius: 12px; 
+            color: white; 
+            margin-bottom: 12px; 
+            outline: none; 
+            transition: 0.3s; 
+            font-size: 0.95rem;
+        }
+        .auth-input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(0,255,136,0.1); }
+        
+        .primary-btn { 
+            width: 100%; padding: 14px; 
+            background: var(--accent); 
+            color: #000; 
+            border: none; 
+            border-radius: 12px; 
+            font-weight: 700; 
+            font-size: 1rem; 
+            cursor: pointer; 
+            transition: 0.2s; 
+        }
         .primary-btn:active { transform: scale(0.98); }
+        .link-text { margin-top: 20px; font-size: 0.85rem; cursor: pointer; opacity: 0.7; transition: 0.2s; }
+        .link-text:hover { color: var(--accent); opacity: 1; }
 
-        /* --- HEADER --- */
+        /* --- APP LAYOUT --- */
+        #app-layout { display: flex; width: 100%; height: 100%; position: relative; }
+
+        /* SIDEBAR (HISTORY) */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 40;
+            flex-shrink: 0;
+        }
+        
+        .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border); }
+        .new-chat-btn { 
+            width: 100%; padding: 12px; 
+            background: rgba(255,255,255,0.03); 
+            border: 1px solid var(--border); 
+            color: var(--accent); 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            display: flex; align-items: center; justify-content: center; gap: 8px; 
+            transition: 0.2s; 
+        }
+        .new-chat-btn:hover { background: var(--accent-dim); border-color: var(--accent); }
+        
+        .history-list { flex: 1; overflow-y: auto; padding: 10px; }
+        .history-item { 
+            padding: 12px 15px; 
+            margin-bottom: 4px; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            color: #94a3b8; 
+            font-size: 0.9rem; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            transition: 0.2s; 
+            border: 1px solid transparent;
+        }
+        .history-item:hover { background: rgba(255,255,255,0.03); color: white; }
+        .history-item.active { background: var(--accent-dim); color: var(--accent); border-color: rgba(0,255,136,0.15); }
+
+        /* MAIN PANE */
+        .main-pane { flex: 1; display: flex; flex-direction: column; position: relative; min-width: 0; background: var(--bg); }
+
+        /* HEADER */
         header {
-            height: 60px;
-            padding: 0 15px;
-            background: rgba(5,7,10,0.9);
-            backdrop-filter: blur(15px);
+            height: 64px;
+            padding: 0 20px;
+            background: rgba(5,7,10,0.95);
+            backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-shrink: 0;
-            z-index: 100;
+            z-index: 30;
         }
-        .logo { font-weight: 700; letter-spacing: 2px; color: var(--accent); display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
-        .glow-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent); }
-        
-        .nav { display: flex; gap: 6px; }
-        .nav-btn { padding: 8px 12px; background: transparent; border: 1px solid transparent; color: #888; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: 0.3s; }
-        .nav-btn.active { color: var(--accent); background: rgba(0,255,136,0.1); border-color: rgba(0,255,136,0.15); }
+        .logo-area { display: flex; align-items: center; gap: 15px; }
+        .menu-btn { display: none; background: none; border: none; color: white; font-size: 1.4rem; cursor: pointer; }
+        .brand { font-weight: 700; letter-spacing: 2px; color: var(--accent); display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+        .glow-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 12px var(--accent); }
 
-        /* --- MAIN CONTENT AREA --- */
-        .main-content { flex: 1; position: relative; overflow: hidden; display: flex; }
-        .view-section { flex: 1; display: none; flex-direction: column; height: 100%; overflow: hidden; }
-        .view-section.active-view { display: flex; }
-
-        /* --- CHAT VIEW (PREMIUM) --- */
-        #chat-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            scroll-behavior: smooth;
+        /* NAV TABS */
+        .nav-tabs { display: flex; background: rgba(255,255,255,0.03); padding: 4px; border-radius: 12px; border: 1px solid var(--border); }
+        .nav-tab { 
+            background: transparent; 
+            border: none; 
+            color: #888; 
+            padding: 6px 16px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 0.85rem; 
+            font-weight: 600; 
+            transition: 0.2s; 
         }
-        .message { max-width: 88%; padding: 12px 18px; border-radius: 18px; line-height: 1.5; font-size: 0.95rem; position: relative; }
+        .nav-tab.active { background: var(--accent-dim); color: var(--accent); }
+
+        /* VIEWS (Chat vs Library) */
+        .view-container { display: none; flex: 1; flex-direction: column; overflow: hidden; position: relative; }
+        .view-container.active-view { display: flex; }
+
+        /* CHAT AREA */
+        #chat-scroller { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 20px; 
+            scroll-behavior: smooth; 
+        }
         
-        .user-msg { 
+        .msg { 
+            max-width: 85%; 
+            padding: 14px 20px; 
+            border-radius: 18px; 
+            line-height: 1.6; 
+            font-size: 0.96rem; 
+            position: relative; 
+            word-wrap: break-word; 
+            animation: slideUp 0.2s ease-out;
+        }
+        
+        .msg.user { 
             align-self: flex-end; 
-            background: linear-gradient(135deg, rgba(0,255,136,0.15), rgba(0,255,136,0.02)); 
-            border: 1px solid rgba(0,255,136,0.3); 
+            background: var(--user-msg-bg); 
+            border: 1px solid rgba(0,255,136,0.2); 
             color: var(--accent); 
             border-bottom-right-radius: 4px; 
-            animation: slideUp 0.3s ease;
         }
         
-        .ai-msg { 
+        .msg.ai { 
             align-self: flex-start; 
-            background: #11151b; 
+            background: var(--ai-msg-bg); 
             border: 1px solid var(--border); 
             border-bottom-left-radius: 4px; 
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2); 
         }
 
-        /* Clean up standard HTML elements inside AI messages */
-        .ai-msg h1, .ai-msg h2, .ai-msg h3 { margin-top: 10px; margin-bottom: 5px; color: var(--accent); font-size: 1.1rem; }
-        .ai-msg p { margin-bottom: 10px; }
-        .ai-msg ul, .ai-msg ol { margin-left: 20px; margin-bottom: 10px; }
-        .ai-msg li { margin-bottom: 5px; }
-        .ai-msg strong { color: #fff; font-weight: 700; }
-        .ai-msg code { background: rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; color: #ff79c6; }
-        .ai-msg pre { background: #000; padding: 10px; border-radius: 8px; overflow-x: auto; margin: 10px 0; border: 1px solid #333; }
-        .ai-msg pre code { background: none; padding: 0; color: #f8f8f2; }
+        /* MARKDOWN STYLES */
+        .msg h1, .msg h2, .msg h3 { margin-top: 15px; margin-bottom: 8px; color: var(--accent); font-size: 1.1rem; letter-spacing: 0.5px; }
+        .msg p { margin-bottom: 10px; }
+        .msg strong { color: #fff; font-weight: 700; }
+        .msg ul, .msg ol { padding-left: 20px; margin-bottom: 15px; }
+        .msg li { margin-bottom: 6px; }
+        .msg code { background: rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; color: #ff79c6; }
+        .msg pre { background: #080b10; padding: 15px; border-radius: 12px; overflow-x: auto; margin: 15px 0; border: 1px solid var(--border); }
+        .msg pre code { background: none; padding: 0; color: #f8f8f2; }
 
-        .typing-cursor {
-            display: inline-block; width: 6px; height: 1em; background: var(--cursor); 
-            margin-left: 5px; border-radius: 2px; vertical-align: middle; animation: blink 1s infinite;
-        }
-
+        .typing-cursor { display: inline-block; width: 6px; height: 1.2em; background: var(--cursor); margin-left: 5px; border-radius: 2px; vertical-align: middle; animation: blink 1s infinite; }
         @keyframes blink { 0%,100% { opacity:1 } 50% { opacity:0.3 } }
         @keyframes slideUp { from { opacity:0; transform:translateY(10px) } to { opacity:1; transform:none } }
 
-        .input-area { 
-            padding: 15px; 
-            background: linear-gradient(to top, var(--bg) 50%, transparent); 
-            flex-shrink: 0; 
-        }
-        .input-card { 
+        /* INPUT AREA */
+        .input-area { padding: 20px; background: linear-gradient(to top, var(--bg) 60%, transparent); flex-shrink: 0; z-index: 20; }
+        .input-box { 
             background: #0f1319; 
             border: 1px solid var(--border); 
             border-radius: 20px; 
-            padding: 6px 12px; 
+            padding: 8px 12px; 
             display: flex; 
             align-items: center; 
-            gap: 10px; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            gap: 12px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4); 
+            transition: 0.3s;
         }
+        .input-box:focus-within { border-color: var(--accent); box-shadow: 0 0 20px rgba(0,255,136,0.1); }
+        
         input[type="text"] { flex: 1; background: transparent; border: none; color: white; font-size: 1rem; outline: none; padding: 12px 0; font-family: inherit; }
-        .send-btn { background: var(--accent); color: #000; border: none; width: 40px; height: 40px; border-radius: 12px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .icon-btn { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: #888; transition: 0.2s; padding: 5px; }
+        .icon-btn:hover { color: var(--accent); }
+        .send-btn { background: var(--accent); color: #000; border: none; width: 42px; height: 42px; border-radius: 12px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .send-btn:active { transform: scale(0.9); }
 
-        /* --- LIBRARY VIEW --- */
-        #library-view { padding: 20px; overflow-y: auto; }
-        .upload-box { background: var(--glass); padding: 20px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 20px; }
-        .lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-        .res-card { background: #11151b; border: 1px solid var(--border); border-radius: 12px; padding: 12px; transition: 0.2s; }
-        .res-card:hover { border-color: var(--accent); }
+        /* LIBRARY & SETTINGS */
+        #library-view, #settings-view { padding: 20px; overflow-y: auto; }
+        .section-card { background: #11151b; padding: 25px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 20px; }
+        
+        .lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+        .res-card { 
+            background: #11151b; 
+            border: 1px solid var(--border); 
+            border-radius: 14px; 
+            padding: 15px; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            position: relative; 
+            display: flex; flex-direction: column; justify-content: space-between; height: 120px;
+        }
+        .res-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+        .res-icon { font-size: 2rem; margin-bottom: 10px; }
+        .res-title { font-weight: 600; font-size: 0.9rem; line-height: 1.3; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 
-        /* --- SETTINGS --- */
-        #settings-view { padding: 20px; }
-        .settings-card { background: var(--glass); padding: 25px; border-radius: 20px; border: 1px solid var(--border); max-width: 500px; margin: 0 auto; }
+        /* DIRECTOR ONLY */
+        .director-only { display: none; }
+        .delete-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,51,102,0.2); color: #ff3366; border: none; width: 24px; height: 24px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .sidebar { position: absolute; height: 100%; transform: translateX(-100%); width: 280px; box-shadow: 10px 0 50px rgba(0,0,0,0.6); }
+            .sidebar.open { transform: translateX(0); }
+            .menu-btn { display: block; }
+            .main-pane { width: 100%; }
+        }
     </style>
 </head>
 <body>
 
 <div id="auth-screen" class="screen active">
     <div class="auth-card">
-        <h1 style="color:var(--accent); font-size:2rem; margin-bottom:5px;">LEMO</h1>
-        <p style="opacity:0.6; margin-bottom:30px;">Engineering Hub</p>
-        <input type="email" id="email" class="auth-input" placeholder="Email">
+        <span class="auth-logo">🧠</span>
+        <div class="auth-title">LEMO</div>
+        <div class="auth-subtitle">Engineering Platform v6.0</div>
+        
+        <input type="email" id="email" class="auth-input" placeholder="Email Address">
         <input type="password" id="password" class="auth-input" placeholder="Password">
-        <button class="primary-btn" onclick="handleAuth()" id="auth-btn-text">Sign In</button>
-        <p style="margin-top:20px; font-size:0.85rem; cursor:pointer; opacity:0.7;" onclick="toggleAuth()" id="auth-toggle">New? Create Account</p>
+        
+        <button class="primary-btn" onclick="handleAuth()" id="auth-btn-text">Secure Login</button>
+        <div class="link-text" onclick="toggleAuth()" id="auth-toggle">First time? Create Account</div>
     </div>
 </div>
 
 <div id="setup-screen" class="screen">
     <div class="auth-card">
-        <h2>Setup Database</h2>
-        <p style="font-size:0.8rem; margin-bottom:20px; opacity:0.6;">Connect Supabase to proceed</p>
+        <div class="auth-title">System Setup</div>
+        <div class="auth-subtitle">Connect to Database</div>
         <input type="text" id="supa-url" class="auth-input" placeholder="Supabase URL">
         <input type="text" id="supa-anon" class="auth-input" placeholder="Anon Key">
-        <button class="primary-btn" onclick="saveConfig()">Connect</button>
+        <button class="primary-btn" onclick="saveConfig()">Initialize System</button>
     </div>
 </div>
 
 <div id="app-screen" class="screen">
-    <header>
-        <div class="logo"><span class="glow-dot"></span>LEMO-TUTOR</div>
-        <div class="nav">
-            <button class="nav-btn" onclick="nav('library')">Library</button>
-            <button class="nav-btn active" onclick="nav('chat')">Tutor</button>
-            <button class="nav-btn" onclick="nav('settings')">Settings</button>
-        </div>
-    </header>
-
-    <div class="main-content">
+    <div id="app-layout">
         
-        <div id="library-view" class="view-section">
-            <div class="upload-box">
-                <h3 style="margin-top:0; margin-bottom:10px;">Add Resource</h3>
-                <input type="text" id="doc-title" class="auth-input" placeholder="Title">
-                <input type="file" id="doc-file" class="auth-input" accept=".pdf">
-                <button class="primary-btn" style="width:auto; padding:10px 25px;" onclick="uploadPDF()">Upload</button>
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <button class="new-chat-btn" onclick="startNewChat()">
+                    <span style="font-size:1.2rem;">+</span> New Session
+                </button>
             </div>
-            <div id="lib-grid" class="lib-grid"></div>
+            <div class="history-list" id="history-list">
+                </div>
+            <div style="padding:15px; border-top:1px solid var(--border); font-size:0.8rem; color:#666; text-align:center;">
+                Lemo Technologies © 2026
+            </div>
         </div>
 
-        <div id="chat-view" class="view-section active-view">
-            <div id="chat-container"></div>
-            <div class="input-area">
-                <div class="input-card">
-                    <button onclick="document.getElementById('chat-img').click()" style="background:none; border:none; font-size:1.4rem; cursor:pointer; color:#888;">📎</button>
-                    <input type="file" id="chat-img" accept="image/*" style="display:none" onchange="alert('Image attached!')">
-                    <input type="text" id="userInp" placeholder="Ask Lemo..." autocomplete="off">
-                    <button class="send-btn" onclick="sendMsg()">→</button>
+        <div class="main-pane">
+            <header>
+                <div class="logo-area">
+                    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+                    <div class="brand"><span class="glow-dot"></span>LEMO-TUTOR</div>
+                </div>
+                
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <div class="nav-tabs">
+                        <button class="nav-tab active" onclick="switchView('chat')">Chat</button>
+                        <button class="nav-tab" onclick="switchView('library')">Library</button>
+                        <button class="nav-tab" onclick="switchView('settings')">Settings</button>
+                    </div>
+                </div>
+            </header>
+
+            <div id="chat-view" class="view-container active-view">
+                <div id="chat-scroller"></div>
+                <div class="input-area">
+                    <div class="input-box">
+                        <button class="icon-btn" onclick="document.getElementById('chat-img').click()">📎</button>
+                        <input type="file" id="chat-img" accept="image/*" style="display:none" onchange="alert('Image Attached')">
+                        <input type="text" id="userInp" placeholder="Ask Lemo anything..." autocomplete="off">
+                        <button class="send-btn" onclick="sendMsg()">→</button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div id="settings-view" class="view-section">
-            <div class="settings-card">
-                <h3>System Keys</h3>
-                <p style="font-size:0.8rem; margin-bottom:10px; opacity:0.6;">Groq API Key (gsk_...)</p>
-                <input type="password" id="groq-key" class="auth-input">
-                <button class="primary-btn" onclick="saveGroq()">Save Key</button>
-                <div style="margin-top:40px; border-top:1px solid var(--border); padding-top:20px;">
-                    <button class="primary-btn" style="background:#ff3366; color:#fff;" onclick="logout()">Log Out</button>
+            <div id="library-view" class="view-container">
+                <div style="max-width:800px; margin:0 auto; width:100%;">
+                    <div class="director-only section-card" id="director-upload">
+                        <h3 style="color:var(--accent); margin-top:0;">Admin Upload</h3>
+                        <div style="display:flex; gap:10px; margin-top:15px;">
+                            <input type="text" id="doc-title" class="auth-input" placeholder="Document Title" style="margin:0;">
+                            <input type="file" id="doc-file" class="auth-input" accept=".pdf" style="margin:0;">
+                        </div>
+                        <button class="primary-btn" style="width:auto; margin-top:15px; padding:10px 30px;" onclick="uploadPDF()">Upload to Library</button>
+                    </div>
+
+                    <h3 style="margin-bottom:20px;">Resource Library</h3>
+                    <div id="lib-grid" class="lib-grid"></div>
                 </div>
             </div>
-        </div>
 
+            <div id="settings-view" class="view-container">
+                <div style="max-width:500px; margin:0 auto; width:100%;">
+                    <div class="section-card">
+                        <h3>User Profile</h3>
+                        <p id="user-email-display" style="opacity:0.6; margin-bottom:20px;"></p>
+                        
+                        <div class="director-only" style="border-top:1px solid var(--border); padding-top:20px; margin-top:20px;">
+                            <h3 style="color:#ff3366;">Director Controls</h3>
+                            <p style="font-size:0.8rem; opacity:0.6; margin-bottom:10px;">Master API Key (Hidden from users)</p>
+                            <input type="password" id="groq-key" class="auth-input" placeholder="gsk_...">
+                            <button class="primary-btn" onclick="saveMasterKey()">Update Master Key</button>
+                        </div>
+
+                        <div style="margin-top:30px; border-top:1px solid var(--border); padding-top:20px;">
+                            <button class="primary-btn" style="background:rgba(255,51,102,0.1); color:#ff3366; border:1px solid rgba(255,51,102,0.3);" onclick="logout()">Sign Out</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
 
 <script>
-    // --- STATE MANAGEMENT ---
-    let supabase, user, groqKey;
+    // --- STATE ---
+    let supabase, user, masterKey;
+    let currentSessionId = null;
     let isLogin = true;
-    let chatHist = [
-        { role: "system", content: "You are Lemo-Tutor, a human engineering expert. You represent Lemo Technologies Rustenburg. You are witty, concise, and highly technical. You are NOT a robot. Use Markdown for formatting. Use LaTeX for math. Remember context." }
-    ];
     let imgBase64 = null;
+    const DIRECTOR_EMAIL = "s225508125@mandela.ac.za";
 
     // --- INITIALIZATION ---
     window.onload = async () => {
@@ -242,239 +410,267 @@
             const { data } = await supabase.auth.getSession();
             if(data.session) {
                 user = data.session.user;
+                checkDirector();
                 initApp();
-            } else {
-                show('auth-screen');
-            }
-        } else {
-            show('setup-screen');
-        }
+            } else show('auth-screen');
+        } else show('setup-screen');
     };
 
-    function show(id) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
+    function checkDirector() {
+        if(user.email === DIRECTOR_EMAIL) {
+            document.querySelectorAll('.director-only').forEach(el => el.style.display = 'block');
+        }
+        document.getElementById('user-email-display').innerText = user.email;
     }
 
-    function nav(view) {
-        document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
-        document.getElementById(view+'-view').classList.add('active-view');
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
-        if(view === 'library') loadLib();
+    function show(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+    
+    function switchView(id) { 
+        document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active-view')); 
+        document.getElementById(id+'-view').classList.add('active-view'); 
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active')); 
+        event.target.classList.add('active'); 
+        if(id==='library') loadLib(); 
     }
 
     // --- AUTHENTICATION ---
-    function saveConfig() {
-        const url = document.getElementById('supa-url').value.trim();
-        const anon = document.getElementById('supa-anon').value.trim();
-        if(url && anon) { localStorage.setItem('lemo_cfg', JSON.stringify({url, anon})); location.reload(); }
+    function saveConfig() { 
+        const u = document.getElementById('supa-url').value; 
+        const a = document.getElementById('supa-anon').value; 
+        if(u && a) { localStorage.setItem('lemo_cfg', JSON.stringify({url:u, anon:a})); location.reload(); } 
     }
-
-    function toggleAuth() {
-        isLogin = !isLogin;
-        document.getElementById('auth-btn-text').innerText = isLogin ? "Sign In" : "Create Account";
-        document.getElementById('auth-toggle').innerText = isLogin ? "New? Create Account" : "Back to Login";
+    
+    function toggleAuth() { 
+        isLogin = !isLogin; 
+        document.getElementById('auth-btn-text').innerText = isLogin ? "Secure Login" : "Create Account"; 
+        document.getElementById('auth-toggle').innerText = isLogin ? "New User? Create Account" : "Back to Login"; 
     }
-
-    async function handleAuth() {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        let res;
-        if(isLogin) res = await supabase.auth.signInWithPassword({email, password});
-        else res = await supabase.auth.signUp({email, password});
-        
-        if(res.error) alert(res.error.message);
-        else location.reload();
+    
+    async function handleAuth() { 
+        const e = document.getElementById('email').value; 
+        const p = document.getElementById('password').value; 
+        const { error } = isLogin ? await supabase.auth.signInWithPassword({email:e, password:p}) : await supabase.auth.signUp({email:e, password:p}); 
+        if(error) alert(error.message); else location.reload(); 
     }
-
+    
     async function logout() { await supabase.auth.signOut(); location.reload(); }
 
+    // --- APPLICATION START ---
     async function initApp() {
         show('app-screen');
-        const { data } = await supabase.from('user_api_keys').select('groq_key').eq('user_id', user.id).single();
-        if(data) groqKey = data.groq_key;
+        // Load Master Key
+        const { data } = await supabase.from('global_config').select('setting_value').eq('setting_name', 'master_groq_key').single();
+        masterKey = data ? data.setting_value : null;
         
-        // Initial "Human" Greeting
-        setTimeout(() => {
-            if(document.getElementById('chat-container').children.length === 0) {
-                typeMessage("Lemo-Tutor online. Let's solve some engineering problems. What have you got?");
-            }
-        }, 500);
+        if(!masterKey && user.email === DIRECTOR_EMAIL) {
+            alert("Director Alert: Please set the Master API Key in Settings.");
+        }
+        
+        loadHistory();
+        startNewChat(false);
     }
 
-    // --- LIBRARY (DATABASE + STORAGE) ---
-    async function uploadPDF() {
-        const title = document.getElementById('doc-title').value;
-        const file = document.getElementById('doc-file').files[0];
-        if(!file || !title) return alert("Missing info");
-        
-        const path = `${Date.now()}_${file.name}`;
-        const { error: upErr } = await supabase.storage.from('pdfs').upload(path, file);
-        if(upErr) return alert(upErr.message);
-        
-        const { data: urlData } = supabase.storage.from('pdfs').getPublicUrl(path);
-        await supabase.from('resources').insert({ user_id: user.id, title, file_url: urlData.publicUrl });
-        alert("Saved!");
-        loadLib();
-    }
-
-    async function loadLib() {
-        const { data } = await supabase.from('resources').select('*').eq('user_id', user.id);
-        const grid = document.getElementById('lib-grid');
-        grid.innerHTML = "";
-        data.forEach(d => {
-            grid.innerHTML += `
-                <div class="res-card">
-                    <div style="font-weight:600; margin-bottom:10px; color:#fff;">${d.title}</div>
-                    <div style="display:flex; gap:10px;">
-                        <button onclick="window.open('${d.file_url}')" style="flex:1; background:var(--accent); border:none; padding:8px; border-radius:6px; cursor:pointer;">OPEN</button>
-                        <button onclick="delRes('${d.id}')" style="flex:1; background:#ff3366; color:white; border:none; border-radius:6px; cursor:pointer;">DEL</button>
-                    </div>
-                </div>
-            `;
+    // --- CHAT SYSTEM ---
+    async function loadHistory() {
+        const { data } = await supabase.from('chat_sessions').select('*').order('created_at', {ascending:false});
+        const list = document.getElementById('history-list');
+        list.innerHTML = "";
+        data.forEach(s => {
+            const div = document.createElement('div');
+            div.className = 'history-item';
+            div.innerText = s.title || "Untitled Session";
+            if(s.id === currentSessionId) div.classList.add('active');
+            div.onclick = () => loadSession(s.id);
+            list.appendChild(div);
         });
     }
 
-    async function delRes(id) {
-        if(confirm("Delete?")) { await supabase.from('resources').delete().eq('id', id); loadLib(); }
+    async function startNewChat(clear=true) {
+        currentSessionId = null;
+        if(clear) {
+            document.getElementById('chat-scroller').innerHTML = "";
+            typeMsg("Lemo-Tutor v6.0 Online. I'm ready to solve engineering problems.");
+        }
+        document.querySelectorAll('.history-item').forEach(i => i.classList.remove('active'));
     }
 
-    // --- CHAT & HUMAN TYPING ENGINE ---
-    function sendMsg() {
-        if(!groqKey) return alert("Save Groq API Key in Settings first.");
+    async function loadSession(id) {
+        currentSessionId = id;
+        document.getElementById('chat-scroller').innerHTML = "";
+        const { data } = await supabase.from('chat_messages').select('*').eq('session_id', id).order('created_at', {ascending:true});
+        data.forEach(msg => appendMsg(msg.role, msg.content));
+        
+        // Highlight active session in sidebar
+        loadHistory(); 
+        
+        // Mobile UX: Close sidebar
+        if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+    }
+
+    function appendMsg(role, text) {
+        const box = document.getElementById('chat-scroller');
+        const div = document.createElement('div');
+        div.className = `msg ${role === 'user' ? 'user' : 'ai'}`;
+        
+        if(role === 'assistant') {
+            div.innerHTML = marked.parse(text);
+            renderMathInElement(div, {delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}]});
+        } else {
+            div.innerText = text;
+        }
+        box.appendChild(div);
+        box.scrollTop = box.scrollHeight;
+    }
+
+    // --- SEND MESSAGE ---
+    async function sendMsg() {
+        if(!masterKey) return alert("System Offline: Director has not configured API Key.");
         const txt = document.getElementById('userInp').value.trim();
         const file = document.getElementById('chat-img').files[0];
 
         if(!txt && !file) return;
 
-        // Image Handling
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = e => {
-                imgBase64 = e.target.result;
-                processSend(txt);
-                document.getElementById('chat-img').value = ""; // clear file input
-            };
-            reader.readAsDataURL(file);
-        } else {
-            processSend(txt);
+        // 1. Create Session?
+        if(!currentSessionId) {
+            const title = txt.substring(0, 30) || "Image Chat";
+            const { data } = await supabase.from('chat_sessions').insert({ user_id: user.id, title }).select().single();
+            currentSessionId = data.id;
+            loadHistory();
         }
+
+        // 2. UI User Msg
+        appendMsg('user', txt || "Image Uploaded");
+        document.getElementById('userInp').value = "";
+
+        // 3. Handle Logic
+        if(file) {
+            const r = new FileReader();
+            r.onload = e => { imgBase64 = e.target.result; processAI(txt); document.getElementById('chat-img').value=""; };
+            r.readAsDataURL(file);
+        } else {
+            processAI(txt);
+        }
+
+        // 4. Save User Msg
+        await supabase.from('chat_messages').insert({ session_id: currentSessionId, role: 'user', content: txt || "[Image]" });
     }
 
-    function processSend(txt) {
-        const container = document.getElementById('chat-container');
-        const userDiv = document.createElement('div');
-        userDiv.className = "message user-msg";
-        userDiv.innerText = txt || "Sent an image...";
-        container.appendChild(userDiv);
-        container.scrollTop = container.scrollHeight;
+    async function processAI(txt) {
+        const box = document.getElementById('chat-scroller');
         
-        document.getElementById('userInp').value = "";
+        // Load Context
+        const { data: hist } = await supabase.from('chat_messages').select('role, content').eq('session_id', currentSessionId).order('created_at', {ascending:true});
         
-        // Prepare Payload
+        let messages = [
+            { role: "system", content: "You are Lemo-Tutor. You are a witty, highly technical engineering expert. You use Markdown and LaTeX. You are NOT a robot. You remember context." },
+            ...hist.map(h => ({ role: h.role, content: h.content }))
+        ];
+
+        // Current Payload
         let content = txt;
         if(imgBase64) {
-            content = [
-                { type: "text", text: txt || "Analyze this image." },
-                { type: "image_url", image_url: { url: imgBase64 } }
-            ];
+            content = [{type:"text", text:txt||"Analyze this"}, {type:"image_url", image_url:{url:imgBase64}}];
+            messages.push({role:"user", content});
         }
-        chatHist.push({ role: "user", content: content });
-        imgBase64 = null; // reset state
-        
-        fetchAI();
-    }
+        imgBase64 = null;
 
-    async function fetchAI() {
         // Placeholder
-        const container = document.getElementById('chat-container');
-        const aiDiv = document.createElement('div');
-        aiDiv.className = "message ai-msg";
+        const aiDiv = document.createElement('div'); aiDiv.className = 'msg ai'; 
         aiDiv.innerHTML = '<span class="typing-cursor"></span>';
-        container.appendChild(aiDiv);
-        container.scrollTop = container.scrollHeight;
+        box.appendChild(aiDiv);
+        box.scrollTop = box.scrollHeight;
 
         try {
             const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
                 method: 'POST',
-                headers: { 'Authorization': `Bearer ${groqKey}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    model: "meta-llama/llama-4-scout-17b-16e-instruct",
-                    messages: chatHist,
-                    temperature: 0.6,
-                    max_tokens: 1500
-                })
+                headers: { 'Authorization': `Bearer ${masterKey}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ model: "meta-llama/llama-4-scout-17b-16e-instruct", messages: messages, temperature: 0.6 })
             });
             const data = await res.json();
             const reply = data.choices[0].message.content;
-            
-            aiDiv.remove(); // Remove placeholder
-            typeMessage(reply); // Start Human Typing
-            chatHist.push({ role: "assistant", content: reply });
 
-        } catch(e) {
-            aiDiv.innerHTML = `<span style="color:red">Error: ${e.message}</span>`;
-        }
+            aiDiv.remove();
+            typeMsg(reply);
+            await supabase.from('chat_messages').insert({ session_id: currentSessionId, role: 'assistant', content: reply });
+
+        } catch(e) { aiDiv.innerHTML = "Connection Error."; }
     }
 
-    function typeMessage(fullText) {
-        const container = document.getElementById('chat-container');
-        const div = document.createElement("div");
-        div.className = "message ai-msg";
-        
-        // Initially, just a span and cursor
-        const textSpan = document.createElement("span");
-        const cursor = document.createElement("span");
-        cursor.className = "typing-cursor";
-        
-        div.appendChild(textSpan);
-        div.appendChild(cursor);
-        container.appendChild(div);
+    function typeMsg(text) {
+        const box = document.getElementById('chat-scroller');
+        const div = document.createElement("div"); div.className = "msg ai";
+        const span = document.createElement("span");
+        const cursor = document.createElement("span"); cursor.className = "typing-cursor";
+        div.appendChild(span); div.appendChild(cursor);
+        box.appendChild(div);
 
         let i = 0;
-        let speed = fullText.length > 200 ? 5 : 15; 
-
-        function typeChar() {
-            if (i < fullText.length) {
-                textSpan.textContent += fullText.charAt(i);
+        let speed = text.length > 200 ? 5 : 15;
+        function type() {
+            if(i < text.length) {
+                span.textContent += text.charAt(i);
                 i++;
-                container.scrollTop = container.scrollHeight;
-                setTimeout(typeChar, speed + Math.random() * 10);
+                box.scrollTop = box.scrollHeight;
+                setTimeout(type, speed);
             } else {
-                // TYPING DONE: CLEAN UP
                 cursor.remove();
-                
-                // 1. Parse Markdown (removes # and *)
-                const rawHTML = marked.parse(fullText);
-                
-                // 2. Inject clean HTML
-                div.innerHTML = rawHTML;
-                
-                // 3. Render Math (KaTeX)
-                renderMathInElement(div, {
-                    delimiters: [{left:"$$",right:"$$",display:true}, {left:"$",right:"$",display:false}]
-                });
-                
-                container.scrollTop = container.scrollHeight;
+                div.innerHTML = marked.parse(text);
+                renderMathInElement(div, {delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}]});
+                box.scrollTop = box.scrollHeight;
             }
         }
-        typeChar();
+        type();
     }
 
-    // --- API KEY SAVING ---
-    async function saveGroq() {
-        const k = document.getElementById('groq-key').value.trim();
+    // --- LIBRARY & ADMIN ---
+    async function uploadPDF() {
+        const t = document.getElementById('doc-title').value; const f = document.getElementById('doc-file').files[0];
+        if(!t || !f) return alert("Missing info");
+        const p = `${Date.now()}_${f.name}`;
+        await supabase.storage.from('pdfs').upload(p, f);
+        const { data } = supabase.storage.from('pdfs').getPublicUrl(p);
+        await supabase.from('resources').insert({ user_id: user.id, title: t, file_url: data.publicUrl });
+        alert("Upload Complete");
+        loadLib();
+    }
+
+    async function loadLib() {
+        const { data } = await supabase.from('resources').select('*');
+        const grid = document.getElementById('lib-grid'); grid.innerHTML = "";
+        data.forEach(d => {
+            let delBtn = "";
+            if(user.email === DIRECTOR_EMAIL) {
+                delBtn = `<button class="delete-btn" onclick="deleteRes('${d.id}')">×</button>`;
+            }
+            grid.innerHTML += `
+                <div class="res-card" onclick="window.open('${d.file_url}')">
+                    ${delBtn}
+                    <div class="res-icon">📄</div>
+                    <div class="res-title">${d.title}</div>
+                </div>`;
+        });
+    }
+
+    async function deleteRes(id) {
+        event.stopPropagation();
+        if(confirm("Delete Resource?")) {
+            await supabase.from('resources').delete().eq('id', id);
+            loadLib();
+        }
+    }
+
+    async function saveMasterKey() {
+        const k = document.getElementById('groq-key').value;
         if(k.startsWith('gsk_')) {
-            await supabase.from('user_api_keys').upsert({ user_id: user.id, groq_key: k });
-            groqKey = k;
-            alert("Key Saved!");
-        } else alert("Invalid Key");
+            await supabase.from('global_config').upsert({setting_name:'master_groq_key', setting_value:k});
+            alert("Master Key Updated Securely");
+            location.reload();
+        } else alert("Invalid Key Format");
     }
 
-    document.getElementById('userInp').addEventListener('keypress', (e) => {
-        if(e.key === 'Enter') sendMsg();
-    });
+    // Enter Key
+    document.getElementById('userInp').addEventListener('keypress', e => { if(e.key === 'Enter') sendMsg(); });
 </script>
 </body>
 </html>
