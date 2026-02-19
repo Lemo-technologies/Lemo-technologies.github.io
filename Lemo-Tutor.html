@@ -3,397 +3,380 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LEMO • Rustenburg</title>
+    <title>LEMO • Rustenburg Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+    
     <style>
-        :root { --accent: #00ff88; --bg: #05070a; --glass: rgba(15,20,25,0.97); --border: rgba(255,255,255,0.08); --text: #f0f2f5; --card: #0f141a; }
+        /* CORE THEME - Fixed to prevent White Screen */
+        :root {
+            --accent: #00ff88;
+            --bg: #05070a; /* Darkest Blue/Black */
+            --glass: rgba(15, 20, 25, 0.96);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #f0f2f5;
+            --card: #0f141a;
+            --error: #ff3366;
+        }
+
         * { margin:0; padding:0; box-sizing:border-box; }
-        body, html { height:100dvh; background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; overflow:hidden; }
+
+        body, html {
+            height: 100dvh;
+            background-color: var(--bg) !important; /* Force Dark Mode */
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+
+        /* SCREENS */
+        .screen { position: absolute; inset: 0; display: none; flex-direction: column; background: var(--bg); }
+        .screen.active { display: flex; }
+
+        /* AUTH & SETUP */
+        #auth-screen, #setup-screen { align-items: center; justify-content: center; background: radial-gradient(circle at top, #1a2330 0%, #05070a 100%); }
         
-        .screen { position:absolute; inset:0; display:none; flex-direction:column; }
-        .screen.active { display:flex; }
-        #auth-screen, #setup-screen { align-items:center; justify-content:center; background:linear-gradient(135deg, #0a0e14, #05070a); }
+        .auth-card { width: 90%; max-width: 400px; background: var(--glass); border: 1px solid var(--border); border-radius: 24px; padding: 40px 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); text-align: center; }
         
-        header { flex-shrink:0; padding:1rem 1.5rem; background:rgba(5,7,10,0.95); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; z-index:100; height:64px; }
-        .logo { font-size:1.35rem; font-weight:700; letter-spacing:3px; color:var(--accent); display:flex; align-items:center; gap:10px; }
-        .nav { display:flex; gap:10px; }
-        .nav-btn { padding:9px 18px; background:transparent; border:1px solid var(--border); border-radius:14px; color:var(--text); cursor:pointer; font-weight:500; transition:all 0.25s; font-size:0.95rem; }
-        .nav-btn.active, .nav-btn:hover { background:var(--accent); color:#000; border-color:var(--accent); transform:translateY(-1px); }
+        input { width: 100%; padding: 15px; background: #0a0e14; border: 1px solid var(--border); border-radius: 12px; color: white; margin-bottom: 15px; font-size: 1rem; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(0,255,136,0.1); }
+
+        button.auth-btn { width: 100%; padding: 15px; background: var(--accent); color: #000; border: none; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: 0.2s; }
+        button.auth-btn:active { transform: scale(0.96); }
+
+        /* APP HEADER */
+        header { flex-shrink: 0; height: 64px; padding: 0 20px; background: rgba(5,7,10,0.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; z-index: 100; }
+        .logo { font-weight: 700; letter-spacing: 2px; color: var(--accent); display: flex; align-items: center; gap: 8px; }
+        .nav { display: flex; gap: 8px; }
+        .nav-btn { padding: 8px 16px; background: transparent; border: 1px solid transparent; border-radius: 10px; color: #888; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: 0.3s; }
+        .nav-btn.active { background: rgba(0,255,136,0.1); color: var(--accent); border-color: rgba(0,255,136,0.2); }
+
+        /* CONTENT AREAS */
+        .main-content { flex: 1; display: flex; overflow: hidden; position: relative; }
+        .content-area { flex: 1; overflow-y: auto; padding: 20px; display: none; -webkit-overflow-scrolling: touch; }
+        .content-area.active-view { display: block; }
+
+        /* LIBRARY STYLES */
+        .upload-section { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 25px; }
+        .library-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding-bottom: 40px; }
         
-        .auth-card, .setup-card { width:94%; max-width:420px; background:var(--glass); border:1px solid var(--border); border-radius:28px; padding:40px 28px; box-shadow:0 30px 80px rgba(0,0,0,0.6); text-align:center; }
-        input { width:100%; padding:16px 20px; background:#0a0e14; border:1px solid var(--border); border-radius:14px; color:white; margin-bottom:16px; font-size:1rem; }
-        button.auth-btn { width:100%; padding:16px; background:var(--accent); color:#000; border:none; border-radius:14px; font-weight:700; font-size:1.1rem; cursor:pointer; margin-top:12px; transition:0.3s; }
-        button.auth-btn:hover { transform:scale(1.03); }
-        .toggle-link { margin-top:28px; color:var(--accent); cursor:pointer; font-size:0.95rem; }
+        .resource-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; position: relative; transition: 0.3s; }
+        .resource-card:hover { border-color: var(--accent); transform: translateY(-5px); }
+        .pdf-preview { height: 120px; background: linear-gradient(45deg, #111, #1a2330); display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+        .card-info { padding: 12px; }
+        .card-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-btns { display: flex; gap: 8px; }
+        .card-btn { flex: 1; padding: 8px; border-radius: 8px; border: none; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+
+        /* CHAT STYLES */
+        #chat-view { display: none; flex-direction: column; height: 100%; }
+        #chat-view.active-view { display: flex; }
+        #chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
         
-        .main-content { flex:1; display:flex; overflow:hidden; }
-        .content-area { flex:1; overflow-y:auto; padding:20px; background:var(--bg); -webkit-overflow-scrolling:touch; }
-        
-        /* LIBRARY - PERFECT FIT */
-        #library-view .upload-box { background:var(--card); padding:22px; border-radius:22px; margin-bottom:24px; }
-        .library-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:20px; }
-        .resource-card { background:var(--card); border:1px solid var(--border); border-radius:20px; overflow:hidden; transition:all 0.3s; }
-        .resource-card:hover { transform:translateY(-8px); box-shadow:0 25px 50px rgba(0,255,136,0.15); }
-        .pdf-icon { height:160px; background:linear-gradient(135deg,#1a2330,#0f141a); display:flex; align-items:center; justify-content:center; font-size:4rem; color:#00ff88; }
-        .card-body { padding:16px; }
-        .card-body h3 { font-size:1.05rem; line-height:1.35; margin-bottom:12px; }
-        .card-actions { display:flex; gap:10px; }
-        .card-actions button { flex:1; padding:10px; border-radius:10px; font-size:0.9rem; font-weight:600; }
-        
-        /* CHAT */
-        #chat-view { flex-direction:column; }
-        #chat-container { flex:1; overflow-y:auto; padding:20px; display:flex; flex-direction:column; gap:22px; scroll-behavior:smooth; -webkit-overflow-scrolling:touch; }
-        .message { max-width:88%; padding:16px 22px; border-radius:22px; line-height:1.65; font-size:0.97rem; box-shadow:0 4px 15px rgba(0,0,0,0.3); }
-        .user-msg { align-self:flex-end; background:linear-gradient(135deg, rgba(0,255,136,0.15), rgba(0,255,136,0.03)); border:1px solid rgba(0,255,136,0.45); border-bottom-right-radius:6px; }
-        .ai-msg { align-self:flex-start; background:var(--glass); border:1px solid var(--border); border-bottom-left-radius:6px; }
-        .input-card { background:#12171d; border:1px solid var(--border); border-radius:24px; padding:8px 16px; display:flex; align-items:center; gap:12px; margin:16px 20px 24px; box-shadow:0 10px 30px rgba(0,0,0,0.4); }
+        .message { max-width: 85%; padding: 14px 18px; border-radius: 18px; line-height: 1.6; font-size: 0.95rem; }
+        .user-msg { align-self: flex-end; background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3); color: var(--accent); border-bottom-right-radius: 4px; }
+        .ai-msg { align-self: flex-start; background: var(--card); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+
+        .chat-input-area { padding: 15px; background: var(--bg); border-top: 1px solid var(--border); display: flex; gap: 10px; align-items: center; }
+        .chat-box { flex: 1; background: #0a0e14; border: 1px solid var(--border); border-radius: 12px; padding: 0 15px; display: flex; align-items: center; height: 50px; }
         
         /* SETTINGS */
-        .setting-card { background:var(--card); border:1px solid var(--border); border-radius:20px; padding:28px; max-width:620px; margin:0 auto; }
-        
-        h2 { color:var(--accent); margin-bottom:18px; font-size:1.45rem; }
-        
-        /* MOBILE OPTIMISATION */
-        @media (max-width: 640px) {
-            .content-area { padding:16px; }
-            .library-grid { grid-template-columns:repeat(auto-fill, minmax(160px,1fr)); gap:16px; }
-            .pdf-icon { height:140px; font-size:3.5rem; }
-            .upload-box { padding:18px; }
-            .auth-card, .setup-card { padding:32px 24px; width:96%; }
-            .input-card { margin:12px 16px 20px; }
+        .settings-card { background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid var(--border); max-width: 600px; margin: 0 auto; }
+
+        @media (max-width: 600px) {
+            .library-grid { grid-template-columns: 1fr 1fr; }
         }
-        
-        .typing-cursor { display:inline-block; width:6px; height:1.3em; background:var(--accent); margin-left:4px; border-radius:2px; animation:blink 1s infinite; vertical-align:middle; }
-        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.25} }
     </style>
 </head>
 <body>
 
-<!-- AUTH -->
 <div id="auth-screen" class="screen active">
     <div class="auth-card">
-        <div class="logo" style="justify-content:center;font-size:2.2rem;margin-bottom:24px;"><span style="font-size:2.8rem;">🧠</span> LEMO</div>
-        <h1 id="auth-title" style="font-size:1.7rem;margin-bottom:8px;">Welcome back</h1>
-        <p id="auth-subtitle" style="opacity:0.75;margin-bottom:32px;">Sign in to your engineering hub</p>
-        <input type="email" id="email" placeholder="Email address">
+        <div style="font-size:3rem; margin-bottom:10px;">🧠</div>
+        <h2 style="margin-bottom:5px;">Lemo Hub</h2>
+        <p style="opacity:0.6; margin-bottom:30px;">Rustenburg Engineering Portal</p>
+        
+        <input type="email" id="email" placeholder="Email Address">
         <input type="password" id="password" placeholder="Password">
-        <button class="auth-btn" id="auth-btn" onclick="handleAuth()">Sign In</button>
-        <div class="toggle-link" id="toggle-link" onclick="toggleAuthMode()">Don't have an account? Create one</div>
+        
+        <button class="auth-btn" onclick="handleAuth()" id="auth-action-btn">Sign In</button>
+        <p style="margin-top:20px; font-size:0.9rem; color:var(--accent); cursor:pointer;" onclick="toggleAuth()" id="auth-toggle">Create an account</p>
     </div>
 </div>
 
-<!-- SETUP -->
 <div id="setup-screen" class="screen">
-    <div class="setup-card">
-        <div class="logo" style="justify-content:center;font-size:1.9rem;margin-bottom:32px;">⚙️ Supabase Setup</div>
-        <p style="opacity:0.8;margin-bottom:28px;line-height:1.5;">Enter once.<br>Stays only in your browser.</p>
-        <input type="text" id="supa-url" placeholder="https://vqfjvycaiegxgvhquntr.supabase.co">
-        <input type="text" id="supa-anon" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
-        <button class="auth-btn" onclick="saveSupabaseConfig()">Save & Launch LEMO</button>
-        <p style="font-size:0.82rem;opacity:0.6;margin-top:24px;">Never shared. GitHub safe.</p>
+    <div class="auth-card">
+        <h2>⚙️ Connect DB</h2>
+        <p style="opacity:0.6; margin-bottom:20px;">Enter your Supabase Keys</p>
+        <input type="text" id="supa-url" placeholder="Project URL (https://...)">
+        <input type="text" id="supa-anon" placeholder="Anon API Key">
+        <button class="auth-btn" onclick="saveConfig()">Connect System</button>
     </div>
 </div>
 
-<!-- MAIN APP -->
 <div id="main-app" class="screen">
     <header>
-        <div class="logo"><span style="display:inline-block;width:11px;height:11px;background:var(--accent);border-radius:50%;box-shadow:0 0 18px var(--accent);"></span> LEMO-TUTOR</div>
+        <div class="logo">LEMO</div>
         <div class="nav">
-            <button class="nav-btn active" onclick="switchView('library')">📚 Library</button>
-            <button class="nav-btn" onclick="switchView('chat')">🤖 Lemo Tutor</button>
-            <button class="nav-btn" onclick="switchView('settings')">⚙️ Settings</button>
-        </div>
-        <div style="display:flex;align-items:center;gap:14px;font-size:0.9rem;">
-            <div id="user-email" style="opacity:0.8;"></div>
-            <button onclick="logout()" style="background:#ff3366;color:white;padding:8px 18px;border:none;border-radius:12px;font-weight:600;cursor:pointer;">Logout</button>
+            <button class="nav-btn active" onclick="setView('library')">Library</button>
+            <button class="nav-btn" onclick="setView('chat')">Tutor</button>
+            <button class="nav-btn" onclick="setView('settings')">Settings</button>
         </div>
     </header>
 
     <div class="main-content">
-        <!-- LIBRARY - NOW PERFECTLY FITS -->
-        <div id="library-view" class="content-area">
-            <h2>My Library</h2>
-            <div class="upload-box">
-                <h3 style="margin-bottom:16px;">Upload new resource</h3>
-                <input type="text" id="res-title" placeholder="Resource title" style="margin-bottom:12px;">
-                <input type="file" id="pdf-upload" accept=".pdf" style="margin-bottom:12px;">
-                <button onclick="uploadResource()" style="background:var(--accent);color:#000;padding:14px 32px;border:none;border-radius:14px;font-weight:700;cursor:pointer;width:100%;">Upload to Shelf</button>
+        <div id="library-view" class="content-area active-view">
+            <div class="upload-section">
+                <h3 style="color:var(--accent); margin-bottom:15px;">Upload Resource</h3>
+                <input type="text" id="res-title" placeholder="Document Title (e.g. Circuit Theory Ch1)">
+                <input type="file" id="pdf-upload" accept=".pdf">
+                <button class="auth-btn" onclick="uploadPDF()">Upload PDF</button>
             </div>
-            <input type="text" id="search" placeholder="Search resources..." onkeyup="filterResources()" style="width:100%;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:16px;margin-bottom:24px;">
-            <div id="library-grid" class="library-grid"></div>
+            <h3 style="margin-bottom:15px;">My Bookshelf</h3>
+            <div id="library-grid" class="library-grid">
+                </div>
         </div>
 
-        <!-- CHAT -->
-        <div id="chat-view" class="content-area" style="display:none;flex-direction:column;">
-            <div style="margin-bottom:16px;">
-                <h2>Lemo-Tutor • Rustenburg</h2>
-                <p style="opacity:0.7;">Your personal engineering mentor</p>
+        <div id="chat-view" class="content-area">
+            <div id="chat-container">
+                <div class="message ai-msg">Lemo-Tutor Online. I have access to Vision and Engineering data. How can I help?</div>
             </div>
-            <div id="chat-container"></div>
-            <div class="input-card">
-                <button onclick="document.getElementById('chat-file').click()" style="background:transparent;border:none;color:var(--accent);font-size:1.7rem;cursor:pointer;">📎</button>
-                <input type="file" id="chat-file" accept="image/*" style="display:none" onchange="handleChatImage()">
-                <input type="text" id="chat-input" placeholder="Ask Lemo anything..." style="flex:1;background:transparent;border:none;outline:none;color:white;font-size:16px;" onkeypress="if(event.key==='Enter') sendChatMessage()">
-                <button onclick="sendChatMessage()" style="background:var(--accent);color:#000;border:none;width:52px;height:52px;border-radius:16px;font-size:1.5rem;cursor:pointer;">→</button>
+            <div class="chat-input-area">
+                <div class="chat-box">
+                    <button onclick="document.getElementById('chat-img').click()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; margin-right:10px;">📎</button>
+                    <input type="file" id="chat-img" accept="image/*" style="display:none" onchange="previewImg()">
+                    <input type="text" id="chat-input" placeholder="Type a message..." style="border:none; margin:0; padding:0; height:100%;" onkeypress="if(event.key==='Enter') sendMessage()">
+                </div>
+                <button onclick="sendMessage()" class="auth-btn" style="width:auto; padding:0 20px;">→</button>
             </div>
         </div>
 
-        <!-- SETTINGS -->
-        <div id="settings-view" class="content-area" style="display:none;">
-            <div class="setting-card">
-                <h2>Account</h2>
-                <p><strong>Email:</strong> <span id="settings-email"></span></p>
-                <br><br>
-                <h2>Groq API Key</h2>
-                <input type="password" id="groq-key-input" placeholder="gsk_...">
-                <button onclick="saveGroqKey()" style="background:var(--accent);color:#000;padding:14px 32px;border:none;border-radius:14px;font-weight:700;cursor:pointer;margin-top:12px;width:100%;">Save Key Securely</button>
-                <br><br><br>
-                <h2>Supabase</h2>
-                <button onclick="editSupabaseConfig()" style="background:#3366ff;color:white;padding:14px 32px;border:none;border-radius:14px;font-weight:700;cursor:pointer;width:100%;">Edit Supabase Config</button>
+        <div id="settings-view" class="content-area">
+            <div class="settings-card">
+                <h3>API Configuration</h3>
+                <p style="opacity:0.6; margin-bottom:10px;">Your Groq AI Key</p>
+                <input type="password" id="groq-key" placeholder="gsk_...">
+                <button class="auth-btn" onclick="saveGroq()">Save Key</button>
+                <hr style="border:1px solid var(--border); margin:30px 0;">
+                <button onclick="logout()" style="width:100%; padding:15px; background:var(--error); border:none; border-radius:12px; color:white; font-weight:700;">Log Out</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    let supabase;
-    let currentUser = null;
-    let groqKey = null;
-    let resources = [];
+    let supabase, user, groqKey;
+    let isLogin = true;
     let chatHistory = [];
-    let chatImageBase64 = null;
-    let supabaseConfig = null;
+    let currentImgBase64 = null;
 
-    async function init() {
-        const saved = localStorage.getItem('lemo_supabase_config');
-        if (saved) {
-            supabaseConfig = JSON.parse(saved);
-            supabase = window.supabase.createClient(supabaseConfig.url, supabaseConfig.anon);
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                currentUser = session.user;
-                await loadUserData();
-                showMainApp();
+    // --- INITIALIZATION ---
+    window.onload = async () => {
+        const cfg = JSON.parse(localStorage.getItem('lemo_config'));
+        if(cfg) {
+            supabase = window.supabase.createClient(cfg.url, cfg.anon);
+            const { data } = await supabase.auth.getSession();
+            if(data.session) {
+                user = data.session.user;
+                await loadApp();
             } else {
-                document.getElementById("auth-screen").classList.add("active");
+                document.getElementById('auth-screen').classList.add('active');
             }
         } else {
-            document.getElementById("setup-screen").classList.add("active");
+            document.getElementById('setup-screen').classList.add('active');
         }
-    }
+    };
 
-    function showMainApp() {
-        document.getElementById("auth-screen").classList.remove("active");
-        document.getElementById("setup-screen").classList.remove("active");
-        document.getElementById("main-app").classList.add("active");
-        document.getElementById("user-email").textContent = currentUser.email;
-        document.getElementById("settings-email").textContent = currentUser.email;
-        switchView("library");
-    }
-
-    async function loadUserData() {
-        const { data: keyData } = await supabase.from('user_api_keys').select('groq_key').eq('user_id', currentUser.id).single();
-        groqKey = keyData?.groq_key || null;
-        const { data: res } = await supabase.from('resources').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
-        resources = res || [];
-        renderLibrary();
-    }
-
-    function saveSupabaseConfig() {
-        const url = document.getElementById("supa-url").value.trim();
-        const anon = document.getElementById("supa-anon").value.trim();
-        if (!url || !anon) return alert("Please fill both fields");
-        localStorage.setItem('lemo_supabase_config', JSON.stringify({url, anon}));
-        location.reload();
-    }
-    function editSupabaseConfig() {
-        const cfg = JSON.parse(localStorage.getItem('lemo_supabase_config') || '{}');
-        const u = prompt("Supabase URL", cfg.url || "");
-        const a = prompt("Anon key", cfg.anon || "");
-        if (u && a) {
-            localStorage.setItem('lemo_supabase_config', JSON.stringify({url:u, anon:a}));
-            alert("Updated. Refreshing...");
+    function saveConfig() {
+        const url = document.getElementById('supa-url').value.trim();
+        const anon = document.getElementById('supa-anon').value.trim();
+        if(url && anon) {
+            localStorage.setItem('lemo_config', JSON.stringify({url, anon}));
             location.reload();
         }
     }
 
-    let isLogin = true;
-    function toggleAuthMode() {
+    // --- AUTHENTICATION ---
+    function toggleAuth() {
         isLogin = !isLogin;
-        document.getElementById("auth-title").textContent = isLogin ? "Welcome back" : "Create account";
-        document.getElementById("auth-subtitle").textContent = isLogin ? "Sign in to your engineering hub" : "Join the community";
-        document.getElementById("auth-btn").textContent = isLogin ? "Sign In" : "Create Account";
-        document.getElementById("toggle-link").textContent = isLogin ? "Don't have an account? Create one" : "Already have an account? Sign in";
+        document.getElementById('auth-action-btn').innerText = isLogin ? "Sign In" : "Register";
+        document.getElementById('auth-toggle').innerText = isLogin ? "Create an account" : "Back to Login";
     }
+
     async function handleAuth() {
-        const email = document.getElementById("email").value.trim();
-        const pass = document.getElementById("password").value.trim();
-        if (!email || !pass) return alert("All fields required");
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
         let res;
-        if (isLogin) res = await supabase.auth.signInWithPassword({email, password:pass});
-        else res = await supabase.auth.signUp({email, password:pass});
-        if (res.error) return alert(res.error.message);
-        currentUser = res.data.user;
-        await loadUserData();
-        showMainApp();
+        if(isLogin) res = await supabase.auth.signInWithPassword({email, password});
+        else res = await supabase.auth.signUp({email, password});
+        
+        if(res.error) alert(res.error.message);
+        else location.reload();
     }
+
     async function logout() {
         await supabase.auth.signOut();
         location.reload();
     }
 
-    function switchView(view) {
-        document.getElementById("library-view").style.display = "none";
-        document.getElementById("chat-view").style.display = "none";
-        document.getElementById("settings-view").style.display = "none";
+    // --- APP LOGIC ---
+    async function loadApp() {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('main-app').classList.add('active');
+        
+        // Load Key
+        const { data } = await supabase.from('user_api_keys').select('groq_key').eq('user_id', user.id).single();
+        if(data) groqKey = data.groq_key;
 
-        if (view === "library") document.getElementById("library-view").style.display = "block";
-        else if (view === "chat") {
-            if (!groqKey) { alert("Please add your Groq key in Settings first"); switchView("settings"); return; }
-            document.getElementById("chat-view").style.display = "flex";
-            initChatUI();
+        loadLibrary();
+    }
+
+    function setView(viewId) {
+        document.querySelectorAll('.content-area').forEach(d => d.classList.remove('active-view'));
+        document.getElementById(viewId + '-view').classList.add('active-view');
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+    }
+
+    // --- LIBRARY ---
+    async function uploadPDF() {
+        const title = document.getElementById('res-title').value;
+        const file = document.getElementById('pdf-upload').files[0];
+        if(!file || !title) return alert("Please fill details");
+
+        const fileName = `${Date.now()}_${file.name}`;
+        // Upload to Bucket
+        const { error: upErr } = await supabase.storage.from('pdfs').upload(fileName, file);
+        if(upErr) return alert("Upload Failed: " + upErr.message);
+
+        // Get URL
+        const { data: urlData } = supabase.storage.from('pdfs').getPublicUrl(fileName);
+
+        // Save to DB
+        const { error: dbErr } = await supabase.from('resources').insert({
+            user_id: user.id,
+            title: title,
+            file_url: urlData.publicUrl
+        });
+
+        if(dbErr) alert("DB Error: " + dbErr.message);
+        else {
+            alert("Uploaded!");
+            loadLibrary();
         }
-        else if (view === "settings") document.getElementById("settings-view").style.display = "block";
-
-        document.querySelectorAll('.nav-btn').forEach((b,i) => b.classList.toggle('active', i === ['library','chat','settings'].indexOf(view)));
     }
 
-    async function uploadResource() {
-        const title = document.getElementById("res-title").value.trim();
-        const file = document.getElementById("pdf-upload").files[0];
-        if (!title || !file) return alert("Title + PDF required");
-        const path = `${currentUser.id}/${Date.now()}-${file.name}`;
-        const { error: upErr } = await supabase.storage.from('pdfs').upload(path, file);
-        if (upErr) return alert(upErr.message);
-        const { data: urlData } = supabase.storage.from('pdfs').getPublicUrl(path);
-        const { error: dbErr } = await supabase.from('resources').insert({ user_id: currentUser.id, title, file_url: urlData.publicUrl });
-        if (dbErr) return alert(dbErr.message);
-        alert("✅ Uploaded to your shelf!");
-        document.getElementById("res-title").value = "";
-        document.getElementById("pdf-upload").value = "";
-        await loadUserData();
-    }
-    function renderLibrary(f = resources) {
-        const g = document.getElementById("library-grid");
-        g.innerHTML = "";
-        f.forEach(r => {
-            const c = document.createElement("div");
-            c.className = "resource-card";
-            c.innerHTML = `
-                <div class="pdf-icon">📘</div>
-                <div class="card-body">
-                    <h3>${r.title}</h3>
-                    <div class="card-actions">
-                        <button onclick="window.open('${r.file_url}','_blank')" style="background:#00cc66;color:white;">Open</button>
-                        <button onclick="deleteResource('${r.id}')" style="background:#ff3366;color:white;">Delete</button>
+    async function loadLibrary() {
+        const { data } = await supabase.from('resources').select('*').eq('user_id', user.id);
+        const grid = document.getElementById('library-grid');
+        grid.innerHTML = "";
+        data.forEach(item => {
+            grid.innerHTML += `
+                <div class="resource-card">
+                    <div class="pdf-preview">📄</div>
+                    <div class="card-info">
+                        <div class="card-title">${item.title}</div>
+                        <div class="card-btns">
+                            <button class="card-btn" style="background:#2ecc71; color:white;" onclick="window.open('${item.file_url}')">OPEN</button>
+                            <button class="card-btn" style="background:#e74c3c; color:white;" onclick="deleteItem('${item.id}')">DEL</button>
+                        </div>
                     </div>
                 </div>
             `;
-            g.appendChild(c);
         });
-        if (f.length === 0) g.innerHTML = `<p style="grid-column:1/-1;text-align:center;opacity:0.6;padding:80px 20px;">No resources yet.<br>Upload your first PDF above!</p>`;
-    }
-    function filterResources() {
-        const t = document.getElementById("search").value.toLowerCase();
-        renderLibrary(resources.filter(r => r.title.toLowerCase().includes(t)));
-    }
-    async function deleteResource(id) {
-        if (!confirm("Delete permanently?")) return;
-        await supabase.from('resources').delete().eq('id', id);
-        await loadUserData();
     }
 
-    function initChatUI() {
-        const c = document.getElementById("chat-container");
-        if (c.children.length === 0 && chatHistory.length <= 1) {
-            const w = document.createElement("div");
-            w.className = "message ai-msg";
-            w.innerHTML = "Hey! Lemo here from Rustenburg.<br>What engineering topic shall we master today?";
-            c.appendChild(w);
+    async function deleteItem(id) {
+        if(confirm("Delete this?")) {
+            await supabase.from('resources').delete().eq('id', id);
+            loadLibrary();
         }
     }
-    async function sendChatMessage() {
-        const inp = document.getElementById("chat-input");
-        const q = inp.value.trim();
-        if (!q && !chatImageBase64) return;
-        const cont = document.getElementById("chat-container");
 
-        const uMsg = document.createElement("div");
-        uMsg.className = "message user-msg";
-        uMsg.textContent = q || "Analyzing image...";
-        cont.appendChild(uMsg);
-        inp.value = "";
+    // --- CHAT & VISION ---
+    function previewImg() {
+        const file = document.getElementById('chat-img').files[0];
+        const reader = new FileReader();
+        reader.onload = e => { 
+            currentImgBase64 = e.target.result;
+            alert("Image attached! Type your question.");
+        };
+        reader.readAsDataURL(file);
+    }
 
-        let userContent = q;
-        if (chatImageBase64) {
-            userContent = [{type:"text", text: q || "Analyze this"}, {type:"image_url", image_url:{url:chatImageBase64}}];
-            chatImageBase64 = null;
+    async function sendMessage() {
+        if(!groqKey) return alert("Go to settings and save your Groq Key first!");
+        
+        const input = document.getElementById('chat-input');
+        const text = input.value.trim();
+        if(!text && !currentImgBase64) return;
+
+        // UI Update
+        const container = document.getElementById('chat-container');
+        container.innerHTML += `<div class="message user-msg">${text || "Analyzing image..."}</div>`;
+        input.value = "";
+        
+        // Prepare Payload
+        let content = text;
+        if(currentImgBase64) {
+            content = [
+                { type: "text", text: text || "Analyze this image" },
+                { type: "image_url", image_url: { url: currentImgBase64 } }
+            ];
         }
-        chatHistory.push({role:"user", content: userContent});
+        
+        chatHistory.push({ role: "user", content: content });
+        currentImgBase64 = null; // Reset image
 
-        const load = document.createElement("div");
-        load.className = "message ai-msg";
-        load.innerHTML = `<span style="opacity:0.6;">Lemo is thinking...</span>`;
-        cont.appendChild(load);
-        cont.scrollTop = cont.scrollHeight;
-
+        // API Call
         try {
             const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${groqKey}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ model: "meta-llama/llama-4-scout-17b-16e-instruct", messages: chatHistory, temperature: 0.72, max_tokens: 2048 })
+                body: JSON.stringify({
+                    model: "meta-llama/llama-4-scout-17b-16e-instruct",
+                    messages: chatHistory,
+                    temperature: 0.6
+                })
             });
+            
             const data = await res.json();
-            load.remove();
-            if (data.choices) {
+            if(data.choices) {
                 const reply = data.choices[0].message.content;
-                chatHistory.push({role:"assistant", content: reply});
-                const aMsg = document.createElement("div");
-                aMsg.className = "message ai-msg";
-                aMsg.innerHTML = parseAndRender(reply);
-                cont.appendChild(aMsg);
-                if (typeof renderMathInElement !== "undefined") renderMathInElement(aMsg, {delimiters: [{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}], throwOnError:false});
+                chatHistory.push({ role: "assistant", content: reply });
+                
+                // Format Math & Text
+                const formatted = reply.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+                
+                const msgDiv = document.createElement('div');
+                msgDiv.className = "message ai-msg";
+                msgDiv.innerHTML = formatted;
+                container.appendChild(msgDiv);
+                
+                // Render Math
+                renderMathInElement(msgDiv, {
+                    delimiters: [{left:"$$",right:"$$",display:true}, {left:"$",right:"$",display:false}]
+                });
             }
         } catch(e) {
-            load.remove();
-            const err = document.createElement("div");
-            err.className = "message ai-msg";
-            err.textContent = "Connection issue – check your Groq key in Settings.";
-            cont.appendChild(err);
+            container.innerHTML += `<div class="message ai-msg" style="color:red">Error: ${e.message}</div>`;
         }
-        cont.scrollTop = cont.scrollHeight;
-    }
-    function handleChatImage() {
-        const f = document.getElementById("chat-file").files[0];
-        if (!f) return;
-        const r = new FileReader();
-        r.onload = e => { chatImageBase64 = e.target.result; sendChatMessage(); };
-        r.readAsDataURL(f);
-    }
-    function parseAndRender(t) {
-        return t
-            .replace(/^### (.*$)/gm, '<h3 style="color:#00ff99;margin:22px 0 12px 0;font-size:1.18rem;">$1</h3>')
-            .replace(/^## (.*$)/gm, '<h2 style="color:#00ffaa;margin:28px 0 16px 0;">$1</h2>')
-            .replace(/^- (.*$)/gm, '<li style="margin:8px 0;">• $1</li>')
-            .replace(/((<li>.*?<\/li>\s*)+)/gs, '<ul style="padding-left:24px;margin:14px 0;">$1</ul>')
-            .replace(/\n/g, '<br>');
+        container.scrollTop = container.scrollHeight;
     }
 
-    async function saveGroqKey() {
-        const k = document.getElementById("groq-key-input").value.trim();
-        if (!k.startsWith("gsk_")) return alert("Key must start with gsk_");
-        const { error } = await supabase.from('user_api_keys').upsert({user_id: currentUser.id, groq_key: k});
-        if (error) return alert(error.message);
-        groqKey = k;
-        alert("✅ Groq key saved securely!");
-        switchView("chat");
+    async function saveGroq() {
+        const key = document.getElementById('groq-key').value;
+        if(key.startsWith('gsk_')) {
+            const { error } = await supabase.from('user_api_keys').upsert({ user_id: user.id, groq_key: key });
+            if(!error) {
+                groqKey = key;
+                alert("Key Saved Securely!");
+            } else alert(error.message);
+        } else alert("Invalid Key");
     }
-
-    window.onload = init;
 </script>
 </body>
 </html>
