@@ -3,31 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LEMO-TUTOR | HUMAN EDITION</title>
+    <title>LEMO-TUTOR | Premium Hub</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 
     <style>
-        /* --- THEME FROM SNIPPET --- */
+        /* --- PREMIUM DARK THEME --- */
         :root {
             --bg: #05070a;
-            --text: #f0f2f5;
+            --text: #e0e6ed;
             --accent: #00ff88;
-            --glass: rgba(15,20,25,0.95);
-            --border: rgba(255,255,255,0.1);
-            --cursor: #00ffaa;
-            --card-bg: #11151b;
+            --glass: rgba(18, 24, 30, 0.95);
+            --border: rgba(255,255,255,0.08);
+            --cursor: #00ff88;
         }
 
+        /* RESET & BASE */
         * { margin:0; padding:0; box-sizing:border-box; }
-
-        body {
+        
+        body, html {
             height: 100dvh;
-            background: var(--bg);
+            background-color: var(--bg) !important; /* NO WHITE SCREEN */
             color: var(--text);
             font-family: 'Inter', sans-serif;
             overflow: hidden;
@@ -35,22 +37,24 @@
             flex-direction: column;
         }
 
-        /* --- SCREENS (Auth/Setup/App) --- */
-        .screen { position: absolute; inset: 0; display: none; flex-direction: column; background: var(--bg); z-index: 200; }
-        .screen.active { display: flex; }
+        /* --- SCREEN MANAGEMENT --- */
+        .screen { position: absolute; inset: 0; display: none; flex-direction: column; background: var(--bg); z-index: 10; }
+        .screen.active { display: flex; z-index: 20; }
 
-        /* --- AUTH STYLES --- */
-        #auth-screen, #setup-screen { align-items: center; justify-content: center; background: radial-gradient(circle at top, #0f1623 0%, #05070a 100%); }
-        .auth-card { width: 90%; max-width: 400px; background: var(--glass); border: 1px solid var(--border); border-radius: 24px; padding: 40px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .auth-input { width: 100%; padding: 14px; background: #0a0e14; border: 1px solid var(--border); border-radius: 12px; color: white; margin-bottom: 12px; outline: none; transition: 0.3s; }
+        /* --- AUTH & SETUP STYLES --- */
+        #auth-screen, #setup-screen { align-items: center; justify-content: center; background: radial-gradient(circle at top, #111923 0%, #05070a 100%); }
+        .auth-card { width: 85%; max-width: 380px; background: var(--glass); border: 1px solid var(--border); border-radius: 24px; padding: 30px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+        .auth-input { width: 100%; padding: 14px; background: #0a0e12; border: 1px solid var(--border); border-radius: 12px; color: white; margin-bottom: 12px; outline: none; transition: 0.3s; }
         .auth-input:focus { border-color: var(--accent); }
-        .auth-btn { width: 100%; padding: 14px; background: var(--accent); color: #000; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 1rem; margin-top: 10px; }
+        .primary-btn { width: 100%; padding: 14px; background: var(--accent); color: #000; border: none; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; margin-top: 10px; transition: 0.2s; }
+        .primary-btn:active { transform: scale(0.98); }
 
         /* --- HEADER --- */
         header {
-            padding: 1rem 1.5rem;
+            height: 60px;
+            padding: 0 15px;
             background: rgba(5,7,10,0.9);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(15px);
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
@@ -58,70 +62,102 @@
             flex-shrink: 0;
             z-index: 100;
         }
-        .logo { font-size: 1.1rem; font-weight: 700; letter-spacing: 3px; color: var(--accent); display: flex; align-items: center; }
-        .glow-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 12px var(--accent); margin-right: 10px; display: inline-block; }
+        .logo { font-weight: 700; letter-spacing: 2px; color: var(--accent); display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+        .glow-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 10px var(--accent); }
         
-        .nav { display: flex; gap: 5px; }
-        .nav-btn { padding: 8px 12px; background: transparent; border: 1px solid transparent; color: #888; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: 0.3s; }
-        .nav-btn.active { color: var(--accent); background: rgba(0,255,136,0.1); border-color: rgba(0,255,136,0.2); }
+        .nav { display: flex; gap: 6px; }
+        .nav-btn { padding: 8px 12px; background: transparent; border: 1px solid transparent; color: #888; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: 0.3s; }
+        .nav-btn.active { color: var(--accent); background: rgba(0,255,136,0.1); border-color: rgba(0,255,136,0.15); }
 
-        /* --- CONTENT VIEWS --- */
+        /* --- MAIN CONTENT AREA --- */
         .main-content { flex: 1; position: relative; overflow: hidden; display: flex; }
         .view-section { flex: 1; display: none; flex-direction: column; height: 100%; overflow: hidden; }
         .view-section.active-view { display: flex; }
 
-        /* --- CHAT VIEW (Typing Effect Style) --- */
+        /* --- CHAT VIEW (PREMIUM) --- */
         #chat-container {
             flex: 1;
             overflow-y: auto;
-            padding: 20px 24px;
+            padding: 20px 15px;
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 15px;
             scroll-behavior: smooth;
         }
-        .message { max-width: 88%; padding: 14px 20px; border-radius: 18px; line-height: 1.6; font-size: 0.96rem; animation: pop 0.2s ease; }
-        .user-msg { align-self: flex-end; background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,255,136,0.02)); border: 1px solid rgba(0,255,136,0.3); color: var(--accent); border-bottom-right-radius: 4px; }
-        .ai-msg { align-self: flex-start; background: var(--glass); border: 1px solid var(--border); border-bottom-left-radius: 4px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+        .message { max-width: 88%; padding: 12px 18px; border-radius: 18px; line-height: 1.5; font-size: 0.95rem; position: relative; }
+        
+        .user-msg { 
+            align-self: flex-end; 
+            background: linear-gradient(135deg, rgba(0,255,136,0.15), rgba(0,255,136,0.02)); 
+            border: 1px solid rgba(0,255,136,0.3); 
+            color: var(--accent); 
+            border-bottom-right-radius: 4px; 
+            animation: slideUp 0.3s ease;
+        }
+        
+        .ai-msg { 
+            align-self: flex-start; 
+            background: #11151b; 
+            border: 1px solid var(--border); 
+            border-bottom-left-radius: 4px; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
 
-        .typing-cursor { display: inline-block; width: 6px; height: 1.2em; background: var(--cursor); margin-left: 5px; border-radius: 2px; vertical-align: middle; animation: blink 1s infinite; }
-        @keyframes blink { 0%,100% { opacity:1 } 50% { opacity:0.25 } }
-        @keyframes pop { from { opacity:0; transform:translateY(10px) } to { opacity:1; transform:none } }
+        .typing-cursor {
+            display: inline-block; width: 6px; height: 1em; background: var(--cursor); 
+            margin-left: 5px; border-radius: 2px; vertical-align: middle; animation: blink 1s infinite;
+        }
 
-        .input-area { padding: 18px 24px; background: linear-gradient(to top, var(--bg) 60%, transparent); flex-shrink: 0; }
-        .input-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 22px; padding: 8px 16px; display: flex; align-items: center; gap: 12px; }
-        input[type="text"] { flex: 1; background: transparent; border: none; color: white; font-size: 1rem; outline: none; padding: 12px 0; }
-        .icon-btn { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: #888; transition: 0.2s; }
-        .icon-btn:hover { color: var(--accent); }
-        .send-btn { background: var(--accent); color: #000; border: none; width: 42px; height: 42px; border-radius: 14px; font-weight: 900; cursor: pointer; font-size: 1.2rem; }
+        @keyframes blink { 0%,100% { opacity:1 } 50% { opacity:0.3 } }
+        @keyframes slideUp { from { opacity:0; transform:translateY(10px) } to { opacity:1; transform:none } }
+
+        .input-area { 
+            padding: 15px; 
+            background: linear-gradient(to top, var(--bg) 50%, transparent); 
+            flex-shrink: 0; 
+        }
+        .input-card { 
+            background: #0f1319; 
+            border: 1px solid var(--border); 
+            border-radius: 20px; 
+            padding: 6px 12px; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+        }
+        input[type="text"] { flex: 1; background: transparent; border: none; color: white; font-size: 1rem; outline: none; padding: 12px 0; font-family: inherit; }
+        .send-btn { background: var(--accent); color: #000; border: none; width: 40px; height: 40px; border-radius: 12px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
         /* --- LIBRARY VIEW --- */
         #library-view { padding: 20px; overflow-y: auto; }
-        .lib-upload { background: var(--card-bg); padding: 20px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 25px; }
-        .lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
-        .res-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 15px; transition: 0.2s; position: relative; }
-        .res-card:hover { border-color: var(--accent); transform: translateY(-3px); }
-        .res-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 10px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-        
-        /* --- SETTINGS VIEW --- */
-        #settings-view { padding: 20px; display: flex; justify-content: center; }
-        .settings-box { width: 100%; max-width: 500px; background: var(--card-bg); padding: 30px; border-radius: 20px; border: 1px solid var(--border); }
+        .upload-box { background: var(--glass); padding: 20px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 20px; }
+        .lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
+        .res-card { background: #11151b; border: 1px solid var(--border); border-radius: 12px; padding: 12px; transition: 0.2s; }
+        .res-card:hover { border-color: var(--accent); }
 
-        /* Math & Formatting */
-        h3 { color: var(--accent); font-size: 1.1rem; margin: 15px 0 8px 0; }
-        pre { background: #0a0e14; padding: 12px; border-radius: 8px; overflow-x: auto; border: 1px solid #333; margin: 10px 0; }
+        /* --- SETTINGS --- */
+        #settings-view { padding: 20px; }
+        .settings-card { background: var(--glass); padding: 25px; border-radius: 20px; border: 1px solid var(--border); max-width: 500px; margin: 0 auto; }
+
+        /* MATH & FORMATTING */
+        pre { background: #000; padding: 12px; border-radius: 8px; overflow-x: auto; border: 1px solid #222; margin: 10px 0; }
+        code { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: #ff79c6; }
+        h3 { color: var(--accent); font-size: 1.1rem; margin-top: 15px; }
+        ul { padding-left: 20px; margin: 10px 0; }
+        li { margin-bottom: 5px; opacity: 0.9; }
     </style>
 </head>
 <body>
 
 <div id="auth-screen" class="screen active">
     <div class="auth-card">
-        <h1 style="color:var(--accent); font-size:2rem; margin-bottom:10px;">LEMO</h1>
-        <p style="opacity:0.6; margin-bottom:30px;">Human Engineering Partner</p>
+        <h1 style="color:var(--accent); font-size:2rem; margin-bottom:5px;">LEMO</h1>
+        <p style="opacity:0.6; margin-bottom:30px;">Engineering Hub</p>
         <input type="email" id="email" class="auth-input" placeholder="Email">
         <input type="password" id="password" class="auth-input" placeholder="Password">
-        <button class="auth-btn" onclick="handleAuth()" id="auth-btn-text">Sign In</button>
-        <p style="margin-top:20px; font-size:0.85rem; cursor:pointer; opacity:0.7;" onclick="toggleAuthMode()" id="auth-toggle">New? Create Account</p>
+        <button class="primary-btn" onclick="handleAuth()" id="auth-btn-text">Sign In</button>
+        <p style="margin-top:20px; font-size:0.85rem; cursor:pointer; opacity:0.7;" onclick="toggleAuth()" id="auth-toggle">New? Create Account</p>
     </div>
 </div>
 
@@ -131,16 +167,16 @@
         <p style="font-size:0.8rem; margin-bottom:20px; opacity:0.6;">Connect Supabase to proceed</p>
         <input type="text" id="supa-url" class="auth-input" placeholder="Supabase URL">
         <input type="text" id="supa-anon" class="auth-input" placeholder="Anon Key">
-        <button class="auth-btn" onclick="saveConfig()">Connect</button>
+        <button class="primary-btn" onclick="saveConfig()">Connect</button>
     </div>
 </div>
 
 <div id="app-screen" class="screen">
     <header>
-        <div class="logo"><span class="glow-dot"></span>LEMO-TUTOR 3.5</div>
+        <div class="logo"><span class="glow-dot"></span>LEMO-TUTOR</div>
         <div class="nav">
             <button class="nav-btn" onclick="nav('library')">Library</button>
-            <button class="nav-btn active" onclick="nav('chat')">Chat</button>
+            <button class="nav-btn active" onclick="nav('chat')">Tutor</button>
             <button class="nav-btn" onclick="nav('settings')">Settings</button>
         </div>
     </header>
@@ -148,11 +184,11 @@
     <div class="main-content">
         
         <div id="library-view" class="view-section">
-            <div class="lib-upload">
-                <h3 style="margin-top:0;">Upload Resource</h3>
-                <input type="text" id="doc-title" class="auth-input" placeholder="Title (e.g. Maths Ch1)">
+            <div class="upload-box">
+                <h3 style="margin-top:0; margin-bottom:10px;">Add Resource</h3>
+                <input type="text" id="doc-title" class="auth-input" placeholder="Title">
                 <input type="file" id="doc-file" class="auth-input" accept=".pdf">
-                <button class="auth-btn" style="width:auto; padding:10px 25px;" onclick="uploadPDF()">Upload PDF</button>
+                <button class="primary-btn" style="width:auto; padding:10px 25px;" onclick="uploadPDF()">Upload</button>
             </div>
             <div id="lib-grid" class="lib-grid"></div>
         </div>
@@ -161,8 +197,8 @@
             <div id="chat-container"></div>
             <div class="input-area">
                 <div class="input-card">
-                    <button class="icon-btn" onclick="document.getElementById('chat-img').click()">📎</button>
-                    <input type="file" id="chat-img" accept="image/*" style="display:none" onchange="imgAttached()">
+                    <button onclick="document.getElementById('chat-img').click()" style="background:none; border:none; font-size:1.4rem; cursor:pointer; color:#888;">📎</button>
+                    <input type="file" id="chat-img" accept="image/*" style="display:none" onchange="alert('Image attached!')">
                     <input type="text" id="userInp" placeholder="Ask Lemo..." autocomplete="off">
                     <button class="send-btn" onclick="sendMsg()">→</button>
                 </div>
@@ -170,13 +206,13 @@
         </div>
 
         <div id="settings-view" class="view-section">
-            <div class="settings-box">
-                <h3>API Configuration</h3>
-                <p style="font-size:0.8rem; margin-bottom:10px; opacity:0.6;">Groq API Key (Llama 4 Scout)</p>
+            <div class="settings-card">
+                <h3>System Keys</h3>
+                <p style="font-size:0.8rem; margin-bottom:10px; opacity:0.6;">Groq API Key (gsk_...)</p>
                 <input type="password" id="groq-key" class="auth-input">
-                <button class="auth-btn" onclick="saveGroq()">Save Key</button>
+                <button class="primary-btn" onclick="saveGroq()">Save Key</button>
                 <div style="margin-top:40px; border-top:1px solid var(--border); padding-top:20px;">
-                    <button class="auth-btn" style="background:#ff3366; color:#fff;" onclick="logout()">Log Out</button>
+                    <button class="primary-btn" style="background:#ff3366; color:#fff;" onclick="logout()">Log Out</button>
                 </div>
             </div>
         </div>
@@ -185,11 +221,11 @@
 </div>
 
 <script>
-    // --- STATE ---
+    // --- STATE MANAGEMENT ---
     let supabase, user, groqKey;
     let isLogin = true;
     let chatHist = [
-        { role: "system", content: "You are Lemo-Tutor, a human engineering expert. You are NOT an AI. You have a personality, you are helpful, slightly informal but highly technical. You remember context. Never say 'As an AI'." }
+        { role: "system", content: "You are Lemo-Tutor, a human engineering expert. You are witty, concise, and highly technical. You are NOT a robot. Do not bore the user. Use LaTeX for math. Use Markdown for formatting. You remember context." }
     ];
     let imgBase64 = null;
 
@@ -230,7 +266,7 @@
         if(url && anon) { localStorage.setItem('lemo_cfg', JSON.stringify({url, anon})); location.reload(); }
     }
 
-    function toggleAuthMode() {
+    function toggleAuth() {
         isLogin = !isLogin;
         document.getElementById('auth-btn-text').innerText = isLogin ? "Sign In" : "Create Account";
         document.getElementById('auth-toggle').innerText = isLogin ? "New? Create Account" : "Back to Login";
@@ -254,15 +290,15 @@
         const { data } = await supabase.from('user_api_keys').select('groq_key').eq('user_id', user.id).single();
         if(data) groqKey = data.groq_key;
         
-        // Initial Greeting
+        // Initial "Human" Greeting
         setTimeout(() => {
             if(document.getElementById('chat-container').children.length === 0) {
-                typeMessage("Hey there! Lemo-Tutor online. I'm ready to help with any engineering problem. What are we working on?");
+                typeMessage("Lemo-Tutor online. Let's solve some engineering problems. What have you got?");
             }
         }, 500);
     }
 
-    // --- LIBRARY ---
+    // --- LIBRARY (DATABASE + STORAGE) ---
     async function uploadPDF() {
         const title = document.getElementById('doc-title').value;
         const file = document.getElementById('doc-file').files[0];
@@ -274,7 +310,7 @@
         
         const { data: urlData } = supabase.storage.from('pdfs').getPublicUrl(path);
         await supabase.from('resources').insert({ user_id: user.id, title, file_url: urlData.publicUrl });
-        alert("Saved to Library!");
+        alert("Saved!");
         loadLib();
     }
 
@@ -285,9 +321,9 @@
         data.forEach(d => {
             grid.innerHTML += `
                 <div class="res-card">
-                    <div class="res-title">${d.title}</div>
+                    <div style="font-weight:600; margin-bottom:10px; color:#fff;">${d.title}</div>
                     <div style="display:flex; gap:10px;">
-                        <button onclick="window.open('${d.file_url}')" style="flex:1; background:var(--accent); border:none; border-radius:6px; cursor:pointer; font-weight:600;">OPEN</button>
+                        <button onclick="window.open('${d.file_url}')" style="flex:1; background:var(--accent); border:none; padding:8px; border-radius:6px; cursor:pointer;">OPEN</button>
                         <button onclick="delRes('${d.id}')" style="flex:1; background:#ff3366; color:white; border:none; border-radius:6px; cursor:pointer;">DEL</button>
                     </div>
                 </div>
@@ -299,20 +335,31 @@
         if(confirm("Delete?")) { await supabase.from('resources').delete().eq('id', id); loadLib(); }
     }
 
-    // --- CHAT & TYPING ENGINE ---
-    function imgAttached() {
+    // --- CHAT & HUMAN TYPING ENGINE ---
+    
+    // 1. Send User Message
+    function sendMsg() {
+        if(!groqKey) return alert("Save Groq API Key in Settings first.");
+        const txt = document.getElementById('userInp').value.trim();
         const file = document.getElementById('chat-img').files[0];
-        const reader = new FileReader();
-        reader.onload = e => { imgBase64 = e.target.result; alert("Image attached!"); };
-        reader.readAsDataURL(file);
+
+        if(!txt && !file) return;
+
+        // Image Handling
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                imgBase64 = e.target.result;
+                processSend(txt);
+                document.getElementById('chat-img').value = ""; // clear file input
+            };
+            reader.readAsDataURL(file);
+        } else {
+            processSend(txt);
+        }
     }
 
-    // 1. Add User Message immediately
-    function sendMsg() {
-        if(!groqKey) return alert("Please save your Groq API Key in Settings first.");
-        const txt = document.getElementById('userInp').value.trim();
-        if(!txt && !imgBase64) return;
-
+    function processSend(txt) {
         const container = document.getElementById('chat-container');
         const userDiv = document.createElement('div');
         userDiv.className = "message user-msg";
@@ -322,7 +369,7 @@
         
         document.getElementById('userInp').value = "";
         
-        // Prepare API Payload
+        // Prepare Payload
         let content = txt;
         if(imgBase64) {
             content = [
@@ -331,14 +378,14 @@
             ];
         }
         chatHist.push({ role: "user", content: content });
-        imgBase64 = null; // reset
-
+        imgBase64 = null; // reset state
+        
         fetchAI();
     }
 
-    // 2. Fetch from Groq
+    // 2. Fetch AI Response
     async function fetchAI() {
-        // Create placeholder for typing
+        // Placeholder
         const container = document.getElementById('chat-container');
         const aiDiv = document.createElement('div');
         aiDiv.className = "message ai-msg";
@@ -360,9 +407,8 @@
             const data = await res.json();
             const reply = data.choices[0].message.content;
             
-            // Remove placeholder and start typing effect
-            aiDiv.remove();
-            typeMessage(reply);
+            aiDiv.remove(); // Remove placeholder
+            typeMessage(reply); // Start Human Typing
             chatHist.push({ role: "assistant", content: reply });
 
         } catch(e) {
@@ -370,7 +416,7 @@
         }
     }
 
-    // 3. The Human Typing Effect Function
+    // 3. The Human Typing Logic
     function typeMessage(fullText) {
         const container = document.getElementById('chat-container');
         const div = document.createElement("div");
@@ -385,17 +431,18 @@
         container.appendChild(div);
 
         let i = 0;
+        // Faster typing for long text so it doesn't bore people
+        let speed = fullText.length > 200 ? 5 : 15; 
+
         function typeChar() {
             if (i < fullText.length) {
-                // simple scroll fix
                 textSpan.textContent += fullText.charAt(i);
                 i++;
                 container.scrollTop = container.scrollHeight;
-                // Randomized typing speed for "human" feel
-                setTimeout(typeChar, 10 + Math.random() * 15);
+                setTimeout(typeChar, speed + Math.random() * 10);
             } else {
                 cursor.remove();
-                // Format Markdown & Math AFTER typing is done
+                // Render Math & Markdown AFTER typing is complete
                 div.innerHTML = formatText(fullText);
                 renderMathInElement(div, {
                     delimiters: [{left:"$$",right:"$$",display:true}, {left:"$",right:"$",display:false}]
@@ -408,10 +455,11 @@
 
     function formatText(t) {
         return t.replace(/\n/g, '<br>')
-                .replace(/\*\*(.*?)\*\*/g, '<h3>$1</h3>') // Bold to H3 for emphasis
+                .replace(/\*\*(.*?)\*\*/g, '<h3>$1</h3>')
                 .replace(/```([\s\S]*?)```/g, '<pre>$1</pre>');
     }
 
+    // --- API KEY SAVING ---
     async function saveGroq() {
         const k = document.getElementById('groq-key').value.trim();
         if(k.startsWith('gsk_')) {
@@ -421,7 +469,7 @@
         } else alert("Invalid Key");
     }
 
-    // Input Enter Key
+    // Enter Key Listener
     document.getElementById('userInp').addEventListener('keypress', (e) => {
         if(e.key === 'Enter') sendMsg();
     });
