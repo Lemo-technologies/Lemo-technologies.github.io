@@ -38,7 +38,10 @@
 
         /* DIRECTOR POSTING BOX */
         .director-only { display: none; background: rgba(0, 255, 136, 0.05); border: 1px dashed var(--accent); border-radius: 20px; padding: 20px; margin-bottom: 30px; }
-        input, textarea { width: 100%; padding: 12px; background: #0f1319; border: 1px solid var(--border); border-radius: 10px; color: white; margin-bottom: 10px; outline: none; box-sizing: border-box; }
+        input, textarea, .file-label { width: 100%; padding: 12px; background: #0f1319; border: 1px solid var(--border); border-radius: 10px; color: white; margin-bottom: 10px; outline: none; box-sizing: border-box; }
+        .file-label { display: inline-block; cursor: pointer; text-align: center; border: 1px dashed var(--accent); }
+        .file-label:hover { background: #1a1f2a; }
+        #p-image { display: none; }
         .post-btn { background: var(--accent); color: #000; border: none; padding: 12px 25px; border-radius: 10px; font-weight: 700; cursor: pointer; width: 100%; }
 
         /* POST CARDS (Facebook Style) */
@@ -58,6 +61,7 @@
         .comment-input-wrap { display: flex; gap: 10px; margin-top: 15px; }
         .comment-input { flex: 1; background: #05070a; border: 1px solid var(--border); padding: 10px; border-radius: 10px; color: white; margin-bottom: 0; }
         .send-comment { background: var(--accent); border: none; padding: 0 15px; border-radius: 10px; cursor: pointer; font-weight: 800; }
+        #file-name { margin-top: -5px; margin-bottom: 10px; font-size: 0.85rem; opacity: 0.7; }
     </style>
 </head>
 <body>
@@ -67,7 +71,7 @@
     <div class="nav-tabs">
         <a href="hub.html" class="nav-tab active">Hub</a>
         <a href="index.html" class="nav-tab">Tutor</a>
-        </div>
+    </div>
 </header>
 
 <div class="container">
@@ -75,7 +79,12 @@
         <h3 style="margin-top:0;">Director: Create New Dose</h3>
         <input type="text" id="p-title" placeholder="Title of post">
         <textarea id="p-content" rows="4" placeholder="Write the engineering lesson here..."></textarea>
-        <input type="text" id="p-img" placeholder="Image URL (Unsplash/Supabase link)">
+        
+        <!-- Image Upload Field (replaces URL input) -->
+        <label for="p-image" class="file-label" id="file-label">📷 Choose an image (optional)</label>
+        <input type="file" id="p-image" accept="image/*">
+        <div id="file-name"></div>
+        
         <button class="post-btn" onclick="publishPost()">Publish to Empire</button>
     </div>
 
@@ -98,11 +107,19 @@
         
         if(session) {
             currentUser = session.user;
-            if(currentUser.email === DIRECTOR_EMAIL) document.getElementById('director-panel').style.display = 'block';
+            if(currentUser.email === DIRECTOR_EMAIL) {
+                document.getElementById('director-panel').style.display = 'block';
+            }
             loadPosts();
         } else {
             window.location.href = "index.html";
         }
+
+        // Display selected filename
+        document.getElementById('p-image').addEventListener('change', function(e) {
+            const fileName = e.target.files[0] ? e.target.files[0].name : '';
+            document.getElementById('file-name').innerText = fileName ? `Selected: ${fileName}` : '';
+        });
     };
 
     function getSmartName(email) {
@@ -152,11 +169,53 @@
     async function publishPost() {
         const title = document.getElementById('p-title').value;
         const content = document.getElementById('p-content').value;
-        const image_url = document.getElementById('p-img').value;
+        const imageFile = document.getElementById('p-image').files[0];
+        
         if(!title) return alert("Title required");
 
-        await supabase.from('hub_posts').insert({ title, content, image_url });
-        location.reload();
+        let image_url = null;
+
+        // Upload image if selected
+        if (imageFile) {
+            // Create a unique file path
+            const filePath = `hub_images/${Date.now()}_${imageFile.name}`;
+            
+            // Upload to Supabase storage (bucket named 'hub_images' - you may need to create it)
+            const { error: uploadError } = await supabase.storage
+                .from('hub_images')  // Make sure this bucket exists in your Supabase storage
+                .upload(filePath, imageFile);
+            
+            if (uploadError) {
+                console.error('Upload error:', uploadError);
+                alert('Failed to upload image: ' + uploadError.message);
+                return;
+            }
+            
+            // Get public URL
+            const { data: urlData } = supabase.storage
+                .from('hub_images')
+                .getPublicUrl(filePath);
+            
+            image_url = urlData.publicUrl;
+        }
+
+        // Insert post with image_url (or null)
+        const { error } = await supabase.from('hub_posts').insert({ 
+            title, 
+            content, 
+            image_url 
+        });
+
+        if (error) {
+            alert('Error publishing post: ' + error.message);
+        } else {
+            // Clear form
+            document.getElementById('p-title').value = '';
+            document.getElementById('p-content').value = '';
+            document.getElementById('p-image').value = '';
+            document.getElementById('file-name').innerText = '';
+            loadPosts(); // Refresh feed
+        }
     }
 
     async function addComment(postId) {
@@ -175,4 +234,3 @@
 </script>
 </body>
 </html>
-
