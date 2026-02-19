@@ -13,6 +13,7 @@
             --border: rgba(255, 255, 255, 0.12);
             --card: #11151b;
             --text: #e2e8f0;
+            --danger: #ff3366;
         }
 
         body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; height: 100%; overflow-x: hidden; }
@@ -34,7 +35,7 @@
         }
         .nav-tab.active { background: rgba(0, 255, 136, 0.1); color: var(--accent); }
 
-        .container { max-width: 700px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 700px; margin: 0 auto; padding: 20px; position: relative; }
 
         /* DIRECTOR POSTING BOX */
         .director-only { display: none; background: rgba(0, 255, 136, 0.05); border: 1px dashed var(--accent); border-radius: 20px; padding: 20px; margin-bottom: 30px; }
@@ -45,7 +46,7 @@
         .post-btn { background: var(--accent); color: #000; border: none; padding: 12px 25px; border-radius: 10px; font-weight: 700; cursor: pointer; width: 100%; }
 
         /* POST CARDS (Facebook Style) */
-        .hub-post { background: var(--card); border: 1px solid var(--border); border-radius: 20px; margin-bottom: 25px; overflow: hidden; }
+        .hub-post { background: var(--card); border: 1px solid var(--border); border-radius: 20px; margin-bottom: 25px; overflow: hidden; position: relative; }
         .post-header { padding: 15px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
         .avatar { width: 35px; height: 35px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 800; }
         .post-img { width: 100%; max-height: 450px; object-fit: cover; border-bottom: 1px solid var(--border); }
@@ -62,6 +63,29 @@
         .comment-input { flex: 1; background: #05070a; border: 1px solid var(--border); padding: 10px; border-radius: 10px; color: white; margin-bottom: 0; }
         .send-comment { background: var(--accent); border: none; padding: 0 15px; border-radius: 10px; cursor: pointer; font-weight: 800; }
         #file-name { margin-top: -5px; margin-bottom: 10px; font-size: 0.85rem; opacity: 0.7; }
+
+        /* DELETE BUTTON (same style as library) */
+        .delete-post-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--danger);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            z-index: 20;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            font-size: 1.2rem;
+            transition: 0.2s;
+        }
+        .delete-post-btn:hover { background: #ff5555; transform: scale(1.1); }
     </style>
 </head>
 <body>
@@ -80,7 +104,7 @@
         <input type="text" id="p-title" placeholder="Title of post">
         <textarea id="p-content" rows="4" placeholder="Write the engineering lesson here..."></textarea>
         
-        <!-- Image Upload Field (replaces URL input) -->
+        <!-- Image Upload Field -->
         <label for="p-image" class="file-label" id="file-label">📷 Choose an image (optional)</label>
         <input type="file" id="p-image" accept="image/*">
         <div id="file-name"></div>
@@ -142,8 +166,14 @@
                     </div>
                 `).join('');
 
+                // Only show delete button if current user is director
+                const deleteButton = (currentUser && currentUser.email === DIRECTOR_EMAIL) 
+                    ? `<button class="delete-post-btn" onclick="deletePost('${p.id}', '${p.image_url || ''}')">×</button>` 
+                    : '';
+
                 feed.innerHTML += `
-                    <div class="hub-post">
+                    <div class="hub-post" id="post-${p.id}">
+                        ${deleteButton}
                         <div class="post-header">
                             <div class="avatar">LM</div>
                             <div style="font-weight:700;">Director Lemo</div>
@@ -177,12 +207,10 @@
 
         // Upload image if selected
         if (imageFile) {
-            // Create a unique file path
             const filePath = `hub_images/${Date.now()}_${imageFile.name}`;
             
-            // Upload to Supabase storage (bucket named 'hub_images' - you may need to create it)
             const { error: uploadError } = await supabase.storage
-                .from('hub_images')  // Make sure this bucket exists in your Supabase storage
+                .from('hub_images')
                 .upload(filePath, imageFile);
             
             if (uploadError) {
@@ -191,7 +219,6 @@
                 return;
             }
             
-            // Get public URL
             const { data: urlData } = supabase.storage
                 .from('hub_images')
                 .getPublicUrl(filePath);
@@ -199,7 +226,6 @@
             image_url = urlData.publicUrl;
         }
 
-        // Insert post with image_url (or null)
         const { error } = await supabase.from('hub_posts').insert({ 
             title, 
             content, 
@@ -214,7 +240,7 @@
             document.getElementById('p-content').value = '';
             document.getElementById('p-image').value = '';
             document.getElementById('file-name').innerText = '';
-            loadPosts(); // Refresh feed
+            loadPosts();
         }
     }
 
@@ -230,6 +256,50 @@
         });
         input.value = "";
         loadPosts();
+    }
+
+    // NEW: Delete post function
+    async function deletePost(postId, imageUrl) {
+        if (!confirm("Are you sure you want to delete this post? This action cannot be undone.")) return;
+
+        // If there's an image, delete it from storage first
+        if (imageUrl) {
+            // Extract file path from URL
+            // Example URL: https://<project>.supabase.co/storage/v1/object/public/hub_images/hub_images/12345_image.jpg
+            // The path is after '/object/public/hub_images/'
+            const bucketName = 'hub_images';
+            const publicUrlPrefix = `${supabase.storage.from(bucketName).getPublicUrl('').data.publicUrl}`;
+            // Remove the base URL to get the file path
+            let filePath = imageUrl.replace(publicUrlPrefix, '');
+            // Remove leading slash if any
+            if (filePath.startsWith('/')) filePath = filePath.substring(1);
+
+            const { error: storageError } = await supabase.storage
+                .from(bucketName)
+                .remove([filePath]);
+
+            if (storageError) {
+                console.error('Failed to delete image:', storageError);
+                alert('Warning: Post will be deleted but image could not be removed from storage.');
+                // Continue to delete post anyway
+            }
+        }
+
+        // Delete the post from the database
+        const { error: dbError } = await supabase
+            .from('hub_posts')
+            .delete()
+            .eq('id', postId);
+
+        if (dbError) {
+            alert('Error deleting post: ' + dbError.message);
+        } else {
+            // Remove the post element from the DOM
+            const postElement = document.getElementById(`post-${postId}`);
+            if (postElement) postElement.remove();
+            // Optionally reload the whole feed to keep consistency
+            // loadPosts();
+        }
     }
 </script>
 </body>
