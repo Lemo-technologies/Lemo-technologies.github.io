@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LEMO-TUTOR | MATH PERFECTED</title>
+    <title>LEMO-TUTOR | FINAL UX</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
@@ -15,23 +15,21 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 
     <style>
-        /* --- LEMO PREMIUM THEME (v6.2) --- */
+        /* --- LEMO THEME --- */
         :root {
             --bg: #05070a;
-            --sidebar-bg: #0a0e12;
+            --sidebar: #0a0e12;
             --text: #e2e8f0;
             --accent: #00ff88;
             --accent-dim: rgba(0, 255, 136, 0.1);
-            --glass: rgba(15, 20, 28, 0.96);
-            --border: rgba(255, 255, 255, 0.08);
+            --glass: rgba(15, 20, 28, 0.98);
+            --border: rgba(255, 255, 255, 0.12);
             --cursor: #00ff88;
             --user-msg-bg: rgba(0, 255, 136, 0.08);
             --ai-msg-bg: #11151b;
-            --error: #ff3366;
         }
 
-        /* RESET */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
         
         body, html {
             height: 100dvh;
@@ -43,257 +41,145 @@
             flex-direction: column;
         }
 
-        /* --- SCREEN MANAGEMENT --- */
+        /* --- SCREENS --- */
         .screen { position: absolute; inset: 0; display: none; flex-direction: column; background: var(--bg); z-index: 50; }
         .screen.active { display: flex; }
 
-        /* --- AUTH & SETUP SCREENS --- */
-        #auth-screen, #setup-screen { align-items: center; justify-content: center; background: radial-gradient(circle at top, #111923 0%, #05070a 100%); }
-        
-        .auth-card { 
-            width: 85%; max-width: 380px; 
-            background: var(--glass); 
-            border: 1px solid var(--border); 
-            border-radius: 24px; 
-            padding: 40px 30px; 
-            text-align: center; 
-            box-shadow: 0 30px 80px rgba(0,0,0,0.6); 
-            backdrop-filter: blur(20px);
-        }
-        
-        .auth-logo { font-size: 2rem; margin-bottom: 10px; display: block; }
-        .auth-title { font-size: 1.5rem; font-weight: 700; color: var(--accent); margin-bottom: 5px; letter-spacing: 2px; }
-        .auth-subtitle { font-size: 0.9rem; opacity: 0.6; margin-bottom: 30px; }
-        
-        .auth-input { 
-            width: 100%; padding: 14px; 
-            background: #0f1319; 
-            border: 1px solid var(--border); 
-            border-radius: 12px; 
-            color: white; 
-            margin-bottom: 12px; 
-            outline: none; 
-            transition: 0.3s; 
-            font-size: 0.95rem;
-        }
+        /* --- AUTH SCREEN --- */
+        #auth-screen { align-items: center; justify-content: center; background: radial-gradient(circle at top, #111923 0%, #05070a 100%); }
+        .auth-card { width: 85%; max-width: 360px; background: var(--glass); border: 1px solid var(--border); border-radius: 24px; padding: 35px; text-align: center; box-shadow: 0 30px 80px rgba(0,0,0,0.8); }
+        .auth-logo { font-size: 3rem; margin-bottom: 10px; display: block; }
+        .auth-title { font-size: 1.5rem; font-weight: 700; color: var(--accent); margin-bottom: 5px; letter-spacing: 3px; }
+        .auth-input { width: 100%; padding: 16px; background: #0f1319; border: 1px solid var(--border); border-radius: 12px; color: white; margin-bottom: 12px; outline: none; font-size: 1rem; transition: 0.3s; }
         .auth-input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(0,255,136,0.1); }
-        
-        .primary-btn { 
-            width: 100%; padding: 14px; 
-            background: var(--accent); 
-            color: #000; 
-            border: none; 
-            border-radius: 12px; 
-            font-weight: 700; 
-            font-size: 1rem; 
-            cursor: pointer; 
-            transition: 0.2s; 
-        }
+        .primary-btn { width: 100%; padding: 16px; background: var(--accent); color: #000; border: none; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: 0.2s; }
         .primary-btn:active { transform: scale(0.98); }
-        .link-text { margin-top: 20px; font-size: 0.85rem; cursor: pointer; opacity: 0.7; transition: 0.2s; }
-        .link-text:hover { color: var(--accent); opacity: 1; }
+        .link-text { margin-top: 20px; font-size: 0.85rem; cursor: pointer; opacity: 0.7; }
 
         /* --- APP LAYOUT --- */
-        #app-layout { display: flex; width: 100%; height: 100%; position: relative; }
+        #app-layout { display: flex; width: 100%; height: 100%; position: relative; overflow: hidden; }
 
         /* SIDEBAR (HISTORY) */
         .sidebar {
             width: 280px;
-            background: var(--sidebar-bg);
+            background: var(--sidebar);
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
+            z-index: 200; 
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 40;
-            flex-shrink: 0;
         }
         
-        .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border); }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+        
         .new-chat-btn { 
-            width: 100%; padding: 12px; 
-            background: rgba(255,255,255,0.03); 
-            border: 1px solid var(--border); 
-            color: var(--accent); 
-            border-radius: 12px; 
-            cursor: pointer; 
-            font-weight: 600; 
-            display: flex; align-items: center; justify-content: center; gap: 8px; 
-            transition: 0.2s; 
+            width: 90%; margin: 15px auto; padding: 12px; 
+            background: rgba(255,255,255,0.05); border: 1px solid var(--border); 
+            color: var(--accent); border-radius: 12px; cursor: pointer; font-weight: 600; 
+            display: flex; align-items: center; justify-content: center; gap: 8px;
         }
-        .new-chat-btn:hover { background: var(--accent-dim); border-color: var(--accent); }
+        .new-chat-btn:active { background: var(--accent-dim); }
         
         .history-list { flex: 1; overflow-y: auto; padding: 10px; }
         .history-item { 
-            padding: 12px 15px; 
-            margin-bottom: 4px; 
-            border-radius: 10px; 
-            cursor: pointer; 
-            color: #94a3b8; 
-            font-size: 0.9rem; 
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-            transition: 0.2s; 
-            border: 1px solid transparent;
+            padding: 14px; margin-bottom: 5px; border-radius: 10px; cursor: pointer; 
+            color: #94a3b8; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+            border: 1px solid transparent; transition: 0.2s;
         }
-        .history-item:hover { background: rgba(255,255,255,0.03); color: white; }
-        .history-item.active { background: var(--accent-dim); color: var(--accent); border-color: rgba(0,255,136,0.15); }
+        .history-item.active { background: var(--accent-dim); color: var(--accent); border-color: rgba(0,255,136,0.2); }
 
         /* MAIN PANE */
-        .main-pane { flex: 1; display: flex; flex-direction: column; position: relative; min-width: 0; background: var(--bg); }
+        .main-pane { flex: 1; display: flex; flex-direction: column; position: relative; min-width: 0; background: var(--bg); z-index: 10; }
+
+        /* MOBILE OVERLAY (Tap to close sidebar) */
+        #mobile-overlay {
+            position: absolute; inset: 0; 
+            background: rgba(0,0,0,0.6); 
+            backdrop-filter: blur(4px);
+            z-index: 150; /* Below sidebar, above chat */
+            display: none;
+            opacity: 0; transition: opacity 0.3s;
+        }
+        #mobile-overlay.active { display: block; opacity: 1; }
 
         /* HEADER */
         header {
             height: 64px;
-            padding: 0 20px;
-            background: rgba(5,7,10,0.95);
-            backdrop-filter: blur(20px);
+            padding: 0 15px;
+            background: rgba(5,7,10,0.98);
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-shrink: 0;
-            z-index: 30;
+            z-index: 100;
         }
-        .logo-area { display: flex; align-items: center; gap: 15px; }
-        .menu-btn { display: none; background: none; border: none; color: white; font-size: 1.4rem; cursor: pointer; }
-        .brand { font-weight: 700; letter-spacing: 2px; color: var(--accent); display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
-        .glow-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 12px var(--accent); }
 
-        /* NAV TABS */
-        .nav-tabs { display: flex; background: rgba(255,255,255,0.03); padding: 4px; border-radius: 12px; border: 1px solid var(--border); }
-        .nav-tab { 
-            background: transparent; 
-            border: none; 
-            color: #888; 
-            padding: 6px 16px; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-size: 0.85rem; 
-            font-weight: 600; 
-            transition: 0.2s; 
+        .menu-btn { 
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.1); border: 1px solid var(--border); 
+            color: white; font-size: 1.2rem; width: 40px; height: 40px; 
+            border-radius: 8px; cursor: pointer; margin-right: 12px;
         }
+        
+        .brand { font-weight: 700; letter-spacing: 1px; color: var(--accent); font-size: 1rem; }
+        .nav-tabs { display: flex; background: rgba(255,255,255,0.05); padding: 4px; border-radius: 12px; }
+        .nav-tab { background: transparent; border: none; color: #888; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 600; }
         .nav-tab.active { background: var(--accent-dim); color: var(--accent); }
 
-        /* VIEWS (Chat vs Library) */
+        /* CHAT AREA */
         .view-container { display: none; flex: 1; flex-direction: column; overflow: hidden; position: relative; }
         .view-container.active-view { display: flex; }
-
-        /* CHAT AREA */
-        #chat-scroller { 
-            flex: 1; 
-            overflow-y: auto; 
-            padding: 20px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 20px; 
-            scroll-behavior: smooth; 
-        }
         
-        .msg { 
-            max-width: 88%; 
-            padding: 14px 20px; 
-            border-radius: 18px; 
-            line-height: 1.6; 
-            font-size: 0.96rem; 
-            position: relative; 
-            word-wrap: break-word; 
-            animation: slideUp 0.2s ease-out;
-        }
+        #chat-scroller { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 20px; scroll-behavior: smooth; }
         
-        .msg.user { 
-            align-self: flex-end; 
-            background: var(--user-msg-bg); 
-            border: 1px solid rgba(0,255,136,0.2); 
-            color: var(--accent); 
-            border-bottom-right-radius: 4px; 
-        }
+        .msg { max-width: 88%; padding: 14px 18px; border-radius: 18px; line-height: 1.6; font-size: 0.98rem; position: relative; word-wrap: break-word; }
+        .msg.user { align-self: flex-end; background: var(--user-msg-bg); border: 1px solid rgba(0,255,136,0.2); color: var(--accent); border-bottom-right-radius: 4px; }
+        .msg.ai { align-self: flex-start; background: var(--ai-msg-bg); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
         
-        .msg.ai { 
-            align-self: flex-start; 
-            background: var(--ai-msg-bg); 
-            border: 1px solid var(--border); 
-            border-bottom-left-radius: 4px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2); 
-        }
-
-        /* --- MARKDOWN & MATH STYLES (CRITICAL FIX) --- */
-        .msg h1, .msg h2, .msg h3 { margin-top: 15px; margin-bottom: 8px; color: var(--accent); font-size: 1.1rem; letter-spacing: 0.5px; }
+        /* MARKDOWN & MATH FIXES */
+        .msg h1, .msg h2, .msg h3 { margin-top: 15px; margin-bottom: 8px; color: var(--accent); font-size: 1.1rem; }
         .msg p { margin-bottom: 10px; }
         .msg strong { color: #fff; font-weight: 700; }
         .msg ul, .msg ol { padding-left: 20px; margin-bottom: 15px; }
-        .msg li { margin-bottom: 6px; }
         
-        /* This keeps the code and math blocks INSIDE the bubble */
-        .msg code { background: rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; color: #ff79c6; overflow-wrap: break-word; }
+        /* SCROLLABLE FORMULAS */
+        .katex-display { overflow-x: auto; overflow-y: hidden; padding: 5px 0; max-width: 100%; -webkit-overflow-scrolling: touch; }
         .msg pre { background: #080b10; padding: 15px; border-radius: 12px; overflow-x: auto; margin: 15px 0; border: 1px solid var(--border); max-width: 100%; }
-        .msg pre code { background: none; padding: 0; color: #f8f8f2; }
-        
-        /* KaTeX Overflow Fix */
-        .katex-display { 
-            overflow-x: auto; 
-            overflow-y: hidden;
-            padding: 5px 0; 
-            margin: 1em 0; 
-            max-width: 100%;
-            -webkit-overflow-scrolling: touch;
-        }
-        .katex { font-size: 1.1em; } /* Make math slightly larger/readable */
+        .msg code { background: rgba(255,255,255,0.1); padding: 2px 5px; border-radius: 4px; font-family: monospace; color: #ff79c6; }
 
         .typing-cursor { display: inline-block; width: 6px; height: 1.2em; background: var(--cursor); margin-left: 5px; border-radius: 2px; vertical-align: middle; animation: blink 1s infinite; }
         @keyframes blink { 0%,100% { opacity:1 } 50% { opacity:0.3 } }
-        @keyframes slideUp { from { opacity:0; transform:translateY(10px) } to { opacity:1; transform:none } }
 
         /* INPUT AREA */
-        .input-area { padding: 20px; background: linear-gradient(to top, var(--bg) 60%, transparent); flex-shrink: 0; z-index: 20; }
-        .input-box { 
-            background: #0f1319; 
-            border: 1px solid var(--border); 
-            border-radius: 20px; 
-            padding: 8px 12px; 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4); 
-            transition: 0.3s;
-        }
-        .input-box:focus-within { border-color: var(--accent); box-shadow: 0 0 20px rgba(0,255,136,0.1); }
-        
-        input[type="text"] { flex: 1; background: transparent; border: none; color: white; font-size: 1rem; outline: none; padding: 12px 0; font-family: inherit; }
-        .icon-btn { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: #888; transition: 0.2s; padding: 5px; }
-        .icon-btn:hover { color: var(--accent); }
-        .send-btn { background: var(--accent); color: #000; border: none; width: 42px; height: 42px; border-radius: 12px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-        .send-btn:active { transform: scale(0.9); }
+        .input-area { padding: 15px; background: linear-gradient(to top, var(--bg) 80%, transparent); flex-shrink: 0; z-index: 20; padding-bottom: max(15px, env(safe-area-inset-bottom)); }
+        .input-box { background: #0f1319; border: 1px solid var(--border); border-radius: 20px; padding: 8px 12px; display: flex; align-items: center; gap: 12px; }
+        input[type="text"] { flex: 1; background: transparent; border: none; color: white; font-size: 1rem; outline: none; }
+        .send-btn { background: var(--accent); color: #000; border: none; width: 44px; height: 44px; border-radius: 12px; font-weight: 800; cursor: pointer; }
 
         /* LIBRARY & SETTINGS */
         #library-view, #settings-view { padding: 20px; overflow-y: auto; }
-        .section-card { background: #11151b; padding: 25px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 20px; }
+        .section-card { background: #11151b; padding: 20px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 20px; }
+        .lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
+        .res-card { background: #11151b; border: 1px solid var(--border); border-radius: 14px; padding: 15px; cursor: pointer; height: 120px; display: flex; flex-direction: column; justify-content: space-between; }
         
-        .lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
-        .res-card { 
-            background: #11151b; 
-            border: 1px solid var(--border); 
-            border-radius: 14px; 
-            padding: 15px; 
-            cursor: pointer; 
-            transition: 0.2s; 
-            position: relative; 
-            display: flex; flex-direction: column; justify-content: space-between; height: 120px;
-        }
-        .res-card:hover { border-color: var(--accent); transform: translateY(-4px); }
-        .res-icon { font-size: 2rem; margin-bottom: 10px; }
-        .res-title { font-weight: 600; font-size: 0.9rem; line-height: 1.3; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-
-        /* DIRECTOR ONLY */
         .director-only { display: none; }
-        .delete-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,51,102,0.2); color: #ff3366; border: none; width: 24px; height: 24px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; }
+        .delete-btn { position: absolute; top: 10px; right: 10px; background: #ff3366; color: white; width: 24px; height: 24px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-        /* RESPONSIVE */
+        /* RESPONSIVE LOGIC */
+        @media (min-width: 769px) {
+            .menu-btn { display: none !important; }
+            .sidebar { position: relative; transform: none !important; }
+            #mobile-overlay { display: none !important; }
+        }
+
         @media (max-width: 768px) {
-            .sidebar { position: absolute; height: 100%; transform: translateX(-100%); width: 280px; box-shadow: 10px 0 50px rgba(0,0,0,0.6); }
+            .sidebar { 
+                position: absolute; height: 100%; top: 0; left: 0;
+                transform: translateX(-100%); width: 80%; max-width: 300px; 
+                box-shadow: 10px 0 50px rgba(0,0,0,0.8); background: #05070a;
+            }
             .sidebar.open { transform: translateX(0); }
-            .menu-btn { display: block; }
-            .main-pane { width: 100%; }
         }
     </style>
 </head>
@@ -303,11 +189,9 @@
     <div class="auth-card">
         <span class="auth-logo">🧠</span>
         <div class="auth-title">LEMO</div>
-        <div class="auth-subtitle">Engineering Platform v6.2</div>
-        
+        <div class="auth-subtitle">Platform v6.3 Final</div>
         <input type="email" id="email" class="auth-input" placeholder="Email Address">
         <input type="password" id="password" class="auth-input" placeholder="Password">
-        
         <button class="primary-btn" onclick="handleAuth()" id="auth-btn-text">Secure Login</button>
         <div class="link-text" onclick="toggleAuth()" id="auth-toggle">First time? Create Account</div>
     </div>
@@ -316,10 +200,9 @@
 <div id="setup-screen" class="screen">
     <div class="auth-card">
         <div class="auth-title">System Setup</div>
-        <div class="auth-subtitle">Connect to Database</div>
         <input type="text" id="supa-url" class="auth-input" placeholder="Supabase URL">
         <input type="text" id="supa-anon" class="auth-input" placeholder="Anon Key">
-        <button class="primary-btn" onclick="saveConfig()">Initialize System</button>
+        <button class="primary-btn" onclick="saveConfig()">Initialize</button>
     </div>
 </div>
 
@@ -327,26 +210,24 @@
     <div id="app-layout">
         
         <div class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <button class="new-chat-btn" onclick="startNewChat()">
-                    <span style="font-size:1.2rem;">+</span> New Session
-                </button>
+            <div style="padding:20px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border);">
+                <span style="font-weight:700; color:var(--accent);">HISTORY</span>
+                <button onclick="toggleSidebar()" style="background:none; border:none; color:white; font-size:1.5rem;" class="mobile-only">×</button>
             </div>
-            <div class="history-list" id="history-list">
-                </div>
-            <div style="padding:15px; border-top:1px solid var(--border); font-size:0.8rem; color:#666; text-align:center;">
-                Lemo Technologies © 2026
-            </div>
+            <button class="new-chat-btn" onclick="startNewChat()">+ New Session</button>
+            <div class="history-list" id="history-list"></div>
         </div>
+
+        <div id="mobile-overlay" onclick="toggleSidebar()"></div>
 
         <div class="main-pane">
             <header>
-                <div class="logo-area">
+                <div style="display:flex; align-items:center;">
                     <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-                    <div class="brand"><span class="glow-dot"></span>LEMO-TUTOR</div>
+                    <div class="brand">LEMO-TUTOR</div>
                 </div>
                 
-                <div style="display:flex; align-items:center; gap:15px;">
+                <div style="display:flex; align-items:center; gap:10px;">
                     <div class="nav-tabs">
                         <button class="nav-tab active" onclick="switchView('chat')">Chat</button>
                         <button class="nav-tab" onclick="switchView('library')">Library</button>
@@ -359,45 +240,41 @@
                 <div id="chat-scroller"></div>
                 <div class="input-area">
                     <div class="input-box">
-                        <button class="icon-btn" onclick="document.getElementById('chat-img').click()">📎</button>
+                        <button onclick="document.getElementById('chat-img').click()" style="background:none; border:none; font-size:1.4rem; color:#888; padding:0 10px;">📎</button>
                         <input type="file" id="chat-img" accept="image/*" style="display:none" onchange="alert('Image Attached')">
-                        <input type="text" id="userInp" placeholder="Ask Lemo anything..." autocomplete="off">
+                        <input type="text" id="userInp" placeholder="Ask Lemo..." autocomplete="off">
                         <button class="send-btn" onclick="sendMsg()">→</button>
                     </div>
                 </div>
             </div>
 
             <div id="library-view" class="view-container">
-                <div style="max-width:800px; margin:0 auto; width:100%;">
-                    <div class="director-only section-card" id="director-upload">
-                        <h3 style="color:var(--accent); margin-top:0;">Admin Upload</h3>
-                        <div style="display:flex; gap:10px; margin-top:15px;">
-                            <input type="text" id="doc-title" class="auth-input" placeholder="Document Title" style="margin:0;">
-                            <input type="file" id="doc-file" class="auth-input" accept=".pdf" style="margin:0;">
-                        </div>
-                        <button class="primary-btn" style="width:auto; margin-top:15px; padding:10px 30px;" onclick="uploadPDF()">Upload to Library</button>
+                <div style="padding:20px; overflow-y:auto;">
+                    <div class="director-only" id="director-upload" style="background:#111; padding:20px; border-radius:15px; margin-bottom:20px; border:1px solid var(--border);">
+                        <h3 style="color:var(--accent); margin-top:0;">Director Upload</h3>
+                        <input type="text" id="doc-title" class="auth-input" placeholder="Document Title" style="margin-bottom:10px;">
+                        <input type="file" id="doc-file" class="auth-input" accept=".pdf" style="margin-bottom:10px;">
+                        <button class="primary-btn" style="width:auto;" onclick="uploadPDF()">Upload</button>
                     </div>
-
-                    <h3 style="margin-bottom:20px;">Resource Library</h3>
                     <div id="lib-grid" class="lib-grid"></div>
                 </div>
             </div>
 
             <div id="settings-view" class="view-container">
-                <div style="max-width:500px; margin:0 auto; width:100%;">
+                <div style="padding:20px; max-width:500px; margin:0 auto;">
                     <div class="section-card">
-                        <h3>User Profile</h3>
+                        <h3>Profile</h3>
                         <p id="user-email-display" style="opacity:0.6; margin-bottom:20px;"></p>
                         
                         <div class="director-only" style="border-top:1px solid var(--border); padding-top:20px; margin-top:20px;">
                             <h3 style="color:#ff3366;">Director Controls</h3>
-                            <p style="font-size:0.8rem; opacity:0.6; margin-bottom:10px;">Master API Key (Hidden from users)</p>
+                            <p style="font-size:0.8rem; opacity:0.6;">Master API Key</p>
                             <input type="password" id="groq-key" class="auth-input" placeholder="gsk_...">
-                            <button class="primary-btn" onclick="saveMasterKey()">Update Master Key</button>
+                            <button class="primary-btn" onclick="saveMasterKey()">Update Key</button>
                         </div>
 
-                        <div style="margin-top:30px; border-top:1px solid var(--border); padding-top:20px;">
-                            <button class="primary-btn" style="background:rgba(255,51,102,0.1); color:#ff3366; border:1px solid rgba(255,51,102,0.3);" onclick="logout()">Sign Out</button>
+                        <div style="margin-top:30px;">
+                            <button class="primary-btn" style="background:#ff3366;" onclick="logout()">Logout</button>
                         </div>
                     </div>
                 </div>
@@ -415,7 +292,7 @@
     let imgBase64 = null;
     const DIRECTOR_EMAIL = "s225508125@mandela.ac.za";
 
-    // --- INITIALIZATION ---
+    // --- INIT ---
     window.onload = async () => {
         const cfg = JSON.parse(localStorage.getItem('lemo_cfg'));
         if(cfg) {
@@ -437,7 +314,14 @@
     }
 
     function show(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
-    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+    
+    // --- NEW SIDEBAR LOGIC (THE FIX) ---
+    function toggleSidebar() { 
+        const sb = document.getElementById('sidebar');
+        const overlay = document.getElementById('mobile-overlay');
+        sb.classList.toggle('open');
+        overlay.classList.toggle('active');
+    }
     
     function switchView(id) { 
         document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active-view')); 
@@ -447,39 +331,18 @@
         if(id==='library') loadLib(); 
     }
 
-    // --- AUTHENTICATION ---
-    function saveConfig() { 
-        const u = document.getElementById('supa-url').value; 
-        const a = document.getElementById('supa-anon').value; 
-        if(u && a) { localStorage.setItem('lemo_cfg', JSON.stringify({url:u, anon:a})); location.reload(); } 
-    }
-    
-    function toggleAuth() { 
-        isLogin = !isLogin; 
-        document.getElementById('auth-btn-text').innerText = isLogin ? "Secure Login" : "Create Account"; 
-        document.getElementById('auth-toggle').innerText = isLogin ? "New User? Create Account" : "Back to Login"; 
-    }
-    
-    async function handleAuth() { 
-        const e = document.getElementById('email').value; 
-        const p = document.getElementById('password').value; 
-        const { error } = isLogin ? await supabase.auth.signInWithPassword({email:e, password:p}) : await supabase.auth.signUp({email:e, password:p}); 
-        if(error) alert(error.message); else location.reload(); 
-    }
-    
+    // --- AUTH ---
+    function saveConfig() { const u=document.getElementById('supa-url').value; const a=document.getElementById('supa-anon').value; if(u&&a){localStorage.setItem('lemo_cfg',JSON.stringify({url:u,anon:a}));location.reload();} }
+    function toggleAuth() { isLogin=!isLogin; document.getElementById('auth-btn-text').innerText=isLogin?"Secure Login":"Create Account"; document.getElementById('auth-toggle').innerText=isLogin?"New User? Create Account":"Back to Login"; }
+    async function handleAuth() { const e=document.getElementById('email').value; const p=document.getElementById('password').value; const {error}=isLogin?await supabase.auth.signInWithPassword({email:e,password:p}):await supabase.auth.signUp({email:e,password:p}); if(error)alert(error.message); else location.reload(); }
     async function logout() { await supabase.auth.signOut(); location.reload(); }
 
-    // --- APPLICATION START ---
+    // --- APP START ---
     async function initApp() {
         show('app-screen');
-        // Load Master Key
         const { data } = await supabase.from('global_config').select('setting_value').eq('setting_name', 'master_groq_key').single();
         masterKey = data ? data.setting_value : null;
-        
-        if(!masterKey && user.email === DIRECTOR_EMAIL) {
-            alert("Director Alert: Please set the Master API Key in Settings.");
-        }
-        
+        if(!masterKey && user.email === DIRECTOR_EMAIL) alert("Director: Set API Key in Settings.");
         loadHistory();
         startNewChat(false);
     }
@@ -503,7 +366,9 @@
         currentSessionId = null;
         if(clear) {
             document.getElementById('chat-scroller').innerHTML = "";
-            typeMsg("Lemo-Tutor v6.2 Online. Ready to calculate.");
+            typeMsg("Lemo-Tutor v6.3 Online. Ready.");
+            // FIX: Close sidebar on mobile when creating new chat
+            if(window.innerWidth < 768) toggleSidebar();
         }
         document.querySelectorAll('.history-item').forEach(i => i.classList.remove('active'));
     }
@@ -513,74 +378,57 @@
         document.getElementById('chat-scroller').innerHTML = "";
         const { data } = await supabase.from('chat_messages').select('*').eq('session_id', id).order('created_at', {ascending:true});
         data.forEach(msg => appendMsg(msg.role, msg.content));
-        
-        // Highlight active session in sidebar
         loadHistory(); 
-        
-        // Mobile UX: Close sidebar
-        if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+        // FIX: Close sidebar on mobile when loading session
+        if(window.innerWidth < 768) toggleSidebar();
     }
 
     function appendMsg(role, text) {
         const box = document.getElementById('chat-scroller');
         const div = document.createElement('div');
         div.className = `msg ${role === 'user' ? 'user' : 'ai'}`;
-        
         if(role === 'assistant') {
             div.innerHTML = marked.parse(text);
             renderMathInElement(div, {delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}]});
-        } else {
-            div.innerText = text;
-        }
+        } else { div.innerText = text; }
         box.appendChild(div);
         box.scrollTop = box.scrollHeight;
     }
 
-    // --- SEND MESSAGE ---
+    // --- SEND MSG ---
     async function sendMsg() {
-        if(!masterKey) return alert("System Offline: Director has not configured API Key.");
+        if(!masterKey) return alert("System Offline.");
         const txt = document.getElementById('userInp').value.trim();
         const file = document.getElementById('chat-img').files[0];
-
         if(!txt && !file) return;
 
-        // 1. Create Session?
         if(!currentSessionId) {
-            const title = txt.substring(0, 30) || "Image Chat";
+            const title = txt.substring(0, 25) || "New Chat";
             const { data } = await supabase.from('chat_sessions').insert({ user_id: user.id, title }).select().single();
             currentSessionId = data.id;
             loadHistory();
         }
 
-        // 2. UI User Msg
         appendMsg('user', txt || "Image Uploaded");
         document.getElementById('userInp').value = "";
 
-        // 3. Handle Logic
         if(file) {
             const r = new FileReader();
             r.onload = e => { imgBase64 = e.target.result; processAI(txt); document.getElementById('chat-img').value=""; };
             r.readAsDataURL(file);
-        } else {
-            processAI(txt);
-        }
+        } else { processAI(txt); }
 
-        // 4. Save User Msg
         await supabase.from('chat_messages').insert({ session_id: currentSessionId, role: 'user', content: txt || "[Image]" });
     }
 
     async function processAI(txt) {
         const box = document.getElementById('chat-scroller');
-        
-        // Load Context
         const { data: hist } = await supabase.from('chat_messages').select('role, content').eq('session_id', currentSessionId).order('created_at', {ascending:true});
-        
         let messages = [
-            { role: "system", content: "You are Lemo-Tutor. You are a witty, highly technical engineering expert. You use Markdown and LaTeX. You are NOT a robot. You remember context." },
+            { role: "system", content: "You are Lemo-Tutor. Engineering expert. Use LaTeX for math." },
             ...hist.map(h => ({ role: h.role, content: h.content }))
         ];
 
-        // Current Payload
         let content = txt;
         if(imgBase64) {
             content = [{type:"text", text:txt||"Analyze this"}, {type:"image_url", image_url:{url:imgBase64}}];
@@ -588,7 +436,6 @@
         }
         imgBase64 = null;
 
-        // Placeholder
         const aiDiv = document.createElement('div'); aiDiv.className = 'msg ai'; 
         aiDiv.innerHTML = '<span class="typing-cursor"></span>';
         box.appendChild(aiDiv);
@@ -618,14 +465,10 @@
         div.appendChild(span); div.appendChild(cursor);
         box.appendChild(div);
 
-        let i = 0;
-        let speed = text.length > 200 ? 5 : 15;
+        let i = 0; let speed = text.length > 200 ? 5 : 15;
         function type() {
             if(i < text.length) {
-                span.textContent += text.charAt(i);
-                i++;
-                box.scrollTop = box.scrollHeight;
-                setTimeout(type, speed);
+                span.textContent += text.charAt(i); i++; box.scrollTop = box.scrollHeight; setTimeout(type, speed);
             } else {
                 cursor.remove();
                 div.innerHTML = marked.parse(text);
@@ -636,7 +479,7 @@
         type();
     }
 
-    // --- LIBRARY & ADMIN ---
+    // --- LIBRARY ---
     async function uploadPDF() {
         const t = document.getElementById('doc-title').value; const f = document.getElementById('doc-file').files[0];
         if(!t || !f) return alert("Missing info");
@@ -644,8 +487,7 @@
         await supabase.storage.from('pdfs').upload(p, f);
         const { data } = supabase.storage.from('pdfs').getPublicUrl(p);
         await supabase.from('resources').insert({ user_id: user.id, title: t, file_url: data.publicUrl });
-        alert("Upload Complete");
-        loadLib();
+        alert("Uploaded"); loadLib();
     }
 
     async function loadLib() {
@@ -654,35 +496,23 @@
         data.forEach(d => {
             let delBtn = "";
             if(user.email === DIRECTOR_EMAIL) {
-                delBtn = `<button class="delete-btn" onclick="deleteRes('${d.id}')">×</button>`;
+                delBtn = `<button class="delete-btn" onclick="deleteRes(event, '${d.id}')">×</button>`;
             }
-            grid.innerHTML += `
-                <div class="res-card" onclick="window.open('${d.file_url}')">
-                    ${delBtn}
-                    <div class="res-icon">📄</div>
-                    <div class="res-title">${d.title}</div>
-                </div>`;
+            grid.innerHTML += `<div class="res-card" onclick="window.open('${d.file_url}')">${delBtn}<div style="font-size:2rem;margin-bottom:10px;">📄</div><div class="res-title">${d.title}</div></div>`;
         });
     }
 
-    async function deleteRes(id) {
-        event.stopPropagation();
-        if(confirm("Delete Resource?")) {
-            await supabase.from('resources').delete().eq('id', id);
-            loadLib();
-        }
+    async function deleteRes(e, id) {
+        e.stopPropagation();
+        if(confirm("Delete?")) { await supabase.from('resources').delete().eq('id', id); loadLib(); }
     }
 
     async function saveMasterKey() {
         const k = document.getElementById('groq-key').value;
-        if(k.startsWith('gsk_')) {
-            await supabase.from('global_config').upsert({setting_name:'master_groq_key', setting_value:k});
-            alert("Master Key Saved.");
-            location.reload();
-        } else alert("Invalid Key Format");
+        await supabase.from('global_config').upsert({setting_name:'master_groq_key', setting_value:k});
+        alert("Saved."); location.reload();
     }
 
-    // Enter Key
     document.getElementById('userInp').addEventListener('keypress', e => { if(e.key === 'Enter') sendMsg(); });
 </script>
 </body>
