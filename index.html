@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>LEMO-TUTOR | DEVELOPER EDITION</title>
+    <title>LEMO-TUTOR | SMART EMPIRE</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
@@ -20,7 +20,7 @@
            ========================================= */
         :root {
             --bg: #05070a;
-            --sidebar: #0a0e12;
+            --sidebar-bg: #0a0e12;
             --text: #e2e8f0;
             --accent: #00ff88;
             --accent-dim: rgba(0, 255, 136, 0.1);
@@ -29,6 +29,7 @@
             --cursor: #00ff88;
             --user-msg-bg: rgba(0, 255, 136, 0.08);
             --ai-msg-bg: #11151b;
+            --danger: #ff3366;
         }
 
         * {
@@ -96,6 +97,12 @@
             letter-spacing: 3px;
         }
 
+        .auth-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.6;
+            margin-bottom: 30px;
+        }
+
         .auth-input {
             width: 100%;
             padding: 16px;
@@ -151,7 +158,7 @@
 
         .sidebar {
             width: 280px;
-            background: var(--sidebar);
+            background: var(--sidebar-bg);
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
@@ -480,24 +487,29 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            position: relative; /* Essential for Delete Button Positioning */
         }
         
         .director-only { display: none; }
         
+        /* Fixed Delete Button - High Visibility */
         .delete-btn {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #ff3366;
+            top: 8px;
+            right: 8px;
+            background: var(--danger);
             color: white;
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
-            border: none;
+            border: 1px solid rgba(255,255,255,0.2);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: bold;
+            z-index: 10; /* Ensures it is on top */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
         /* =========================================
@@ -531,7 +543,7 @@
     <div class="auth-card">
         <span class="auth-logo">🧠</span>
         <div class="auth-title">LEMO</div>
-        <div class="auth-subtitle">Platform v6.3 Developer</div>
+        <div class="auth-subtitle">Platform v6.4 Smart Edition</div>
         <input type="email" id="email" class="auth-input" placeholder="Email Address">
         <input type="password" id="password" class="auth-input" placeholder="Password">
         <button class="primary-btn" onclick="handleAuth()" id="auth-btn-text">Secure Login</button>
@@ -733,7 +745,6 @@
     // ===========================================
     async function initApp() {
         show('app-screen');
-        // Fetch the Global Key
         const { data } = await supabase.from('global_config').select('setting_value').eq('setting_name', 'master_groq_key').single();
         masterKey = data ? data.setting_value : null;
         
@@ -746,7 +757,7 @@
     }
 
     // ===========================================
-    // CHAT & SESSION MANAGEMENT
+    // CHAT & SMART TITLES
     // ===========================================
     async function loadHistory() {
         const { data } = await supabase.from('chat_sessions').select('*').order('created_at', {ascending:false});
@@ -757,7 +768,7 @@
             data.forEach(s => {
                 const div = document.createElement('div');
                 div.className = 'history-item';
-                div.innerText = s.title || "Untitled Session";
+                div.innerText = s.title || "New Session";
                 if(s.id === currentSessionId) div.classList.add('active');
                 div.onclick = () => loadSession(s.id);
                 list.appendChild(div);
@@ -769,12 +780,8 @@
         currentSessionId = null;
         if(clear) {
             document.getElementById('chat-scroller').innerHTML = "";
-            typeMsg("Lemo-Tutor v6.3 Online. I am ready to assist.");
-            
-            // Force Sidebar Close on Mobile
-            if(window.innerWidth < 768) {
-                toggleSidebar();
-            }
+            typeMsg("Lemo-Tutor v6.4 Online. I'm ready to solve engineering problems.");
+            if(window.innerWidth < 768) toggleSidebar();
         }
         document.querySelectorAll('.history-item').forEach(i => i.classList.remove('active'));
     }
@@ -790,12 +797,32 @@
         }
         
         loadHistory(); 
-        
-        // Force Sidebar Close on Mobile
         if(window.innerWidth < 768) {
             const sb = document.getElementById('sidebar');
             if(sb.classList.contains('open')) toggleSidebar();
         }
+    }
+
+    // --- SMART TITLE GENERATOR ---
+    async function generateSmartTitle(sessionId, userText) {
+        try {
+            const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${masterKey}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: "meta-llama/llama-4-scout-17b-16e-instruct",
+                    messages: [
+                        {role: "system", content: "Generate a very short 3-5 word title for a chat that starts with this message. No quotes."},
+                        {role: "user", content: userText}
+                    ]
+                })
+            });
+            const data = await res.json();
+            const title = data.choices[0].message.content.trim();
+            
+            await supabase.from('chat_sessions').update({ title: title }).eq('id', sessionId);
+            loadHistory(); // Refresh sidebar with new title
+        } catch(e) { console.log("Title gen failed", e); }
     }
 
     function appendMsg(role, text) {
@@ -819,7 +846,7 @@
     }
 
     // ===========================================
-    // MESSAGING LOGIC
+    // SENDING LOGIC
     // ===========================================
     async function sendMsg() {
         if(!masterKey) return alert("System Offline: Director has not configured API Key.");
@@ -828,21 +855,23 @@
 
         if(!txt && !file) return;
 
+        let isNewSession = false;
+
         // 1. Create Session if New
         if(!currentSessionId) {
-            const title = txt.substring(0, 25) || "New Chat";
-            const { data } = await supabase.from('chat_sessions').insert({ user_id: user.id, title }).select().single();
+            const { data } = await supabase.from('chat_sessions').insert({ user_id: user.id, title: "New Session..." }).select().single();
             if(data) {
                 currentSessionId = data.id;
+                isNewSession = true;
                 loadHistory();
             }
         }
 
-        // 2. Add User Message to UI
+        // 2. Add User Message
         appendMsg('user', txt || "Image Uploaded");
         document.getElementById('userInp').value = "";
 
-        // 3. Process Image or Text
+        // 3. Process
         if(file) {
             const r = new FileReader();
             r.onload = e => { 
@@ -855,8 +884,13 @@
             processAI(txt);
         }
 
-        // 4. Save to DB (Background)
+        // 4. Save User Msg
         await supabase.from('chat_messages').insert({ session_id: currentSessionId, role: 'user', content: txt || "[Image]" });
+
+        // 5. Generate Smart Title (Background)
+        if(isNewSession && txt) {
+            generateSmartTitle(currentSessionId, txt);
+        }
     }
 
     async function processAI(txt) {
@@ -870,7 +904,6 @@
             ...hist.map(h => ({ role: h.role, content: h.content }))
         ];
 
-        // Add Current Input
         let content = txt;
         if(imgBase64) {
             content = [
@@ -898,11 +931,8 @@
                     temperature: 0.6 
                 })
             });
-            
             const data = await res.json();
-            
             if(data.error) throw new Error(data.error.message);
-            
             const reply = data.choices[0].message.content;
 
             aiDiv.remove();
@@ -981,6 +1011,7 @@
         if(data) {
             data.forEach(d => {
                 let delBtn = "";
+                // Force delete button for Director
                 if(user.email === DIRECTOR_EMAIL) {
                     delBtn = `<button class="delete-btn" onclick="deleteRes(event, '${d.id}')">×</button>`;
                 }
@@ -996,7 +1027,7 @@
 
     async function deleteRes(e, id) {
         e.stopPropagation();
-        if(confirm("Delete Resource?")) {
+        if(confirm("Permanently Delete This File?")) {
             await supabase.from('resources').delete().eq('id', id);
             loadLib();
         }
