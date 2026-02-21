@@ -241,7 +241,7 @@
             border-radius: 4px;
             border: 1px solid rgba(255,255,255,0.05);
             display: flex;
-            justify-content: center; /* Centers the rendered equation */
+            justify-content: center;
             overflow-x: auto;
         }
 
@@ -340,6 +340,34 @@
             font-size: 0.95rem;
         }
 
+        /* COMPLIANCE FAQ SECTION (For Paystack) */
+        .faq-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        .faq-item {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            padding: 24px;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+        .faq-item:hover {
+            border-color: rgba(0,255,136,0.2);
+            background: rgba(0,255,136,0.02);
+        }
+        .faq-item h4 {
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .faq-item p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
         /* CTA Block */
         .cta-block {
             background: linear-gradient(145deg, rgba(15,20,29,1) 0%, rgba(5,7,10,1) 100%);
@@ -384,9 +412,17 @@
             justify-content: space-between;
             align-items: center;
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             flex-wrap: wrap;
             gap: 20px;
+        }
+        .footer-links a {
+            color: var(--text-muted);
+            margin-left: 20px;
+            transition: 0.2s;
+        }
+        .footer-links a:hover {
+            color: var(--accent);
         }
 
         /* Animations */
@@ -408,12 +444,9 @@
 
         /* Mobile adjustments */
         @media (max-width: 900px) {
-            .bento-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .card-span-2 {
-                grid-column: span 2;
-            }
+            .bento-grid { grid-template-columns: repeat(2, 1fr); }
+            .card-span-2 { grid-column: span 2; }
+            .faq-grid { grid-template-columns: 1fr; }
         }
         
         /* SURGICAL FIXES FOR MOBILE PERFECT FIT */
@@ -424,40 +457,24 @@
                 padding: 30px 0 60px; 
                 flex-direction: column; 
                 text-align: center; 
-                gap: 0px; /* Reduced to ZERO to pull simulation up */
+                gap: 0px;
             }
-            .hero-text h1 { 
-                font-size: 2.2rem; 
-                margin-bottom: 12px; 
-            }
-            .hero-text p { 
-                margin: 0 auto 20px; 
-                font-size: 0.95rem;
-            }
-            .hero-btns { 
-                justify-content: center; 
-                gap: 12px; 
-            }
-            .hero-visual {
-                min-height: 280px; 
-                margin-top: -20px; /* Forcefully pulls simulation into the gap */
-                width: 100%;
-            }
+            .hero-text h1 { font-size: 2.2rem; margin-bottom: 12px; }
+            .hero-text p { margin: 0 auto 20px; font-size: 0.95rem; }
+            .hero-btns { justify-content: center; gap: 12px; }
+            .hero-visual { min-height: 280px; margin-top: -20px; width: 100%; }
             .radar-graphic { max-width: 240px; } 
             .terminal-ui { 
-                right: 50%; 
-                transform: translateX(50%); 
-                bottom: 0px; /* Adjusted to fit the new upward shift */
-                animation: none; 
-                width: 95%; 
-                max-width: 320px;
-                font-size: 0.75rem; 
-                padding: 12px 16px; 
+                right: 50%; transform: translateX(50%); bottom: 0px; 
+                animation: none; width: 95%; max-width: 320px; font-size: 0.75rem; padding: 12px 16px; 
             }
             .bento-grid { grid-template-columns: 1fr; }
             .card-span-2 { grid-column: span 1; }
             .section { padding: 60px 0; }
-            footer { flex-direction: column; text-align: center; justify-content: center; }
+            
+            footer { flex-direction: column; text-align: center; justify-content: center; gap: 15px; }
+            .footer-links { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+            .footer-links a { margin-left: 0; }
         }
     </style>
 </head>
@@ -538,7 +555,7 @@
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
                 </div>
                 <h3>Curated Library</h3>
-                <p>Access high-level PDFs and resources curated by the director, or securely upload your own technical documents.</p>
+                <p>Access high-level PDFs and resources curated by the director, featuring native Lexical RAG vectorization.</p>
             </div>
 
             <div class="bento-card">
@@ -580,6 +597,32 @@
         </div>
     </section>
 
+    <section id="faq" class="section container">
+        <h2 class="section-title">Service Details & FAQ</h2>
+        <div class="section-sub">Clear, transparent information regarding your subscription and data.</div>
+        
+        <div class="faq-grid">
+            <div class="faq-item">
+                <h4>What exactly am I paying for?</h4>
+                <p>The R25/month subscription grants you unlimited access to the LEMO-TUTOR computational engine, our proprietary Lexical RAG library access, and secure session history. It is a recurring digital service.</p>
+            </div>
+            <div class="faq-item">
+                <h4>How is the product delivered? (Delivery Policy)</h4>
+                <p>LEMO is a digital-only Software as a Service (SaaS). Access is granted instantly upon successful payment verification. There are no physical goods or shipping involved.</p>
+            </div>
+            <div class="faq-item">
+                <h4>Can I cancel my subscription? (Refund Policy)</h4>
+                <p>Yes. You can cancel your subscription at any time. Due to the digital nature of the platform, we do not offer pro-rated refunds for partial months used, but you will not be billed again once cancelled.</p>
+            </div>
+            <div class="faq-item">
+                <h4>Contact & Entity Details</h4>
+                <p><strong>Entity:</strong> Lemo-Tech Rustenburg Engineering (Pty) Ltd.<br>
+                <strong>Location:</strong> Phokeng, North West, South Africa.<br>
+                <strong>Director Email:</strong> s225508125@mandela.ac.za</p>
+            </div>
+        </div>
+    </section>
+
     <section class="container">
         <div class="cta-block">
             <div class="cta-content">
@@ -592,8 +635,12 @@
 </main>
 
 <footer>
-    <div>© 2026 SMART EMPIRE · LEMO-TECH RUSTENBURG ENGINEERING.</div>
-    <div>📍 Protocol built for engineers, by engineers.</div>
+    <div>© 2026 Lemo-Tech Rustenburg Engineering (Pty) Ltd.</div>
+    <div class="footer-links">
+        <a href="terms.html">Terms & Conditions</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="refund.html">Refund Policy</a>
+    </div>
 </footer>
 
 </body>
