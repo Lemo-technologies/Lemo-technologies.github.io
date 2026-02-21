@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>LEMO · SMART EMPIRE · Engineering AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #05070a;
+            --accent: #00ff88;
+            --accent-dim: rgba(0, 255, 136, 0.1);
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --card-bg: #11151b;
+            --border: rgba(255, 255, 255, 0.12);
+            --glass: rgba(15, 20, 28, 0.98);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Header (matching app style) */
+        header {
+            height: 70px;
+            padding: 0 5%;
+            background: var(--glass);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent);
+            letter-spacing: 2px;
+            white-space: nowrap;
+        }
+        .logo span {
+            color: white;
+            font-weight: 300;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        .nav-links a {
+            font-weight: 500;
+            transition: color 0.2s;
+            font-size: 0.95rem;
+        }
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        /* Buttons */
+        .btn {
+            background: var(--accent);
+            color: #000;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-block;
+            white-space: nowrap;
+        }
+        .btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(0,255,136,0.3);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            margin-left: 10px;
+        }
+        .btn-outline:hover {
+            background: var(--accent-dim);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 5%;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 0;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+        .hero-text {
+            flex: 1 1 400px;
+        }
+        .hero-text h1 {
+            font-size: clamp(2.2rem, 6vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+        .hero-text h1 span {
+            color: var(--accent);
+        }
+        .hero-text p {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            max-width: 600px;
+        }
+        .hero-btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .hero-image {
+            flex: 1 1 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, var(--accent-dim) 0%, transparent 70%);
+            padding: 20px;
+        }
+        .hero-image svg {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+        }
+
+        /* Section styling */
+        .section {
+            padding: 70px 0;
+        }
+        .section-title {
+            text-align: center;
+            font-size: clamp(2rem, 5vw, 2.8rem);
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        .section-title span {
+            color: var(--accent);
+        }
+        .section-sub {
+            text-align: center;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto 50px;
+            font-size: 1.1rem;
+            padding: 0 20px;
+        }
+
+        /* Features grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px 25px;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--accent);
+        }
+        .feature-card p {
+            color: var(--text-muted);
+        }
+
+        /* How it works steps */
+        .steps {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+        }
+        .step {
+            flex: 1 1 200px;
+            text-align: center;
+        }
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: var(--accent);
+            color: #000;
+            font-size: 1.8rem;
+            font-weight: 800;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        .step h4 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+        .step p {
+            color: var(--text-muted);
+        }
+
+        /* CTA block */
+        .cta-block {
+            background: linear-gradient(145deg, #0f151d 0%, #05070a 100%);
+            border: 1px solid var(--accent);
+            border-radius: 40px;
+            padding: 60px 40px;
+            text-align: center;
+            margin: 40px 0;
+        }
+        .cta-block h2 {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            margin-bottom: 20px;
+        }
+        .cta-block p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 30px 5%;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            header {
+                height: 60px;
+                padding: 0 4%;
+            }
+            .logo {
+                font-size: 1.3rem;
+            }
+            .nav-links {
+                gap: 1rem;
+            }
+            .nav-links a {
+                font-size: 0.8rem;
+            }
+            .btn {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
+            .hero {
+                padding: 40px 0;
+                flex-direction: column-reverse;
+                text-align: center;
+            }
+            .hero-text p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .hero-btns {
+                justify-content: center;
+            }
+            .hero-image svg {
+                max-width: 280px;
+            }
+            .section {
+                padding: 50px 0;
+            }
+            .cta-block {
+                padding: 40px 20px;
+            }
+            .step {
+                flex-basis: 100%;
+            }
+        }
+        @media (max-width: 480px) {
+            .nav-links a:not(.btn) {
+                display: none;  /* keep only buttons visible on very small screens */
+            }
+            .nav-links .btn {
+                padding: 6px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">LEMO<span>TECH</span></div>
+    <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#how">How it works</a>
+        <a href="hub.html">Hub</a>
+        <a href="tutor.html" class="btn">Launch App</a>
+    </div>
+</header>
+
+<main>
+    <!-- HERO -->
+    <section class="hero container">
+        <div class="hero-text">
+            <h1>Engineering AI that <span>thinks</span> with you</h1>
+            <p>LEMO is an intelligent tutor for engineering students and professionals. Solve problems, explore concepts, and collaborate – all in one place.</p>
+            <div class="hero-btns">
+                <a href="tutor.html" class="btn">Try Tutor →</a>
+                <a href="hub.html" class="btn btn-outline">Explore the Hub</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <!-- Simple SVG representing math/engineering -->
+            <svg viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="200" cy="150" r="100" stroke="#00ff88" stroke-width="2" stroke-dasharray="8 8" fill="none"/>
+                <circle cx="200" cy="150" r="60" stroke="#00ff88" stroke-width="2" fill="none"/>
+                <path d="M200 50 L200 90 M200 210 L200 250 M300 150 L260 150 M140 150 L100 150" stroke="#00ff88" stroke-width="3"/>
+                <circle cx="200" cy="150" r="10" fill="#00ff88"/>
+                <text x="300" y="70" fill="#e2e8f0" font-family="Inter" font-size="14">∫ f(x) dx</text>
+                <text x="40" y="230" fill="#e2e8f0" font-family="Inter" font-size="14">E = mc²</text>
+                <text x="150" y="270" fill="#e2e8f0" font-family="Inter" font-size="14">∇ × E = –∂B/∂t</text>
+            </svg>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features" class="section container">
+        <h2 class="section-title">Why <span>LEMO</span>?</h2>
+        <div class="section-sub">More than a chatbot – a complete engineering companion</div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <h3>AI-Powered Tutor</h3>
+                <p>Advanced reasoning with LaTeX, Markdown, and image recognition. Trained for engineering.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>Smart Library</h3>
+                <p>Upload and share PDFs. Director‑curated resources for every subject.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3>Community Hub</h3>
+                <p>Discuss ideas, ask questions, and get feedback from peers and mentors.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h3>Context Aware</h3>
+                <p>Remember your entire conversation history. Build on previous problems seamlessly.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📷</div>
+                <h3>Image Input</h3>
+                <p>Upload photos of handwritten equations or diagrams – the AI understands them.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔐</div>
+                <h3>Secure & Private</h3>
+                <p>Your data is protected. Only you and the director can see your personal sessions.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how" class="section container">
+        <h2 class="section-title">How it <span>works</span></h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h4>Create an account</h4>
+                <p>Sign up with your email – it takes 10 seconds.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h4>Ask or explore</h4>
+                <p>Type your question, upload a file, or browse the Hub.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h4>Get answers</h4>
+                <p>Receive detailed, step‑by‑step solutions with proper math formatting.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CALL TO ACTION -->
+    <section class="container">
+        <div class="cta-block">
+            <h2>Ready to engineer smarter?</h2>
+            <p>Join hundreds of students already using LEMO. It's free.</p>
+            <a href="tutor.html" class="btn">Get Started →</a>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <p>© 2026 SMART EMPIRE · LEMO-TUTOR · All rights reserved.</p>
+    <p style="margin-top: 10px;">📍 Built for engineers, by engineers.</p>
+</footer>
+
+</body>
+          </html>
