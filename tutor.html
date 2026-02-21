@@ -14,6 +14,9 @@
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
+
     <style>
         /* =========================================
            1. CORE THEME VARIABLES
@@ -178,6 +181,13 @@
             transform: scale(0.98);
         }
 
+        .primary-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
         .link-text {
             margin-top: 24px;
             font-size: 0.85rem;
@@ -319,7 +329,7 @@
             cursor: pointer;
             margin-right: 16px;
             transition: 0.2s;
-            flex-shrink: 0; /* Prevents button from squishing */
+            flex-shrink: 0;
         }
         .menu-btn:hover { background: rgba(255,255,255,0.05); }
         
@@ -474,6 +484,16 @@
 
         @keyframes blink { 0%,100% { opacity:1 } 50% { opacity:0.3 } }
 
+        /* RAG Status Indicator */
+        .rag-status { 
+            font-family: 'Fira Code', monospace; 
+            font-size: 0.75rem; 
+            color: var(--accent); 
+            opacity: 0.7; 
+            margin-bottom: 8px; 
+            display: block; 
+        }
+
         /* =========================================
            6. INPUT AREA
            ========================================= */
@@ -607,7 +627,7 @@
         .delete-btn:hover { background: #ff5555; transform: scale(1.1); }
 
         /* =========================================
-           8. RESPONSIVE BREAKPOINTS (FIXED FOR MOBILE NAV)
+           8. RESPONSIVE BREAKPOINTS
            ========================================= */
         @media (min-width: 769px) {
             .menu-btn { display: none !important; }
@@ -617,7 +637,7 @@
 
         @media (max-width: 768px) {
             header { 
-                padding: 0 10px; /* Reduced side padding to give tabs room */
+                padding: 0 10px; 
             }
             .sidebar { 
                 position: absolute;
@@ -631,9 +651,8 @@
             }
             .sidebar.open { transform: translateX(0); }
             
-            /* Squeeze Header Items gracefully */
             .brand { 
-                font-size: 0.95rem; /* Slightly smaller text */
+                font-size: 0.95rem; 
                 letter-spacing: 0.5px;
             }
             .menu-btn {
@@ -646,7 +665,7 @@
                 padding: 2px;
             }
             .nav-tab {
-                padding: 6px 8px; /* Tighter padding so all 4 fit comfortably */
+                padding: 6px 8px; 
                 font-size: 0.8rem;
             }
         }
@@ -662,7 +681,7 @@
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
         </div>
         <div class="auth-title">LEMO INIT</div>
-        <div class="auth-subtitle">Computational Environment v6.4</div>
+        <div class="auth-subtitle">Computational Environment v6.5 (RAG Active)</div>
         <input type="email" id="email" class="auth-input" placeholder="User Identifier">
         <input type="password" id="password" class="auth-input" placeholder="Access Protocol">
         <button class="primary-btn" onclick="handleAuth()" id="auth-btn-text">Authenticate</button>
@@ -727,10 +746,10 @@
             <div id="library-view" class="view-container">
                 <div style="padding:24px; overflow-y:auto;">
                     <div class="director-only section-card">
-                        <h3 style="color:var(--accent); margin-top:0; margin-bottom: 16px;">Director Upload</h3>
+                        <h3 style="color:var(--accent); margin-top:0; margin-bottom: 16px;">Director Data Injection</h3>
                         <input type="text" id="doc-title" class="auth-input" placeholder="Document Nomenclature">
                         <input type="file" id="doc-file" class="auth-input" accept=".pdf">
-                        <button class="primary-btn" style="width:auto; margin-top: 10px;" onclick="uploadPDF()">Inject to DB</button>
+                        <button class="primary-btn" id="upload-btn" style="width:auto; margin-top: 10px;" onclick="uploadPDF()">Inject to DB & Vectorize</button>
                     </div>
                     <div id="lib-grid" class="lib-grid"></div>
                 </div>
@@ -766,9 +785,7 @@
     // ===========================================
     const SUPABASE_URL = "https://vqfjvycaiegxgvhquntr.supabase.co/";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxZmp2eWNhaWVneGd2aHF1bnRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEyNjY0OTgsImV4cCI6MjA4Njg0MjQ5OH0.DOx6caoqnKeev9Ccx2WCeGzU3SthCUI3yLKmOsPwj7A";
-    // ===========================================
-
-    // Initialize Supabase client immediately
+    
     let supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     let user;
     let masterKey;
@@ -803,9 +820,6 @@
         document.getElementById(id).classList.add('active');
     }
     
-    // ===========================================
-    // UI INTERACTIONS
-    // ===========================================
     function toggleSidebar() { 
         const sb = document.getElementById('sidebar');
         const overlay = document.getElementById('mobile-overlay');
@@ -821,9 +835,6 @@
         if(id === 'library') loadLib(); 
     }
 
-    // ===========================================
-    // AUTHENTICATION LOGIC
-    // ===========================================
     function toggleAuth() { 
         isLogin = !isLogin; 
         document.getElementById('auth-btn-text').innerText = isLogin ? "Authenticate" : "Establish Identity"; 
@@ -852,9 +863,6 @@
         location.reload(); 
     }
 
-    // ===========================================
-    // APP STARTUP
-    // ===========================================
     async function initApp() {
         show('app-screen');
         const { data } = await supabase.from('global_config').select('setting_value').eq('setting_name', 'master_groq_key').single();
@@ -892,7 +900,7 @@
         currentSessionId = null;
         if(clear) {
             document.getElementById('chat-scroller').innerHTML = "";
-            typeMsg("Lemo-Tutor Engine v6.4 Online. I am initialized and ready to compute.");
+            typeMsg("Lemo-Tutor Engine v6.5 Online. Ready to compute and parse library files.");
             if(window.innerWidth < 768) toggleSidebar();
         }
         document.querySelectorAll('.history-item').forEach(i => i.classList.remove('active'));
@@ -917,6 +925,7 @@
 
     // --- SMART TITLE GENERATOR ---
     async function generateSmartTitle(sessionId, userText) {
+        if(!masterKey) return;
         try {
             const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
                 method: 'POST',
@@ -958,7 +967,7 @@
     }
 
     // ===========================================
-    // SENDING LOGIC
+    // SENDING LOGIC & RAG
     // ===========================================
     async function sendMsg() {
         if(!masterKey) return alert("System Offline: Director has not configured API Key.");
@@ -969,7 +978,6 @@
 
         let isNewSession = false;
 
-        // 1. Create Session if New
         if(!currentSessionId) {
             const { data } = await supabase.from('chat_sessions').insert({ user_id: user.id, title: "Computing..." }).select().single();
             if(data) {
@@ -979,11 +987,9 @@
             }
         }
 
-        // 2. Add User Message
         appendMsg('user', txt || "Visual Data Provided");
         document.getElementById('userInp').value = "";
 
-        // 3. Process
         if(file) {
             const r = new FileReader();
             r.onload = e => { 
@@ -996,10 +1002,8 @@
             processAI(txt);
         }
 
-        // 4. Save User Msg
         await supabase.from('chat_messages').insert({ session_id: currentSessionId, role: 'user', content: txt || "[Image Protocol]" });
 
-        // 5. Generate Smart Title (Background)
         if(isNewSession && txt) {
             generateSmartTitle(currentSessionId, txt);
         }
@@ -1008,30 +1012,49 @@
     async function processAI(txt) {
         const box = document.getElementById('chat-scroller');
         
-        // Build Context
+        // RAG Status Indicator
+        const aiDiv = document.createElement('div'); 
+        aiDiv.className = 'msg ai'; 
+        aiDiv.innerHTML = '<span class="rag-status">> Querying Lexical Library...</span><span class="typing-cursor"></span>';
+        box.appendChild(aiDiv);
+        box.scrollTop = box.scrollHeight;
+
+        let libraryContext = "";
+        
+        try {
+            // Execute the RAG Search
+            const { data: ragDocs, error } = await supabase.rpc('search_documents', { search_query: txt });
+            if(ragDocs && ragDocs.length > 0) {
+                libraryContext = "CONTEXT EXTRACTED FROM LEMO LIBRARY:\n" + ragDocs.map(d => d.content).join("\n\n") + "\n\nUse the context above to answer the query if relevant.";
+                aiDiv.innerHTML = '<span class="rag-status">> Library Data Found. Computing...</span><span class="typing-cursor"></span>';
+            } else {
+                aiDiv.innerHTML = '<span class="rag-status">> No Library Data matched. Standard computing...</span><span class="typing-cursor"></span>';
+            }
+        } catch(e) {
+            console.log("RAG Search failed", e);
+            aiDiv.innerHTML = '<span class="rag-status">> Standard computing...</span><span class="typing-cursor"></span>';
+        }
+
         const { data: hist } = await supabase.from('chat_messages').select('role, content').eq('session_id', currentSessionId).order('created_at', {ascending:true});
         
+        let sysPrompt = "You are Lemo-Tutor. You are a witty, highly technical engineering expert. You use Markdown and LaTeX. You are NOT a robot. You remember context.";
+        if(libraryContext) sysPrompt += "\n\n" + libraryContext;
+
         let messages = [
-            { role: "system", content: "You are Lemo-Tutor. You are a witty, highly technical engineering expert. You use Markdown and LaTeX. You are NOT a robot. You remember context." },
+            { role: "system", content: sysPrompt },
             ...hist.map(h => ({ role: h.role, content: h.content }))
         ];
 
-        let content = txt;
         if(imgBase64) {
-            content = [
-                {type:"text", text:txt||"Analyze visual input."}, 
-                {type:"image_url", image_url:{url:imgBase64}}
-            ];
-            messages.push({role:"user", content});
+            messages.push({
+                role: "user", 
+                content: [
+                    {type:"text", text:txt||"Analyze visual input."}, 
+                    {type:"image_url", image_url:{url:imgBase64}}
+                ]
+            });
+            imgBase64 = null;
         }
-        imgBase64 = null;
-
-        // Typing Indicator
-        const aiDiv = document.createElement('div'); 
-        aiDiv.className = 'msg ai'; 
-        aiDiv.innerHTML = '<span class="typing-cursor"></span>';
-        box.appendChild(aiDiv);
-        box.scrollTop = box.scrollHeight;
 
         try {
             const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -1093,26 +1116,70 @@
     }
 
     // ===========================================
-    // LIBRARY & ADMIN FUNCTIONS
+    // PDF INJECTION & VECTORIZATION
     // ===========================================
     async function uploadPDF() {
         const t = document.getElementById('doc-title').value; 
         const f = document.getElementById('doc-file').files[0];
+        const btn = document.getElementById('upload-btn');
         
         if(!t || !f) return alert("Missing parameters");
         
-        const p = `${Date.now()}_${f.name}`;
+        const originalText = btn.innerText;
+        btn.innerText = "Uploading Storage...";
+        btn.disabled = true;
         
-        const { error: upErr } = await supabase.storage.from('pdfs').upload(p, f);
-        if(upErr) return alert(upErr.message);
-        
-        const { data } = supabase.storage.from('pdfs').getPublicUrl(p);
-        
-        const { error: dbErr } = await supabase.from('resources').insert({ user_id: user.id, title: t, file_url: data.publicUrl });
-        if(dbErr) return alert(dbErr.message);
-        
-        alert("Injection Complete");
-        loadLib();
+        try {
+            // 1. Upload to Storage
+            const p = `${Date.now()}_${f.name}`;
+            const { error: upErr } = await supabase.storage.from('pdfs').upload(p, f);
+            if(upErr) throw upErr;
+            
+            const { data: urlData } = supabase.storage.from('pdfs').getPublicUrl(p);
+            
+            // 2. Insert into Resources
+            btn.innerText = "Saving Reference...";
+            const { data: resData, error: dbErr } = await supabase.from('resources').insert({ user_id: user.id, title: t, file_url: urlData.publicUrl }).select().single();
+            if(dbErr) throw dbErr;
+
+            // 3. Extract Text using PDF.js
+            btn.innerText = "Extracting Lexicon...";
+            const arrayBuffer = await f.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+            
+            let fullText = "";
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                fullText += textContent.items.map(item => item.str).join(' ') + "\n";
+            }
+
+            // 4. Chunk the text (1500 chars)
+            btn.innerText = "Indexing Chunks...";
+            const chunks = [];
+            let i = 0;
+            while (i < fullText.length) {
+                chunks.push({ document_id: resData.id, content: fullText.slice(i, i + 1500) });
+                i += 1500;
+            }
+
+            // 5. Save chunks to DB
+            if(chunks.length > 0) {
+                const { error: chunkErr } = await supabase.from('document_chunks').insert(chunks);
+                if(chunkErr) throw chunkErr;
+            }
+
+            alert("Injection & RAG Vectorization Complete");
+            document.getElementById('doc-title').value = "";
+            document.getElementById('doc-file').value = "";
+            loadLib();
+
+        } catch(err) {
+            alert("Error: " + err.message);
+        } finally {
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
     }
 
     async function loadLib() {
@@ -1160,9 +1227,12 @@
         }
     }
 
-    // Enter Key Listener
-    document.getElementById('userInp').addEventListener('keypress', e => { 
-        if(e.key === 'Enter') sendMsg(); 
+    // Enter Key Listener (Standard Enter or Mobile Enter)
+    document.getElementById('userInp').addEventListener('keydown', e => { 
+        if(e.key === 'Enter') {
+            e.preventDefault();
+            sendMsg(); 
+        }
     });
 </script>
 </body>
