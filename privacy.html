@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy | LEMO-TECH</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #05070a;
+            --accent: #00ff88;
+            --accent-dim: rgba(0, 255, 136, 0.1);
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --card-bg: rgba(17, 21, 27, 0.6);
+            --border: rgba(255, 255, 255, 0.08);
+            --glass: rgba(5, 7, 10, 0.85);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Ambient Plasma Background */
+        .ambient-plasma {
+            position: fixed;
+            top: -20%;
+            left: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle, var(--accent-dim) 0%, transparent 60%);
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        /* Header */
+        header {
+            height: 70px;
+            padding: 0 5%;
+            background: var(--glass);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(16px);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent);
+            letter-spacing: 1.5px;
+            text-decoration: none;
+        }
+        .logo span {
+            color: white;
+            font-weight: 400;
+        }
+
+        .back-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+        .back-link:hover {
+            color: var(--accent);
+        }
+
+        /* Content Container */
+        .legal-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 40px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .last-updated {
+            color: var(--accent);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 40px;
+            display: block;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            color: #fff;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        p {
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        ul {
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            padding-left: 20px;
+            font-size: 0.95rem;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 30px 5%;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .legal-container {
+                margin: 30px 15px;
+                padding: 25px;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="ambient-plasma"></div>
+
+<header>
+    <a href="index.html" class="logo">LEMO<span>TECH</span></a>
+    <a href="index.html" class="back-link">← Return Home</a>
+</header>
+
+<main class="legal-container">
+    <h1>Privacy Policy</h1>
+    <span class="last-updated">Last Updated: February 2026</span>
+
+    <h2>1. Introduction</h2>
+    <p>Lemo-Tech Rustenburg Engineering (Pty) Ltd. ("we", "our", or "us") respects your privacy and is committed to protecting the personal and computational data you share with us. This Privacy Policy explains how we collect, use, and safeguard your information when you use the LEMO-TUTOR platform.</p>
+
+    <h2>2. Data We Collect</h2>
+    <p>To provide our digital engineering services, we collect the following types of information:</p>
+    <ul>
+        <li><strong>Account Information:</strong> Your email address and secure authentication credentials used to access the platform.</li>
+        <li><strong>Computational Data:</strong> Chat session logs, image uploads, and PDF documents you inject into the database. This allows the AI to maintain context and utilize Lexical RAG vectorization.</li>
+        <li><strong>Billing Information:</strong> Payments are handled entirely by our secure third-party gateway (Paystack). We do not store or process your credit card information on our servers.</li>
+    </ul>
+
+    <h2>3. How We Use Your Data</h2>
+    <p>We use your data strictly to operate and improve the LEMO environment. Specifically, we use it to:</p>
+    <ul>
+        <li>Authenticate your secure access to the platform.</li>
+        <li>Process engineering queries through our integrated Large Language Models (LLMs).</li>
+        <li>Maintain your historical session logs so you can review past calculations.</li>
+    </ul>
+    <p><strong>We do not sell, rent, or trade your personal data or computational session history to third parties for marketing purposes.</strong></p>
+
+    <h2>4. Data Security & Storage</h2>
+    <p>Your data is stored securely using enterprise-grade database architecture (Supabase) with Row-Level Security (RLS) enabled. This ensures that your private chat sessions and uploaded documents are isolated and can only be accessed by your authenticated account.</p>
+
+    <h2>5. Third-Party Integrations</h2>
+    <p>To provide advanced computational reasoning, your specific chat prompts and uploaded images may be processed through third-party API providers (such as Groq). These providers act as data processors and do not use your session inputs to train their public models.</p>
+
+    <h2>6. Your Rights</h2>
+    <p>You maintain full control over your data. You have the right to request a complete export of your session history or request the permanent deletion of your account and all associated data records from our servers.</p>
+
+    <h2>7. Contact Us</h2>
+    <p>If you have any questions or concerns regarding this Privacy Policy or how your data is handled, please contact the Director at:</p>
+    <p><strong>Email:</strong> s225508125@mandela.ac.za</p>
+
+</main>
+
+<footer>
+    <div>© 2026 Lemo-Tech Rustenburg Engineering (Pty) Ltd. All rights reserved.</div>
+</footer>
+
+</body>
+</html>
