@@ -952,14 +952,7 @@
         div.className = `msg ${role === 'user' ? 'user' : 'ai'}`;
         
         if(role === 'assistant') {
-            // --- NEW: TIKZ TO IMAGE RENDERER FOR HISTORY ---
-            let processedText = text.replace(/```tikz\n([\s\S]*?)```/g, (match, code) => {
-                const encodedTikz = encodeURIComponent(code.trim());
-                return `\n\n<img src="https://quickchart.io/tikz?code=${encodedTikz}" alt="Engineering Schematic" style="background: #fff; padding: 10px; border-radius: 8px; max-width: 100%; border: 2px solid var(--accent); margin: 10px 0;">\n\n`;
-            });
-            // -----------------------------------------------
-            
-            div.innerHTML = marked.parse(processedText);
+            div.innerHTML = marked.parse(text);
             renderMathInElement(div, {
                 delimiters:[
                     {left:"$$",right:"$$",display:true},
@@ -1044,12 +1037,7 @@
 
         const { data: hist } = await supabase.from('chat_messages').select('role, content').eq('session_id', currentSessionId).order('created_at', {ascending:true});
         
-        // --- NEW: TIKZ SYSTEM PROMPT INTEGRATION ---
-        let sysPrompt = "You are Lemo-Tutor. You are a witty, highly technical engineering expert. You use Markdown and LaTeX. You are NOT a robot. You remember context.\n" +
-        "CRITICAL INSTRUCTION FOR DIAGRAMS: If the user asks for geometry, trigonometry projections, electrical circuits, or schematics, DO NOT use ASCII art. " +
-        "Instead, output valid LaTeX TikZ code inside a ```tikz codeblock. Example:\n```tikz\n\\begin{tikzpicture}\n...\n\\end{tikzpicture}\n```";
-        // -------------------------------------------
-        
+        let sysPrompt = "You are Lemo-Tutor. You are a witty, highly technical engineering expert. You use Markdown and LaTeX. You are NOT a robot. You remember context.";
         if(libraryContext) sysPrompt += "\n\n" + libraryContext;
 
         let messages = [
@@ -1069,7 +1057,7 @@
         }
 
         try {
-            const res = await fetch('[https://api.groq.com/openai/v1/chat/completions](https://api.groq.com/openai/v1/chat/completions)', {
+            const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${masterKey}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
@@ -1114,15 +1102,7 @@
                 setTimeout(type, speed);
             } else {
                 cursor.remove();
-                
-                // --- NEW: TIKZ TO IMAGE RENDERER (Post-Typing) ---
-                let processedText = text.replace(/```tikz\n([\s\S]*?)```/g, (match, code) => {
-                    const encodedTikz = encodeURIComponent(code.trim());
-                    return `\n\n<img src="https://quickchart.io/tikz?code=${encodedTikz}" alt="Engineering Schematic" style="background: #fff; padding: 10px; border-radius: 8px; max-width: 100%; border: 2px solid var(--accent); margin: 10px 0;">\n\n`;
-                });
-                // -------------------------------------------------
-
-                div.innerHTML = marked.parse(processedText);
+                div.innerHTML = marked.parse(text);
                 renderMathInElement(div, {
                     delimiters:[
                         {left:"$$",right:"$$",display:true},
