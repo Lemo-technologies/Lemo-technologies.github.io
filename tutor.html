@@ -16,7 +16,7 @@
 
     <style>
         /* =========================================
-           1. CORE THEME VARIABLES (Matched to Index)
+           1. CORE THEME VARIABLES
            ========================================= */
         :root {
             --bg: #05070a;
@@ -53,7 +53,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Custom Scrollbar for a premium IDE feel */
+        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
@@ -319,6 +319,7 @@
             cursor: pointer;
             margin-right: 16px;
             transition: 0.2s;
+            flex-shrink: 0; /* Prevents button from squishing */
         }
         .menu-btn:hover { background: rgba(255,255,255,0.05); }
         
@@ -327,6 +328,7 @@
             letter-spacing: 1.5px;
             color: var(--accent);
             font-size: 1.1rem;
+            white-space: nowrap;
         }
         .brand span { color: #fff; font-weight: 400; }
 
@@ -336,6 +338,7 @@
             padding: 4px;
             border-radius: 8px;
             border: 1px solid var(--border);
+            align-items: center;
         }
 
         .nav-tab {
@@ -348,6 +351,7 @@
             font-size: 0.85rem;
             font-weight: 600;
             transition: 0.2s;
+            white-space: nowrap;
         }
 
         .nav-tab:hover { color: #fff; }
@@ -603,7 +607,7 @@
         .delete-btn:hover { background: #ff5555; transform: scale(1.1); }
 
         /* =========================================
-           8. RESPONSIVE BREAKPOINTS
+           8. RESPONSIVE BREAKPOINTS (FIXED FOR MOBILE NAV)
            ========================================= */
         @media (min-width: 769px) {
             .menu-btn { display: none !important; }
@@ -612,6 +616,9 @@
         }
 
         @media (max-width: 768px) {
+            header { 
+                padding: 0 10px; /* Reduced side padding to give tabs room */
+            }
             .sidebar { 
                 position: absolute;
                 height: 100%;
@@ -623,6 +630,25 @@
                 box-shadow: 20px 0 50px rgba(0,0,0,0.8);
             }
             .sidebar.open { transform: translateX(0); }
+            
+            /* Squeeze Header Items gracefully */
+            .brand { 
+                font-size: 0.95rem; /* Slightly smaller text */
+                letter-spacing: 0.5px;
+            }
+            .menu-btn {
+                margin-right: 8px;
+                width: 32px;
+                height: 32px;
+            }
+            .nav-tabs {
+                gap: 2px;
+                padding: 2px;
+            }
+            .nav-tab {
+                padding: 6px 8px; /* Tighter padding so all 4 fit comfortably */
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
