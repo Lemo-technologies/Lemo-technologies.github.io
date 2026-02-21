@@ -178,7 +178,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 400px; /* Ensures space for the absolute elements */
+            min-height: 400px;
         }
         .radar-graphic {
             width: 100%;
@@ -225,7 +225,7 @@
         .term-math {
             color: #fff;
             margin-top: 8px;
-            word-break: break-word; /* Forces long equations to wrap safely */
+            word-break: break-word;
             background: rgba(255,255,255,0.03);
             padding: 8px;
             border-radius: 4px;
@@ -402,28 +402,44 @@
                 grid-column: span 2;
             }
         }
+        
+        /* SURGICAL FIXES FOR MOBILE PERFECT FIT */
         @media (max-width: 768px) {
             header { padding: 0 4%; }
             .nav-links a:not(.btn) { display: none; }
             .hero { 
-                padding: 40px 0 100px; /* Added extra bottom padding on mobile */
+                padding: 30px 0 60px; /* Reduced top/bottom padding to pull everything up */
                 flex-direction: column; 
                 text-align: center; 
+                gap: 20px; /* FIXED MASSIVE GAP HERE */
             }
-            .hero-text p { margin: 0 auto 30px; }
-            .hero-btns { justify-content: center; }
+            .hero-text h1 { 
+                font-size: 2.2rem; /* Scaled down slightly to prevent huge line breaks */
+                margin-bottom: 12px; 
+            }
+            .hero-text p { 
+                margin: 0 auto 20px; /* Tightened paragraph margin */
+                font-size: 0.95rem;
+            }
+            .hero-btns { 
+                justify-content: center; 
+                gap: 12px; 
+            }
             .hero-visual {
-                min-height: 340px; /* Fixed height container to prevent overlaps */
-                margin-top: 20px;
+                min-height: 280px; /* Shorter container to fit on one screen */
+                margin-top: 0px; 
+                width: 100%;
             }
-            .radar-graphic { max-width: 300px; }
+            .radar-graphic { max-width: 240px; } /* Scaled down graphic */
             .terminal-ui { 
                 right: 50%; 
                 transform: translateX(50%); 
-                bottom: -30px; /* Anchored nicely at the bottom of the visual container */
+                bottom: -15px; /* Tucked closer to the radar */
                 animation: none; 
-                width: 90%; 
-                font-size: 0.75rem; /* Scaled down slightly to fit LaTeX */
+                width: 95%; /* Widened box so LaTeX fits better */
+                max-width: 320px;
+                font-size: 0.75rem; 
+                padding: 12px 16px; /* Tighter padding inside box */
             }
             .bento-grid { grid-template-columns: 1fr; }
             .card-span-2 { grid-column: span 1; }
