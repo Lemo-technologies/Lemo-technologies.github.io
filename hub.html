@@ -2,96 +2,295 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>LEMO | THE HUB</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+    
     <style>
+        /* =========================================
+           1. CORE THEME VARIABLES
+           ========================================= */
         :root {
             --bg: #05070a;
-            --accent: #00ff88;
-            --border: rgba(255, 255, 255, 0.12);
-            --card: #11151b;
             --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --accent: #00ff88;
+            --accent-dim: rgba(0, 255, 136, 0.1);
+            --accent-glow: rgba(0, 255, 136, 0.2);
+            --glass: rgba(5, 7, 10, 0.85);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(0, 255, 136, 0.3);
+            --card: rgba(17, 21, 27, 0.6);
             --danger: #ff3366;
         }
 
-        body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; height: 100%; overflow-x: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-        /* HEADER MATCHING INDEX.HTML */
+        body, html { 
+            background: var(--bg); 
+            color: var(--text); 
+            font-family: 'Inter', sans-serif; 
+            min-height: 100%; 
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+        /* Ambient Background */
+        .ambient-plasma {
+            position: fixed;
+            top: -20%;
+            left: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle, var(--accent-dim) 0%, transparent 60%);
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.4;
+            pointer-events: none;
+            animation: pulse 8s ease-in-out infinite alternate;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.2; transform: scale(1); }
+            100% { opacity: 0.5; transform: scale(1.1); }
+        }
+
+        /* =========================================
+           2. HEADER
+           ========================================= */
         header {
-            height: 64px; padding: 0 20px;
-            background: rgba(5,7,10,0.95); border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: space-between;
-            position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px);
+            height: 64px; 
+            padding: 0 20px;
+            background: var(--glass); 
+            border-bottom: 1px solid var(--border);
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            backdrop-filter: blur(16px);
         }
-        .brand { font-weight: 800; color: var(--accent); letter-spacing: 1px; }
         
-        .nav-tabs { display: flex; background: rgba(255,255,255,0.05); padding: 4px; border-radius: 12px; }
-        .nav-tab { 
-            background: transparent; border: none; color: #888; 
-            padding: 8px 16px; border-radius: 8px; cursor: pointer; 
-            font-size: 0.85rem; font-weight: 600; text-decoration: none;
+        .brand {
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: var(--accent);
+            font-size: 1.1rem;
+            white-space: nowrap;
         }
-        .nav-tab.active { background: rgba(0, 255, 136, 0.1); color: var(--accent); }
+        .brand span { color: #fff; font-weight: 400; }
 
-        .container { max-width: 700px; margin: 0 auto; padding: 20px; position: relative; }
+        .nav-tabs {
+            display: flex;
+            background: rgba(255,255,255,0.03);
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            align-items: center;
+        }
 
-        /* DIRECTOR POSTING BOX */
-        .director-only { display: none; background: rgba(0, 255, 136, 0.05); border: 1px dashed var(--accent); border-radius: 20px; padding: 20px; margin-bottom: 30px; }
-        input, textarea, .file-label { width: 100%; padding: 12px; background: #0f1319; border: 1px solid var(--border); border-radius: 10px; color: white; margin-bottom: 10px; outline: none; box-sizing: border-box; }
-        .file-label { display: inline-block; cursor: pointer; text-align: center; border: 1px dashed var(--accent); }
-        .file-label:hover { background: #1a1f2a; }
+        .nav-tab {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: 0.2s;
+            white-space: nowrap;
+            text-decoration: none;
+        }
+
+        .nav-tab:hover { color: #fff; }
+
+        .nav-tab.active {
+            background: var(--accent-dim);
+            color: var(--accent);
+        }
+
+        .container { max-width: 720px; margin: 0 auto; padding: 30px 20px; position: relative; }
+
+        /* =========================================
+           3. DIRECTOR POSTING BOX
+           ========================================= */
+        .director-only { 
+            display: none; 
+            background: rgba(17, 21, 27, 0.4); 
+            border: 1px solid var(--border-hover); 
+            border-radius: 16px; 
+            padding: 24px; 
+            margin-bottom: 30px; 
+            backdrop-filter: blur(10px);
+            box-shadow: inset 0 0 20px rgba(0,255,136,0.05);
+        }
+        
+        input, textarea { 
+            width: 100%; 
+            padding: 14px 16px; 
+            background: rgba(0,0,0,0.4); 
+            border: 1px solid var(--border); 
+            border-radius: 10px; 
+            color: white; 
+            margin-bottom: 12px; 
+            outline: none; 
+            font-size: 0.95rem; 
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        input:focus, textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
+            background: rgba(0, 255, 136, 0.02);
+        }
+
+        .file-label { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px;
+            cursor: pointer; 
+            border: 1px dashed var(--accent); 
+            padding: 14px 16px;
+            border-radius: 10px;
+            background: rgba(0,255,136,0.02);
+            color: var(--accent);
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-bottom: 12px;
+        }
+        .file-label:hover { background: var(--accent-dim); transform: translateY(-1px); }
         #p-image { display: none; }
-        .post-btn { background: var(--accent); color: #000; border: none; padding: 12px 25px; border-radius: 10px; font-weight: 700; cursor: pointer; width: 100%; }
-
-        /* POST CARDS (Facebook Style) */
-        .hub-post { background: var(--card); border: 1px solid var(--border); border-radius: 20px; margin-bottom: 25px; overflow: hidden; position: relative; }
-        .post-header { padding: 15px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
-        .avatar { width: 35px; height: 35px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 800; }
-        .post-img { width: 100%; max-height: 450px; object-fit: cover; border-bottom: 1px solid var(--border); }
-        .post-body { padding: 20px; }
-        .post-title { font-size: 1.2rem; font-weight: 700; color: var(--accent); margin-bottom: 10px; }
         
-        /* COMMENT SECTION */
-        .comment-section { background: rgba(0,0,0,0.15); padding: 15px 20px; border-top: 1px solid var(--border); }
-        .comment-item { margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 8px; }
-        .comment-user { color: var(--accent); font-weight: 700; margin-right: 8px; text-transform: capitalize; font-size: 0.85rem; }
-        .comment-text { font-size: 0.9rem; opacity: 0.9; }
-        
-        .comment-input-wrap { display: flex; gap: 10px; margin-top: 15px; }
-        .comment-input { flex: 1; background: #05070a; border: 1px solid var(--border); padding: 10px; border-radius: 10px; color: white; margin-bottom: 0; }
-        .send-comment { background: var(--accent); border: none; padding: 0 15px; border-radius: 10px; cursor: pointer; font-weight: 800; }
-        #file-name { margin-top: -5px; margin-bottom: 10px; font-size: 0.85rem; opacity: 0.7; }
+        .post-btn { 
+            background: var(--accent); 
+            color: #05070a; 
+            border: none; 
+            padding: 14px 25px; 
+            border-radius: 10px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            width: 100%; 
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .post-btn:hover { background: #00e67a; transform: translateY(-2px); box-shadow: 0 8px 25px var(--accent-glow); }
 
-        /* DELETE BUTTON (same style as library) */
+        #file-name { margin-top: -6px; margin-bottom: 12px; font-size: 0.8rem; opacity: 0.7; font-family: 'Fira Code', monospace; }
+
+        /* =========================================
+           4. POST CARDS
+           ========================================= */
+        .hub-post { 
+            background: var(--card); 
+            border: 1px solid var(--border); 
+            border-radius: 16px; 
+            margin-bottom: 30px; 
+            overflow: hidden; 
+            position: relative; 
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+        .hub-post:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255,255,255,0.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .post-header { padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 12px; }
+        .avatar { 
+            width: 38px; height: 38px; 
+            background: linear-gradient(135deg, var(--accent) 0%, #00b3ff 100%); 
+            border-radius: 8px; 
+            display: flex; align-items: center; justify-content: center; 
+            color: #000; font-weight: 800; font-size: 0.9rem;
+        }
+        .post-img { width: 100%; max-height: 500px; object-fit: cover; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .post-body { padding: 24px 20px; }
+        .post-title { font-size: 1.3rem; font-weight: 800; color: #fff; margin-bottom: 12px; letter-spacing: -0.5px; }
+        .post-content { white-space: pre-wrap; color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
+        
+        /* =========================================
+           5. COMMENT SECTION
+           ========================================= */
+        .comment-section { background: rgba(0,0,0,0.3); padding: 20px; border-top: 1px solid var(--border); }
+        .comment-item { margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 10px; display: flex; flex-direction: column; }
+        .comment-user { color: var(--accent); font-weight: 600; text-transform: capitalize; font-size: 0.8rem; margin-bottom: 4px; letter-spacing: 0.5px; }
+        .comment-text { font-size: 0.9rem; color: #e2e8f0; }
+        
+        .comment-input-wrap { display: flex; gap: 10px; margin-top: 16px; align-items: center; }
+        .comment-input { 
+            flex: 1; 
+            background: rgba(255,255,255,0.03); 
+            border: 1px solid var(--border); 
+            padding: 12px 16px; 
+            border-radius: 10px; 
+            color: white; 
+            margin-bottom: 0; 
+            font-size: 0.9rem;
+        }
+        .comment-input:focus { border-color: var(--accent); background: rgba(0,0,0,0.5); }
+        
+        .send-comment { 
+            background: var(--accent); 
+            border: none; 
+            width: 44px; height: 44px; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            display: flex; align-items: center; justify-content: center;
+            color: #000;
+            transition: 0.2s;
+        }
+        .send-comment:hover { transform: scale(1.05); background: #00e67a; }
+
+        /* DELETE BUTTON */
         .delete-post-btn {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            background: var(--danger);
-            color: white;
+            top: 16px;
+            right: 16px;
+            background: rgba(255, 51, 102, 0.1);
+            color: var(--danger);
             width: 32px;
             height: 32px;
-            border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 51, 102, 0.3);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
             z-index: 20;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            font-size: 1.2rem;
-            transition: 0.2s;
+            transition: all 0.2s;
         }
-        .delete-post-btn:hover { background: #ff5555; transform: scale(1.1); }
+        .delete-post-btn:hover { background: var(--danger); color: #fff; transform: scale(1.05); }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            header { padding: 0 10px; }
+            .brand { font-size: 0.95rem; }
+            .nav-tabs { gap: 2px; padding: 2px; }
+            .nav-tab { padding: 6px 8px; font-size: 0.8rem; }
+        }
     </style>
 </head>
 <body>
 
+<div class="ambient-plasma"></div>
+
 <header>
-    <div class="brand">LEMO-TECH</div>
+    <div class="brand">LEMO<span>TECH</span></div>
     <div class="nav-tabs">
         <a href="hub.html" class="nav-tab active">Hub</a>
         <a href="tutor.html" class="nav-tab">Tutor</a>
@@ -100,26 +299,31 @@
 
 <div class="container">
     <div id="director-panel" class="director-only">
-        <h3 style="margin-top:0;">Director: Create New Dose</h3>
-        <input type="text" id="p-title" placeholder="Title of post">
-        <textarea id="p-content" rows="4" placeholder="Write the engineering lesson here..."></textarea>
+        <h3 style="margin-top:0; margin-bottom: 16px; color: #fff;">Broadcast to Empire</h3>
+        <input type="text" id="p-title" placeholder="Protocol Designation (Title)">
+        <textarea id="p-content" rows="4" placeholder="Input engineering data..."></textarea>
         
-        <!-- Image Upload Field -->
-        <label for="p-image" class="file-label" id="file-label">📷 Choose an image (optional)</label>
+        <label for="p-image" class="file-label" id="file-label">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            Attach Visual Data
+        </label>
         <input type="file" id="p-image" accept="image/*">
         <div id="file-name"></div>
         
-        <button class="post-btn" onclick="publishPost()">Publish to Empire</button>
+        <button class="post-btn" onclick="publishPost()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            Execute Broadcast
+        </button>
     </div>
 
     <div id="posts-feed">
-        <p style="text-align:center; opacity:0.5;">Syncing with the Hub...</p>
+        <p style="text-align:center; opacity:0.5; font-family: 'Fira Code', monospace; font-size: 0.85rem;">Establishing connection to Hub...</p>
     </div>
 </div>
 
 <script>
     // ===========================================
-    // 🔐 HARDCODED SUPABASE CREDENTIALS (same as tutor.html)
+    // 🔐 HARDCODED SUPABASE CREDENTIALS
     // ===========================================
     const SUPABASE_URL = "https://vqfjvycaiegxgvhquntr.supabase.co/";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxZmp2eWNhaWVneGd2aHF1bnRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEyNjY0OTgsImV4cCI6MjA4Njg0MjQ5OH0.DOx6caoqnKeev9Ccx2WCeGzU3SthCUI3yLKmOsPwj7A";
@@ -139,14 +343,13 @@
             }
             loadPosts();
         } else {
-            // No active session – redirect to login page (tutor.html)
             window.location.href = "tutor.html";
         }
 
         // Display selected filename
         document.getElementById('p-image').addEventListener('change', function(e) {
             const fileName = e.target.files[0] ? e.target.files[0].name : '';
-            document.getElementById('file-name').innerText = fileName ? `Selected: ${fileName}` : '';
+            document.getElementById('file-name').innerText = fileName ? `Data attached: ${fileName}` : '';
         });
     };
 
@@ -170,9 +373,11 @@
                     </div>
                 `).join('');
 
-                // Only show delete button if current user is director
+                // Premium Delete Button SVG
                 const deleteButton = (currentUser && currentUser.email === DIRECTOR_EMAIL) 
-                    ? `<button class="delete-post-btn" onclick="deletePost('${p.id}', '${p.image_url || ''}')">×</button>` 
+                    ? `<button class="delete-post-btn" onclick="deletePost('${p.id}', '${p.image_url || ''}')">
+                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                       </button>` 
                     : '';
 
                 feed.innerHTML += `
@@ -180,18 +385,23 @@
                         ${deleteButton}
                         <div class="post-header">
                             <div class="avatar">LM</div>
-                            <div style="font-weight:700;">Director Lemo</div>
+                            <div>
+                                <div style="font-weight:700; font-size:0.95rem; color:#fff;">Director Lemo</div>
+                                <div style="font-size:0.75rem; color:var(--accent); font-family:'Fira Code', monospace;">System Override</div>
+                            </div>
                         </div>
                         ${p.image_url ? `<img src="${p.image_url}" class="post-img">` : ''}
                         <div class="post-body">
                             <div class="post-title">${p.title}</div>
-                            <div style="white-space:pre-wrap; opacity:0.8; font-size:0.95rem;">${p.content}</div>
+                            <div class="post-content">${p.content}</div>
                         </div>
                         <div class="comment-section">
                             <div id="comments-${p.id}">${commentHTML}</div>
                             <div class="comment-input-wrap">
-                                <input type="text" id="in-${p.id}" class="comment-input" placeholder="Add a comment...">
-                                <button class="send-comment" onclick="addComment('${p.id}')">→</button>
+                                <input type="text" id="in-${p.id}" class="comment-input" placeholder="Transmit reply...">
+                                <button class="send-comment" onclick="addComment('${p.id}')">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -205,11 +415,10 @@
         const content = document.getElementById('p-content').value;
         const imageFile = document.getElementById('p-image').files[0];
         
-        if(!title) return alert("Title required");
+        if(!title) return alert("Title designation required");
 
         let image_url = null;
 
-        // Upload image if selected
         if (imageFile) {
             const filePath = `hub_images/${Date.now()}_${imageFile.name}`;
             
@@ -218,8 +427,7 @@
                 .upload(filePath, imageFile);
             
             if (uploadError) {
-                console.error('Upload error:', uploadError);
-                alert('Failed to upload image: ' + uploadError.message);
+                alert('Upload failure: ' + uploadError.message);
                 return;
             }
             
@@ -237,9 +445,8 @@
         });
 
         if (error) {
-            alert('Error publishing post: ' + error.message);
+            alert('Broadcast Error: ' + error.message);
         } else {
-            // Clear form
             document.getElementById('p-title').value = '';
             document.getElementById('p-content').value = '';
             document.getElementById('p-image').value = '';
@@ -263,9 +470,8 @@
     }
 
     async function deletePost(postId, imageUrl) {
-        if (!confirm("Are you sure you want to delete this post? This action cannot be undone.")) return;
+        if (!confirm("Confirm data purge? This action is irreversible.")) return;
 
-        // If there's an image, delete it from storage first
         if (imageUrl) {
             const bucketName = 'hub_images';
             const publicUrlPrefix = `${supabase.storage.from(bucketName).getPublicUrl('').data.publicUrl}`;
@@ -277,8 +483,7 @@
                 .remove([filePath]);
 
             if (storageError) {
-                console.error('Failed to delete image:', storageError);
-                alert('Warning: Post will be deleted but image could not be removed from storage.');
+                console.error('Storage wipe failed:', storageError);
             }
         }
 
@@ -288,7 +493,7 @@
             .eq('id', postId);
 
         if (dbError) {
-            alert('Error deleting post: ' + dbError.message);
+            alert('Database error: ' + dbError.message);
         } else {
             const postElement = document.getElementById(`post-${postId}`);
             if (postElement) postElement.remove();
