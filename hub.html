@@ -118,15 +118,18 @@
 </div>
 
 <script>
-    let supabase;
+    // ===========================================
+    // 🔐 HARDCODED SUPABASE CREDENTIALS (same as index.html)
+    // ===========================================
+    const SUPABASE_URL = "https://vqfjvycaiegxgvhquntr.supabase.co/";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxZmp2eWNhaWVneGd2aHF1bnRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEyNjY0OTgsImV4cCI6MjA4Njg0MjQ5OH0.DOx6caoqnKeev9Ccx2WCeGzU3SthCUI3yLKmOsPwj7A";
+    // ===========================================
+
+    let supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     let currentUser = null;
     const DIRECTOR_EMAIL = "s225508125@mandela.ac.za";
 
     window.onload = async () => {
-        const cfg = JSON.parse(localStorage.getItem('lemo_cfg'));
-        if(!cfg) { window.location.href = "index.html"; return; }
-        
-        supabase = window.supabase.createClient(cfg.url, cfg.anon);
         const { data: { session } } = await supabase.auth.getSession();
         
         if(session) {
@@ -136,6 +139,7 @@
             }
             loadPosts();
         } else {
+            // No active session – redirect to login page (index.html)
             window.location.href = "index.html";
         }
 
@@ -258,20 +262,14 @@
         loadPosts();
     }
 
-    // NEW: Delete post function
     async function deletePost(postId, imageUrl) {
         if (!confirm("Are you sure you want to delete this post? This action cannot be undone.")) return;
 
         // If there's an image, delete it from storage first
         if (imageUrl) {
-            // Extract file path from URL
-            // Example URL: https://<project>.supabase.co/storage/v1/object/public/hub_images/hub_images/12345_image.jpg
-            // The path is after '/object/public/hub_images/'
             const bucketName = 'hub_images';
             const publicUrlPrefix = `${supabase.storage.from(bucketName).getPublicUrl('').data.publicUrl}`;
-            // Remove the base URL to get the file path
             let filePath = imageUrl.replace(publicUrlPrefix, '');
-            // Remove leading slash if any
             if (filePath.startsWith('/')) filePath = filePath.substring(1);
 
             const { error: storageError } = await supabase.storage
@@ -281,11 +279,9 @@
             if (storageError) {
                 console.error('Failed to delete image:', storageError);
                 alert('Warning: Post will be deleted but image could not be removed from storage.');
-                // Continue to delete post anyway
             }
         }
 
-        // Delete the post from the database
         const { error: dbError } = await supabase
             .from('hub_posts')
             .delete()
@@ -294,11 +290,8 @@
         if (dbError) {
             alert('Error deleting post: ' + dbError.message);
         } else {
-            // Remove the post element from the DOM
             const postElement = document.getElementById(`post-${postId}`);
             if (postElement) postElement.remove();
-            // Optionally reload the whole feed to keep consistency
-            // loadPosts();
         }
     }
 </script>
