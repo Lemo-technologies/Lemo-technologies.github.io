@@ -16,7 +16,7 @@
 
     <style>
         /* =========================================
-           1. CORE THEME VARIABLES (unchanged)
+           1. CORE THEME VARIABLES
            ========================================= */
         :root {
             --bg: #05070a;
@@ -146,7 +146,7 @@
         }
 
         /* =========================================
-           3. MAIN LAYOUT & SIDEBAR (unchanged)
+           3. MAIN LAYOUT & SIDEBAR
            ========================================= */
         #app-layout {
             display: flex;
@@ -216,7 +216,7 @@
             border-color: rgba(0,255,136,0.2);
         }
 
-        /* Mobile Overlay */
+        /* Mobile Overlay to Close Sidebar */
         #mobile-overlay {
             position: absolute;
             inset: 0; 
@@ -233,7 +233,7 @@
         }
 
         /* =========================================
-           4. MAIN CONTENT & HEADER (unchanged)
+           4. MAIN CONTENT & HEADER
            ========================================= */
         .main-pane {
             flex: 1;
@@ -303,7 +303,7 @@
         }
 
         /* =========================================
-           5. CHAT MESSAGES (unchanged)
+           5. CHAT MESSAGES
            ========================================= */
         .view-container {
             display: none;
@@ -374,6 +374,7 @@
             margin-bottom: 15px;
         }
         
+        /* Ensure Math scrolls instead of breaking */
         .katex-display {
             overflow-x: auto;
             overflow-y: hidden;
@@ -414,7 +415,7 @@
         @keyframes blink { 0%,100% { opacity:1 } 50% { opacity:0.3 } }
 
         /* =========================================
-           6. INPUT AREA (unchanged)
+           6. INPUT AREA
            ========================================= */
         .input-area {
             padding: 15px;
@@ -455,7 +456,7 @@
         }
 
         /* =========================================
-           7. LIBRARY & SETTINGS STYLES (updated)
+           7. LIBRARY & SETTINGS STYLES
            ========================================= */
         #library-view, #settings-view {
             padding: 20px;
@@ -486,11 +487,12 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            position: relative;
+            position: relative; /* Essential for Delete Button Positioning */
         }
         
         .director-only { display: none; }
         
+        /* Fixed Delete Button - High Visibility */
         .delete-btn {
             position: absolute;
             top: 8px;
@@ -506,12 +508,12 @@
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            z-index: 10;
+            z-index: 10; /* Ensures it is on top */
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
         /* =========================================
-           8. RESPONSIVE BREAKPOINTS (unchanged)
+           8. RESPONSIVE BREAKPOINTS
            ========================================= */
         @media (min-width: 769px) {
             .menu-btn { display: none !important; }
@@ -537,7 +539,7 @@
 </head>
 <body>
 
-<!-- AUTH SCREEN (unchanged) -->
+<!-- AUTH SCREEN -->
 <div id="auth-screen" class="screen active">
     <div class="auth-card">
         <span class="auth-logo">🧠</span>
@@ -550,9 +552,8 @@
     </div>
 </div>
 
-<!-- SETUP SCREEN REMOVED – configuration is now stored in the database -->
+<!-- NO SETUP SCREEN – credentials are hardcoded -->
 
-<!-- APP SCREEN -->
 <div id="app-screen" class="screen">
     <div id="app-layout">
         
@@ -584,7 +585,6 @@
                 </div>
             </header>
 
-            <!-- CHAT VIEW (unchanged) -->
             <div id="chat-view" class="view-container active-view">
                 <div id="chat-scroller"></div>
                 <div class="input-area">
@@ -597,7 +597,6 @@
                 </div>
             </div>
 
-            <!-- LIBRARY VIEW (unchanged) -->
             <div id="library-view" class="view-container">
                 <div style="padding:20px; overflow-y:auto;">
                     <div class="director-only" id="director-upload" style="background:#111; padding:20px; border-radius:15px; margin-bottom:20px; border:1px solid var(--border);">
@@ -610,7 +609,6 @@
                 </div>
             </div>
 
-            <!-- SETTINGS VIEW (updated with Supabase config fields) -->
             <div id="settings-view" class="view-container">
                 <div style="padding:20px; max-width:500px; margin:0 auto;">
                     <div class="section-card">
@@ -619,21 +617,9 @@
                         
                         <div class="director-only" style="border-top:1px solid var(--border); padding-top:20px; margin-top:20px;">
                             <h3 style="color:#ff3366;">Director Controls</h3>
-                            
-                            <!-- Master API Key (existing) -->
-                            <p style="font-size:0.8rem; opacity:0.6;">Groq API Key</p>
+                            <p style="font-size:0.8rem; opacity:0.6;">Master API Key</p>
                             <input type="password" id="groq-key" class="auth-input" placeholder="gsk_...">
-                            <button class="primary-btn" onclick="saveMasterKey()" style="margin-bottom:20px;">Update Key</button>
-
-                            <!-- New: Supabase Configuration -->
-                            <p style="font-size:0.8rem; opacity:0.6; margin-top:20px;">Supabase URL</p>
-                            <input type="text" id="supabase-url" class="auth-input" placeholder="https://your-project.supabase.co">
-                            
-                            <p style="font-size:0.8rem; opacity:0.6;">Supabase Anon Key</p>
-                            <input type="text" id="supabase-anon" class="auth-input" placeholder="your-anon-key">
-                            
-                            <button class="primary-btn" onclick="saveSupabaseConfig()" style="background:var(--accent); color:#000;">Update Supabase Configuration</button>
-                            <p style="font-size:0.7rem; opacity:0.5; margin-top:10px;">After updating, the app will reload with the new configuration.</p>
+                            <button class="primary-btn" onclick="saveMasterKey()">Update Key</button>
                         </div>
 
                         <div style="margin-top:30px;">
@@ -649,14 +635,14 @@
 
 <script>
     // ===========================================
-    // 🔐 BOOTSTRAP CONFIGURATION (HARDCODED)
+    // 🔐 HARDCODED SUPABASE CREDENTIALS
     // ===========================================
-    // Replace these with your actual Supabase project details before uploading.
-    const BOOTSTRAP_URL = "https://your-project.supabase.co";      // <-- CHANGE THIS
-    const BOOTSTRAP_ANON_KEY = "your-anon-key";                    // <-- CHANGE THIS
+    const SUPABASE_URL = "https://vqfjvycaiegxgvhquntr.supabase.co/";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxZmp2eWNhaWVneGd2aHF1bnRyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEyNjY0OTgsImV4cCI6MjA4Njg0MjQ5OH0.DOx6caoqnKeev9Ccx2WCeGzU3SthCUI3yLKmOsPwj7A";
     // ===========================================
 
-    let supabase;
+    // Initialize Supabase client immediately
+    let supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     let user;
     let masterKey;
     let currentSessionId = null;
@@ -665,64 +651,12 @@
     const DIRECTOR_EMAIL = "s225508125@mandela.ac.za";
 
     // ===========================================
-    // HELPER: Initialize supabase client with given credentials
-    // ===========================================
-    function initSupabase(url, anonKey) {
-        return window.supabase.createClient(url, anonKey);
-    }
-
-    // ===========================================
-    // FETCH ACTIVE CONFIG FROM DATABASE AND RE-INIT IF NEEDED
-    // ===========================================
-    async function loadAndApplyConfig() {
-        // Try to fetch saved configuration from global_config
-        const { data: urlData } = await supabase
-            .from('global_config')
-            .select('setting_value')
-            .eq('setting_name', 'supabase_url')
-            .maybeSingle();
-        
-        const { data: keyData } = await supabase
-            .from('global_config')
-            .select('setting_value')
-            .eq('setting_name', 'supabase_anon_key')
-            .maybeSingle();
-
-        const configUrl = urlData?.setting_value;
-        const configKey = keyData?.setting_value;
-
-        // If both exist and differ from bootstrap, re-initialize
-        if (configUrl && configKey && (configUrl !== BOOTSTRAP_URL || configKey !== BOOTSTRAP_ANON_KEY)) {
-            console.log('Re-initializing Supabase with database-stored configuration');
-            supabase = initSupabase(configUrl, configKey);
-            // After re-init, we need to re-fetch the session because the client changed
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                user = session.user;
-                checkDirector();
-            } else {
-                // If session lost, redirect to auth
-                show('auth-screen');
-                return false;
-            }
-        }
-        return true;
-    }
-
-    // ===========================================
     // INITIALIZATION & AUTH
     // ===========================================
     window.onload = async () => {
-        // First, connect using bootstrap credentials
-        supabase = initSupabase(BOOTSTRAP_URL, BOOTSTRAP_ANON_KEY);
-        
-        // Check if user is already logged in
         const { data } = await supabase.auth.getSession();
-        if (data.session) {
+        if(data.session) {
             user = data.session.user;
-            // Now load and apply the database-stored config (if any)
-            const configApplied = await loadAndApplyConfig();
-            if (configApplied === false) return; // auth screen already shown
             checkDirector();
             initApp();
         } else {
@@ -731,15 +665,10 @@
     };
 
     function checkDirector() {
-        if (user && user.email === DIRECTOR_EMAIL) {
+        if(user.email === DIRECTOR_EMAIL) {
             document.querySelectorAll('.director-only').forEach(el => el.style.display = 'block');
-            // Pre-fill the Supabase config fields with current values
-            document.getElementById('supabase-url').value = supabase.supabaseUrl;
-            document.getElementById('supabase-anon').value = supabase.supabaseKey;
         }
-        if (user) {
-            document.getElementById('user-email-display').innerText = user.email;
-        }
+        document.getElementById('user-email-display').innerText = user.email;
     }
 
     function show(id) {
@@ -748,7 +677,7 @@
     }
     
     // ===========================================
-    // UI INTERACTIONS (unchanged)
+    // UI INTERACTIONS
     // ===========================================
     function toggleSidebar() { 
         const sb = document.getElementById('sidebar');
@@ -766,7 +695,7 @@
     }
 
     // ===========================================
-    // AUTHENTICATION LOGIC (unchanged)
+    // AUTHENTICATION LOGIC
     // ===========================================
     function toggleAuth() { 
         isLogin = !isLogin; 
@@ -797,7 +726,7 @@
     }
 
     // ===========================================
-    // APP STARTUP (unchanged)
+    // APP STARTUP
     // ===========================================
     async function initApp() {
         show('app-screen');
@@ -813,7 +742,7 @@
     }
 
     // ===========================================
-    // CHAT & SMART TITLES (unchanged)
+    // CHAT & SMART TITLES
     // ===========================================
     async function loadHistory() {
         const { data } = await supabase.from('chat_sessions').select('*').order('created_at', {ascending:false});
@@ -859,6 +788,7 @@
         }
     }
 
+    // --- SMART TITLE GENERATOR ---
     async function generateSmartTitle(sessionId, userText) {
         try {
             const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -876,7 +806,7 @@
             const title = data.choices[0].message.content.trim();
             
             await supabase.from('chat_sessions').update({ title: title }).eq('id', sessionId);
-            loadHistory();
+            loadHistory(); // Refresh sidebar with new title
         } catch(e) { console.log("Title gen failed", e); }
     }
 
@@ -901,7 +831,7 @@
     }
 
     // ===========================================
-    // SENDING LOGIC (unchanged)
+    // SENDING LOGIC
     // ===========================================
     async function sendMsg() {
         if(!masterKey) return alert("System Offline: Director has not configured API Key.");
@@ -912,6 +842,7 @@
 
         let isNewSession = false;
 
+        // 1. Create Session if New
         if(!currentSessionId) {
             const { data } = await supabase.from('chat_sessions').insert({ user_id: user.id, title: "New Session..." }).select().single();
             if(data) {
@@ -921,9 +852,11 @@
             }
         }
 
+        // 2. Add User Message
         appendMsg('user', txt || "Image Uploaded");
         document.getElementById('userInp').value = "";
 
+        // 3. Process
         if(file) {
             const r = new FileReader();
             r.onload = e => { 
@@ -936,8 +869,10 @@
             processAI(txt);
         }
 
+        // 4. Save User Msg
         await supabase.from('chat_messages').insert({ session_id: currentSessionId, role: 'user', content: txt || "[Image]" });
 
+        // 5. Generate Smart Title (Background)
         if(isNewSession && txt) {
             generateSmartTitle(currentSessionId, txt);
         }
@@ -946,6 +881,7 @@
     async function processAI(txt) {
         const box = document.getElementById('chat-scroller');
         
+        // Build Context
         const { data: hist } = await supabase.from('chat_messages').select('role, content').eq('session_id', currentSessionId).order('created_at', {ascending:true});
         
         let messages = [
@@ -963,6 +899,7 @@
         }
         imgBase64 = null;
 
+        // Typing Indicator
         const aiDiv = document.createElement('div'); 
         aiDiv.className = 'msg ai'; 
         aiDiv.innerHTML = '<span class="typing-cursor"></span>';
@@ -1029,7 +966,7 @@
     }
 
     // ===========================================
-    // LIBRARY & ADMIN FUNCTIONS (unchanged)
+    // LIBRARY & ADMIN FUNCTIONS
     // ===========================================
     async function uploadPDF() {
         const t = document.getElementById('doc-title').value; 
@@ -1059,6 +996,7 @@
         if(data) {
             data.forEach(d => {
                 let delBtn = "";
+                // Force delete button for Director
                 if(user.email === DIRECTOR_EMAIL) {
                     delBtn = `<button class="delete-btn" onclick="deleteRes(event, '${d.id}')">×</button>`;
                 }
@@ -1091,39 +1029,10 @@
         }
     }
 
-    // ===========================================
-    // NEW: Save Supabase Configuration
-    // ===========================================
-    async function saveSupabaseConfig() {
-        const newUrl = document.getElementById('supabase-url').value.trim();
-        const newKey = document.getElementById('supabase-anon').value.trim();
-
-        if (!newUrl || !newKey) {
-            alert("Both URL and Anon Key are required.");
-            return;
-        }
-
-        // Save to global_config table
-        const { error: urlError } = await supabase
-            .from('global_config')
-            .upsert({ setting_name: 'supabase_url', setting_value: newUrl }, { onConflict: 'setting_name' });
-
-        const { error: keyError } = await supabase
-            .from('global_config')
-            .upsert({ setting_name: 'supabase_anon_key', setting_value: newKey }, { onConflict: 'setting_name' });
-
-        if (urlError || keyError) {
-            alert("Error saving configuration: " + (urlError?.message || keyError?.message));
-        } else {
-            alert("Supabase configuration updated. The app will now reload.");
-            location.reload(); // Reload to apply new config
-        }
-    }
-
     // Enter Key Listener
     document.getElementById('userInp').addEventListener('keypress', e => { 
         if(e.key === 'Enter') sendMsg(); 
     });
 </script>
 </body>
-</html>
+        </html>
