@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>LEMO-TUTOR | SMART EMPIRE</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
@@ -16,19 +16,22 @@
 
     <style>
         /* =========================================
-           1. CORE THEME VARIABLES
+           1. CORE THEME VARIABLES (Matched to Index)
            ========================================= */
         :root {
             --bg: #05070a;
-            --sidebar-bg: #0a0e12;
+            --sidebar-bg: rgba(10, 14, 18, 0.95);
             --text: #e2e8f0;
+            --text-muted: #94a3b8;
             --accent: #00ff88;
             --accent-dim: rgba(0, 255, 136, 0.1);
-            --glass: rgba(15, 20, 28, 0.98);
-            --border: rgba(255, 255, 255, 0.12);
+            --accent-glow: rgba(0, 255, 136, 0.2);
+            --glass: rgba(5, 7, 10, 0.85);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(0, 255, 136, 0.3);
             --cursor: #00ff88;
-            --user-msg-bg: rgba(0, 255, 136, 0.08);
-            --ai-msg-bg: #11151b;
+            --user-msg-bg: rgba(0, 255, 136, 0.05);
+            --ai-msg-bg: rgba(17, 21, 27, 0.6);
             --danger: #ff3366;
         }
 
@@ -47,6 +50,32 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Custom Scrollbar for a premium IDE feel */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+        /* Ambient Background */
+        .ambient-plasma {
+            position: fixed;
+            top: -20%;
+            left: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle, var(--accent-dim) 0%, transparent 60%);
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.4;
+            pointer-events: none;
+            animation: pulse 8s ease-in-out infinite alternate;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.2; transform: scale(1); }
+            100% { opacity: 0.5; transform: scale(1.1); }
         }
 
         /* =========================================
@@ -57,7 +86,7 @@
             inset: 0;
             display: none;
             flex-direction: column;
-            background: var(--bg);
+            background: transparent;
             z-index: 50;
         }
 
@@ -69,69 +98,80 @@
         #auth-screen {
             align-items: center;
             justify-content: center;
-            background: radial-gradient(circle at top, #111923 0%, #05070a 100%);
+            background: var(--bg);
         }
 
         .auth-card {
             width: 85%;
-            max-width: 360px;
-            background: var(--glass);
+            max-width: 380px;
+            background: rgba(15, 20, 29, 0.7);
             border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 35px;
+            border-radius: 20px;
+            padding: 40px 35px;
             text-align: center;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 0 20px rgba(255,255,255,0.02);
+            backdrop-filter: blur(20px);
+            position: relative;
+            z-index: 10;
         }
 
-        .auth-logo {
-            font-size: 3rem;
-            margin-bottom: 10px;
-            display: block;
+        .auth-icon {
+            color: var(--accent);
+            margin-bottom: 16px;
         }
 
         .auth-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--accent);
-            margin-bottom: 5px;
-            letter-spacing: 3px;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
         }
 
         .auth-subtitle {
             font-size: 0.9rem;
-            opacity: 0.6;
+            color: var(--text-muted);
             margin-bottom: 30px;
         }
 
         .auth-input {
             width: 100%;
-            padding: 16px;
-            background: #0f1319;
+            padding: 14px 16px;
+            background: rgba(0,0,0,0.4);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 10px;
             color: white;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             outline: none;
-            font-size: 1rem;
-            transition: 0.3s;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            font-family: 'Fira Code', monospace;
         }
 
         .auth-input:focus {
             border-color: var(--accent);
-            box-shadow: 0 0 15px rgba(0,255,136,0.1);
+            box-shadow: 0 0 15px var(--accent-glow);
+            background: rgba(0, 255, 136, 0.02);
         }
 
         .primary-btn {
             width: 100%;
-            padding: 16px;
+            padding: 14px;
             background: var(--accent);
-            color: #000;
-            border: none;
-            border-radius: 12px;
+            color: #05070a;
+            border: 1px solid var(--accent);
+            border-radius: 10px;
             font-weight: 700;
             font-size: 1rem;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 15px transparent;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--accent-glow);
+            background: #00e67a;
         }
 
         .primary-btn:active {
@@ -139,10 +179,14 @@
         }
 
         .link-text {
-            margin-top: 20px;
+            margin-top: 24px;
             font-size: 0.85rem;
             cursor: pointer;
-            opacity: 0.7;
+            color: var(--text-muted);
+            transition: color 0.2s;
+        }
+        .link-text:hover {
+            color: var(--accent);
         }
 
         /* =========================================
@@ -154,6 +198,7 @@
             height: 100%;
             position: relative;
             overflow: hidden;
+            z-index: 10;
         }
 
         .sidebar {
@@ -164,63 +209,66 @@
             flex-direction: column;
             z-index: 200; 
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .sidebar-header {
-            padding: 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            backdrop-filter: blur(16px);
         }
         
         .new-chat-btn { 
-            width: 90%;
-            margin: 15px auto;
+            width: 88%;
+            margin: 20px auto 10px;
             padding: 12px; 
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border); 
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px solid var(--border-hover); 
             color: var(--accent);
-            border-radius: 12px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600; 
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            transition: all 0.2s;
+        }
+        .new-chat-btn:hover {
+            background: var(--accent-dim);
+            transform: translateY(-1px);
         }
 
         .history-list {
             flex: 1;
             overflow-y: auto;
-            padding: 10px;
+            padding: 10px 15px;
         }
 
         .history-item { 
-            padding: 14px;
-            margin-bottom: 5px;
-            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 6px;
+            border-radius: 8px;
             cursor: pointer; 
-            color: #94a3b8;
-            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis; 
             border: 1px solid transparent;
-            transition: 0.2s;
+            transition: all 0.2s;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .history-item:hover {
+            background: rgba(255,255,255,0.03);
+            color: #fff;
         }
 
         .history-item.active {
             background: var(--accent-dim);
             color: var(--accent);
-            border-color: rgba(0,255,136,0.2);
+            border-color: rgba(0,255,136,0.15);
         }
 
-        /* Mobile Overlay to Close Sidebar */
         #mobile-overlay {
             position: absolute;
             inset: 0; 
-            background: rgba(0,0,0,0.6); 
+            background: rgba(0,0,0,0.7); 
             backdrop-filter: blur(4px);
             z-index: 150;
             display: none;
@@ -241,61 +289,68 @@
             flex-direction: column;
             position: relative;
             min-width: 0;
-            background: var(--bg);
+            background: transparent;
             z-index: 10;
         }
 
         header {
             height: 64px;
-            padding: 0 15px;
-            background: rgba(5,7,10,0.98);
+            padding: 0 20px;
+            background: var(--glass);
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-shrink: 0;
             z-index: 100;
+            backdrop-filter: blur(16px);
         }
 
         .menu-btn { 
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255,255,255,0.1);
+            background: transparent;
             border: 1px solid var(--border); 
             color: white;
-            font-size: 1.2rem;
-            width: 40px;
-            height: 40px; 
-            border-radius: 8px;
+            width: 36px;
+            height: 36px; 
+            border-radius: 6px;
             cursor: pointer;
-            margin-right: 12px;
+            margin-right: 16px;
+            transition: 0.2s;
         }
+        .menu-btn:hover { background: rgba(255,255,255,0.05); }
         
         .brand {
-            font-weight: 700;
-            letter-spacing: 1px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
             color: var(--accent);
-            font-size: 1rem;
+            font-size: 1.1rem;
         }
+        .brand span { color: #fff; font-weight: 400; }
 
         .nav-tabs {
             display: flex;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.03);
             padding: 4px;
-            border-radius: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
         }
 
         .nav-tab {
             background: transparent;
             border: none;
-            color: #888;
-            padding: 6px 12px;
-            border-radius: 8px;
+            color: var(--text-muted);
+            padding: 6px 14px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: 600;
+            transition: 0.2s;
         }
+
+        .nav-tab:hover { color: #fff; }
 
         .nav-tab.active {
             background: var(--accent-dim);
@@ -320,28 +375,29 @@
         #chat-scroller {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 24px;
             scroll-behavior: smooth;
         }
         
         .msg {
             max-width: 88%;
-            padding: 14px 18px;
-            border-radius: 18px;
+            padding: 18px 22px;
+            border-radius: 12px;
             line-height: 1.6;
-            font-size: 0.98rem;
+            font-size: 0.95rem;
             position: relative;
             word-wrap: break-word;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
 
         .msg.user {
             align-self: flex-end;
             background: var(--user-msg-bg);
-            border: 1px solid rgba(0,255,136,0.2);
-            color: var(--accent);
+            border: 1px solid rgba(0,255,136,0.15);
+            color: #fff;
             border-bottom-right-radius: 4px;
         }
 
@@ -350,55 +406,55 @@
             background: var(--ai-msg-bg);
             border: 1px solid var(--border);
             border-bottom-left-radius: 4px;
+            backdrop-filter: blur(10px);
+            color: var(--text);
         }
         
-        /* Typography & Math Fixes */
         .msg h1, .msg h2, .msg h3 {
-            color: var(--accent);
-            margin-top: 15px;
-            margin-bottom: 8px;
-            font-size: 1.1rem;
-        }
-
-        .msg p {
-            margin-bottom: 10px;
-        }
-
-        .msg strong {
             color: #fff;
-            font-weight: 700;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
         }
 
-        .msg ul, .msg ol {
-            padding-left: 20px;
-            margin-bottom: 15px;
-        }
+        .msg p { margin-bottom: 12px; }
+        .msg p:last-child { margin-bottom: 0; }
+        .msg strong { color: var(--accent); font-weight: 600; }
+        .msg ul, .msg ol { padding-left: 20px; margin-bottom: 15px; }
         
-        /* Ensure Math scrolls instead of breaking */
+        /* Math Rendering CSS */
         .katex-display {
             overflow-x: auto;
             overflow-y: hidden;
-            padding: 5px 0;
+            padding: 10px 0;
+            margin: 10px 0;
             max-width: 100%;
             -webkit-overflow-scrolling: touch;
+            background: rgba(0,0,0,0.2);
+            border-radius: 6px;
+            text-align: center;
         }
 
         .msg pre {
             background: #080b10;
-            padding: 15px;
-            border-radius: 12px;
+            padding: 16px;
+            border-radius: 8px;
             overflow-x: auto;
             margin: 15px 0;
             border: 1px solid var(--border);
             max-width: 100%;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
         }
 
         .msg code {
-            background: rgba(255,255,255,0.1);
-            padding: 2px 5px;
+            background: rgba(0,0,0,0.4);
+            padding: 2px 6px;
             border-radius: 4px;
-            font-family: monospace;
-            color: #ff79c6;
+            font-family: 'Fira Code', monospace;
+            color: var(--accent);
+            font-size: 0.9em;
         }
 
         .typing-cursor {
@@ -418,99 +474,133 @@
            6. INPUT AREA
            ========================================= */
         .input-area {
-            padding: 15px;
-            background: linear-gradient(to top, var(--bg) 80%, transparent);
+            padding: 20px;
+            background: linear-gradient(to top, var(--bg) 70%, transparent);
             flex-shrink: 0;
             z-index: 20;
-            padding-bottom: max(15px, env(safe-area-inset-bottom));
+            padding-bottom: max(20px, env(safe-area-inset-bottom));
         }
 
         .input-box {
-            background: #0f1319;
+            background: rgba(15, 20, 29, 0.8);
             border: 1px solid var(--border);
-            border-radius: 20px;
+            border-radius: 12px;
             padding: 8px 12px;
             display: flex;
             align-items: center;
             gap: 12px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
         }
+        
+        .input-box:focus-within {
+            border-color: var(--border-hover);
+            box-shadow: 0 0 20px rgba(0,0,0,0.5), inset 0 0 10px var(--accent-glow);
+        }
+
+        .attach-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+            border-radius: 6px;
+        }
+        .attach-btn:hover { color: var(--accent); background: rgba(255,255,255,0.05); }
 
         input[type="text"] {
             flex: 1;
             background: transparent;
             border: none;
             color: white;
-            font-size: 1rem;
+            font-size: 0.95rem;
             outline: none;
+            font-family: 'Inter', sans-serif;
         }
+        input[type="text"]::placeholder { color: #5a6b80; }
 
         .send-btn {
             background: var(--accent);
-            color: #000;
+            color: #05070a;
             border: none;
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            font-weight: 800;
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
         }
+        .send-btn:hover { background: #00e67a; transform: scale(1.05); }
 
         /* =========================================
            7. LIBRARY & SETTINGS STYLES
            ========================================= */
         #library-view, #settings-view {
-            padding: 20px;
+            padding: 24px;
             overflow-y: auto;
         }
 
         .section-card {
-            background: #11151b;
-            padding: 20px;
-            border-radius: 20px;
+            background: rgba(17, 21, 27, 0.6);
+            padding: 24px;
+            border-radius: 16px;
             border: 1px solid var(--border);
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            backdrop-filter: blur(10px);
         }
 
         .lib-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 16px;
         }
 
         .res-card {
-            background: #11151b;
+            background: rgba(17, 21, 27, 0.6);
             border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 15px;
+            border-radius: 12px;
+            padding: 16px;
             cursor: pointer;
-            height: 120px;
+            height: 130px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            position: relative; /* Essential for Delete Button Positioning */
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .res-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-hover);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
         
         .director-only { display: none; }
         
-        /* Fixed Delete Button - High Visibility */
         .delete-btn {
             position: absolute;
             top: 8px;
             right: 8px;
             background: var(--danger);
             color: white;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.2);
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            border: none;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            z-index: 10; /* Ensures it is on top */
+            z-index: 10;
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            transition: 0.2s;
         }
+        .delete-btn:hover { background: #ff5555; transform: scale(1.1); }
 
         /* =========================================
            8. RESPONSIVE BREAKPOINTS
@@ -529,9 +619,8 @@
                 left: 0;
                 transform: translateX(-100%);
                 width: 80%;
-                max-width: 300px;
-                box-shadow: 10px 0 50px rgba(0,0,0,0.8);
-                background: #05070a;
+                max-width: 320px;
+                box-shadow: 20px 0 50px rgba(0,0,0,0.8);
             }
             .sidebar.open { transform: translateX(0); }
         }
@@ -539,30 +628,36 @@
 </head>
 <body>
 
-<!-- AUTH SCREEN -->
+<div class="ambient-plasma"></div>
+
 <div id="auth-screen" class="screen active">
     <div class="auth-card">
-        <span class="auth-logo">🧠</span>
-        <div class="auth-title">LEMO</div>
-        <div class="auth-subtitle">Platform v6.4 Smart Edition</div>
-        <input type="email" id="email" class="auth-input" placeholder="Email Address">
-        <input type="password" id="password" class="auth-input" placeholder="Password">
-        <button class="primary-btn" onclick="handleAuth()" id="auth-btn-text">Secure Login</button>
-        <div class="link-text" onclick="toggleAuth()" id="auth-toggle">First time? Create Account</div>
+        <div class="auth-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div class="auth-title">LEMO INIT</div>
+        <div class="auth-subtitle">Computational Environment v6.4</div>
+        <input type="email" id="email" class="auth-input" placeholder="User Identifier">
+        <input type="password" id="password" class="auth-input" placeholder="Access Protocol">
+        <button class="primary-btn" onclick="handleAuth()" id="auth-btn-text">Authenticate</button>
+        <div class="link-text" onclick="toggleAuth()" id="auth-toggle">Establish New Account</div>
     </div>
 </div>
-
-<!-- NO SETUP SCREEN – credentials are hardcoded -->
 
 <div id="app-screen" class="screen">
     <div id="app-layout">
         
         <div class="sidebar" id="sidebar">
             <div style="padding:20px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border);">
-                <span style="font-weight:700; color:var(--accent);">HISTORY</span>
-                <button onclick="toggleSidebar()" style="background:none; border:none; color:white; font-size:1.5rem;" class="mobile-only">×</button>
+                <span style="font-weight:700; color:var(--text-muted); font-size: 0.85rem; letter-spacing: 1px;">SESSION LOGS</span>
+                <button onclick="toggleSidebar()" style="background:none; border:none; color:white; cursor:pointer;" class="mobile-only">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
             </div>
-            <button class="new-chat-btn" onclick="startNewChat()">+ New Session</button>
+            <button class="new-chat-btn" onclick="startNewChat()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                New Compute
+            </button>
             <div class="history-list" id="history-list"></div>
         </div>
 
@@ -571,8 +666,10 @@
         <div class="main-pane">
             <header>
                 <div style="display:flex; align-items:center;">
-                    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-                    <div class="brand">LEMO-TUTOR</div>
+                    <button class="menu-btn" onclick="toggleSidebar()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
+                    <div class="brand">LEMO<span>TUTOR</span></div>
                 </div>
                 
                 <div style="display:flex; align-items:center; gap:10px;">
@@ -580,7 +677,7 @@
                         <a href="hub.html" class="nav-tab" style="text-decoration: none; display: flex; align-items: center;">Hub</a>
                         <button class="nav-tab active" onclick="switchView('chat')">Chat</button>
                         <button class="nav-tab" onclick="switchView('library')">Library</button>
-                        <button class="nav-tab" onclick="switchView('settings')">Settings</button>
+                        <button class="nav-tab" onclick="switchView('settings')">Config</button>
                     </div>
                 </div>
             </header>
@@ -589,41 +686,45 @@
                 <div id="chat-scroller"></div>
                 <div class="input-area">
                     <div class="input-box">
-                        <button onclick="document.getElementById('chat-img').click()" style="background:none; border:none; font-size:1.4rem; color:#888; padding:0 10px;">📎</button>
-                        <input type="file" id="chat-img" accept="image/*" style="display:none" onchange="alert('Image Attached')">
-                        <input type="text" id="userInp" placeholder="Ask Lemo..." autocomplete="off">
-                        <button class="send-btn" onclick="sendMsg()">→</button>
+                        <button class="attach-btn" onclick="document.getElementById('chat-img').click()">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                        </button>
+                        <input type="file" id="chat-img" accept="image/*" style="display:none" onchange="alert('Visual Data Parsed')">
+                        <input type="text" id="userInp" placeholder="Input parameters..." autocomplete="off">
+                        <button class="send-btn" onclick="sendMsg()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                        </button>
                     </div>
                 </div>
             </div>
 
             <div id="library-view" class="view-container">
-                <div style="padding:20px; overflow-y:auto;">
-                    <div class="director-only" id="director-upload" style="background:#111; padding:20px; border-radius:15px; margin-bottom:20px; border:1px solid var(--border);">
-                        <h3 style="color:var(--accent); margin-top:0;">Director Upload</h3>
-                        <input type="text" id="doc-title" class="auth-input" placeholder="Document Title" style="margin-bottom:10px;">
-                        <input type="file" id="doc-file" class="auth-input" accept=".pdf" style="margin-bottom:10px;">
-                        <button class="primary-btn" style="width:auto;" onclick="uploadPDF()">Upload</button>
+                <div style="padding:24px; overflow-y:auto;">
+                    <div class="director-only section-card">
+                        <h3 style="color:var(--accent); margin-top:0; margin-bottom: 16px;">Director Upload</h3>
+                        <input type="text" id="doc-title" class="auth-input" placeholder="Document Nomenclature">
+                        <input type="file" id="doc-file" class="auth-input" accept=".pdf">
+                        <button class="primary-btn" style="width:auto; margin-top: 10px;" onclick="uploadPDF()">Inject to DB</button>
                     </div>
                     <div id="lib-grid" class="lib-grid"></div>
                 </div>
             </div>
 
             <div id="settings-view" class="view-container">
-                <div style="padding:20px; max-width:500px; margin:0 auto;">
+                <div style="padding:24px; max-width:600px; margin:0 auto; width: 100%;">
                     <div class="section-card">
-                        <h3>Profile</h3>
-                        <p id="user-email-display" style="opacity:0.6; margin-bottom:20px;"></p>
+                        <h3 style="margin-bottom: 8px;">User Credentials</h3>
+                        <p id="user-email-display" style="color:var(--text-muted); font-family: 'Fira Code', monospace; margin-bottom:24px;"></p>
                         
-                        <div class="director-only" style="border-top:1px solid var(--border); padding-top:20px; margin-top:20px;">
-                            <h3 style="color:#ff3366;">Director Controls</h3>
-                            <p style="font-size:0.8rem; opacity:0.6;">Master API Key</p>
+                        <div class="director-only" style="border-top:1px solid var(--border); padding-top:24px; margin-top:24px;">
+                            <h3 style="color:var(--danger); margin-bottom: 8px;">Root Access Protocols</h3>
+                            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 12px;">Master API Key</p>
                             <input type="password" id="groq-key" class="auth-input" placeholder="gsk_...">
-                            <button class="primary-btn" onclick="saveMasterKey()">Update Key</button>
+                            <button class="primary-btn" onclick="saveMasterKey()">Update Protocol</button>
                         </div>
 
-                        <div style="margin-top:30px;">
-                            <button class="primary-btn" style="background:#ff3366;" onclick="logout()">Logout</button>
+                        <div style="margin-top:32px;">
+                            <button class="primary-btn" style="background:var(--danger); border-color:var(--danger); color:#fff;" onclick="logout()">Terminate Session</button>
                         </div>
                     </div>
                 </div>
@@ -699,8 +800,8 @@
     // ===========================================
     function toggleAuth() { 
         isLogin = !isLogin; 
-        document.getElementById('auth-btn-text').innerText = isLogin ? "Secure Login" : "Create Account"; 
-        document.getElementById('auth-toggle').innerText = isLogin ? "New User? Create Account" : "Back to Login"; 
+        document.getElementById('auth-btn-text').innerText = isLogin ? "Authenticate" : "Establish Identity"; 
+        document.getElementById('auth-toggle').innerText = isLogin ? "New User? Establish Account" : "Return to Authentication"; 
     }
     
     async function handleAuth() { 
@@ -734,7 +835,7 @@
         masterKey = data ? data.setting_value : null;
         
         if(!masterKey && user.email === DIRECTOR_EMAIL) {
-            alert("Director Alert: Please set the Master API Key in Settings.");
+            alert("Director Alert: Please set the Master API Key in Config.");
         }
         
         loadHistory();
@@ -765,7 +866,7 @@
         currentSessionId = null;
         if(clear) {
             document.getElementById('chat-scroller').innerHTML = "";
-            typeMsg("Lemo-Tutor v6.4 Online. I'm ready to solve engineering problems.");
+            typeMsg("Lemo-Tutor Engine v6.4 Online. I am initialized and ready to compute.");
             if(window.innerWidth < 768) toggleSidebar();
         }
         document.querySelectorAll('.history-item').forEach(i => i.classList.remove('active'));
@@ -844,7 +945,7 @@
 
         // 1. Create Session if New
         if(!currentSessionId) {
-            const { data } = await supabase.from('chat_sessions').insert({ user_id: user.id, title: "New Session..." }).select().single();
+            const { data } = await supabase.from('chat_sessions').insert({ user_id: user.id, title: "Computing..." }).select().single();
             if(data) {
                 currentSessionId = data.id;
                 isNewSession = true;
@@ -853,7 +954,7 @@
         }
 
         // 2. Add User Message
-        appendMsg('user', txt || "Image Uploaded");
+        appendMsg('user', txt || "Visual Data Provided");
         document.getElementById('userInp').value = "";
 
         // 3. Process
@@ -870,7 +971,7 @@
         }
 
         // 4. Save User Msg
-        await supabase.from('chat_messages').insert({ session_id: currentSessionId, role: 'user', content: txt || "[Image]" });
+        await supabase.from('chat_messages').insert({ session_id: currentSessionId, role: 'user', content: txt || "[Image Protocol]" });
 
         // 5. Generate Smart Title (Background)
         if(isNewSession && txt) {
@@ -892,7 +993,7 @@
         let content = txt;
         if(imgBase64) {
             content = [
-                {type:"text", text:txt||"Analyze this"}, 
+                {type:"text", text:txt||"Analyze visual input."}, 
                 {type:"image_url", image_url:{url:imgBase64}}
             ];
             messages.push({role:"user", content});
@@ -972,7 +1073,7 @@
         const t = document.getElementById('doc-title').value; 
         const f = document.getElementById('doc-file').files[0];
         
-        if(!t || !f) return alert("Missing info");
+        if(!t || !f) return alert("Missing parameters");
         
         const p = `${Date.now()}_${f.name}`;
         
@@ -984,7 +1085,7 @@
         const { error: dbErr } = await supabase.from('resources').insert({ user_id: user.id, title: t, file_url: data.publicUrl });
         if(dbErr) return alert(dbErr.message);
         
-        alert("Upload Complete");
+        alert("Injection Complete");
         loadLib();
     }
 
@@ -998,13 +1099,17 @@
                 let delBtn = "";
                 // Force delete button for Director
                 if(user.email === DIRECTOR_EMAIL) {
-                    delBtn = `<button class="delete-btn" onclick="deleteRes(event, '${d.id}')">×</button>`;
+                    delBtn = `<button class="delete-btn" onclick="deleteRes(event, '${d.id}')">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>`;
                 }
                 grid.innerHTML += `
                     <div class="res-card" onclick="window.open('${d.file_url}')">
                         ${delBtn}
-                        <div class="res-icon">📄</div>
-                        <div class="res-title">${d.title}</div>
+                        <div style="color:var(--accent); margin-bottom: 10px;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        </div>
+                        <div style="font-size: 0.95rem; font-weight: 600;">${d.title}</div>
                     </div>`;
             });
         }
@@ -1012,7 +1117,7 @@
 
     async function deleteRes(e, id) {
         e.stopPropagation();
-        if(confirm("Permanently Delete This File?")) {
+        if(confirm("Permanently Purge This File?")) {
             await supabase.from('resources').delete().eq('id', id);
             loadLib();
         }
@@ -1022,10 +1127,10 @@
         const k = document.getElementById('groq-key').value;
         if(k.startsWith('gsk_')) {
             await supabase.from('global_config').upsert({setting_name:'master_groq_key', setting_value:k});
-            alert("Master Key Saved.");
+            alert("Protocol Updated.");
             location.reload();
         } else {
-            alert("Invalid Key Format");
+            alert("Invalid Protocol Format");
         }
     }
 
@@ -1035,4 +1140,4 @@
     });
 </script>
 </body>
-        </html>
+</html>
