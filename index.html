@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>LEMO · SMART EMPIRE · Engineering AI</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
     <style>
         * {
             margin: 0;
@@ -222,6 +230,8 @@
         .dot-g { background: #27c93f; }
         .term-body { color: #a1b0c0; }
         .term-accent { color: var(--accent); }
+        
+        /* Math container ensures it formats cleanly */
         .term-math {
             color: #fff;
             margin-top: 8px;
@@ -230,6 +240,9 @@
             padding: 8px;
             border-radius: 4px;
             border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: center; /* Centers the rendered equation */
+            overflow-x: auto;
         }
 
         /* Section styling */
@@ -408,17 +421,17 @@
             header { padding: 0 4%; }
             .nav-links a:not(.btn) { display: none; }
             .hero { 
-                padding: 30px 0 60px; /* Reduced top/bottom padding to pull everything up */
+                padding: 30px 0 60px; 
                 flex-direction: column; 
                 text-align: center; 
-                gap: 20px; /* FIXED MASSIVE GAP HERE */
+                gap: 0px; /* Reduced to ZERO to pull simulation up */
             }
             .hero-text h1 { 
-                font-size: 2.2rem; /* Scaled down slightly to prevent huge line breaks */
+                font-size: 2.2rem; 
                 margin-bottom: 12px; 
             }
             .hero-text p { 
-                margin: 0 auto 20px; /* Tightened paragraph margin */
+                margin: 0 auto 20px; 
                 font-size: 0.95rem;
             }
             .hero-btns { 
@@ -426,20 +439,20 @@
                 gap: 12px; 
             }
             .hero-visual {
-                min-height: 280px; /* Shorter container to fit on one screen */
-                margin-top: 0px; 
+                min-height: 280px; 
+                margin-top: -20px; /* Forcefully pulls simulation into the gap */
                 width: 100%;
             }
-            .radar-graphic { max-width: 240px; } /* Scaled down graphic */
+            .radar-graphic { max-width: 240px; } 
             .terminal-ui { 
                 right: 50%; 
                 transform: translateX(50%); 
-                bottom: -15px; /* Tucked closer to the radar */
+                bottom: 0px; /* Adjusted to fit the new upward shift */
                 animation: none; 
-                width: 95%; /* Widened box so LaTeX fits better */
+                width: 95%; 
                 max-width: 320px;
                 font-size: 0.75rem; 
-                padding: 12px 16px; /* Tighter padding inside box */
+                padding: 12px 16px; 
             }
             .bento-grid { grid-template-columns: 1fr; }
             .card-span-2 { grid-column: span 1; }
