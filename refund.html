@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refund & Delivery Policy | LEMO-TECH</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #05070a;
+            --accent: #00ff88;
+            --accent-dim: rgba(0, 255, 136, 0.1);
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --card-bg: rgba(17, 21, 27, 0.6);
+            --border: rgba(255, 255, 255, 0.08);
+            --glass: rgba(5, 7, 10, 0.85);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Ambient Plasma Background */
+        .ambient-plasma {
+            position: fixed;
+            top: -20%;
+            left: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle, var(--accent-dim) 0%, transparent 60%);
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        /* Header */
+        header {
+            height: 70px;
+            padding: 0 5%;
+            background: var(--glass);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(16px);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent);
+            letter-spacing: 1.5px;
+            text-decoration: none;
+        }
+        .logo span {
+            color: white;
+            font-weight: 400;
+        }
+
+        .back-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+        .back-link:hover {
+            color: var(--accent);
+        }
+
+        /* Content Container */
+        .legal-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 40px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .last-updated {
+            color: var(--accent);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 40px;
+            display: block;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            color: #fff;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+
+        p {
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        ul {
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            padding-left: 20px;
+            font-size: 0.95rem;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 30px 5%;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .legal-container {
+                margin: 30px 15px;
+                padding: 25px;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="ambient-plasma"></div>
+
+<header>
+    <a href="index.html" class="logo">LEMO<span>TECH</span></a>
+    <a href="index.html" class="back-link">← Return Home</a>
+</header>
+
+<main class="legal-container">
+    <h1>Refund & Delivery Policy</h1>
+    <span class="last-updated">Last Updated: February 2026</span>
+
+    <h2>1. Delivery Policy (Digital Goods)</h2>
+    <p>LEMO is a digital Software as a Service (SaaS) platform provided by Lemo-Tech Rustenburg Engineering (Pty) Ltd. There are no physical products associated with this subscription.</p>
+    <ul>
+        <li><strong>Instant Access:</strong> Upon successful verification of your R25 monthly payment via our payment gateway (Paystack), access to the LEMO-TUTOR computational environment is granted instantly.</li>
+        <li><strong>No Shipping:</strong> Because our service is 100% cloud-based, there are no shipping, handling, or physical delivery times involved.</li>
+    </ul>
+
+    <h2>2. Subscription Cancellation</h2>
+    <p>You may cancel your monthly subscription at any time. To cancel, please navigate to the account configuration settings within the LEMO app or contact our support team. Once cancelled, your card will not be billed for any future cycles. You will retain full access to the platform until the end of your currently paid billing period.</p>
+
+    <h2>3. Refund Policy</h2>
+    <p>Due to the immediate, digital nature of the LEMO platform and the server costs associated with utilizing our AI computational engines, <strong>we do not offer pro-rated refunds for partial months used.</strong></p>
+    <p>Refunds are only issued under the following strict conditions:</p>
+    <ul>
+        <li><strong>Billing Errors:</strong> If you are accidentally charged multiple times in a single billing cycle due to a technical error on our end or our payment processor's end.</li>
+        <li><strong>Service Outage:</strong> If the LEMO platform is completely inaccessible for a period exceeding 7 consecutive days during your active billing cycle.</li>
+    </ul>
+
+    <h2>4. How to Request a Refund</h2>
+    <p>If you believe you qualify for a refund based on the conditions outlined above, please initiate a formal request within 7 days of the billing anomaly.</p>
+    <p>Provide your account identifier (email) and proof of the transaction anomaly to:</p>
+    <p><strong>Email:</strong> s225508125@mandela.ac.za</p>
+    <p>All approved refunds will be processed back to the original payment method within 5–10 business days, depending on your bank's processing times.</p>
+
+</main>
+
+<footer>
+    <div>© 2026 Lemo-Tech Rustenburg Engineering (Pty) Ltd. All rights reserved.</div>
+</footer>
+
+</body>
+</html>
